@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  pg-db:
+    image: 'postgres:latest'
+    container_name: pg-db
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=sidea-user
+      - POSTGRES_DB=sidea
+      - POSTGRES_PASSWORD=12345678
+
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
