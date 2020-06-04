@@ -1,18 +1,19 @@
 version: '3.7'
-
 services:
-  pg-db:
-    image: 'postgres:latest'
-    container_name: pg-db
-    ports:
-      - '5432:5432'
+  mysql_db_container:
+    image: mysql:latest
     environment:
-      - POSTGRES_USER=sidea-user
-      - POSTGRES_DB=sidea
-      - POSTGRES_PASSWORD=12345678
-
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - 3306:3306
     volumes:
-      - data:/var/lib/postgresql/data
+      - mysql_db_data_container:/var/lib/mysql
+  adminer_container:
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql_db_container
+    ports:
+      - 8080:8080
 
 volumes:
-  data:
+  mysql_db_data_container:
