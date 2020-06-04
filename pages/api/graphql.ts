@@ -5,6 +5,14 @@ import { resolvers } from '../../graphql/resolvers/index';
 
 const prisma = new PrismaClient();
 
+prisma.user
+  .findMany()
+  .then(console.log)
+  .catch(console.log)
+  .finally(() => {
+    prisma.disconnect();
+  });
+
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
