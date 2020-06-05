@@ -1,9 +1,9 @@
-const resolvers = {
-  Query: {
-    sayHello() {
-      return 'Hello World!';
-    },
-  },
+import { Resolvers } from '../types/index';
+import { Context } from '../../pages/api/graphql';
+
+const resolvers: Resolvers<Context> = {
+  Query: {},
+  Mutation: {},
 };
 
-export { resolvers };
+export default resolvers;
