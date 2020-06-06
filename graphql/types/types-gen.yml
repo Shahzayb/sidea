@@ -4,6 +4,12 @@ schema: 'graphql/schema.ts'
 # documents: "src/**/*.graphql"
 generates:
   graphql/types/index.ts:
+    config:
+      useIndexSignature: true
+      contextType: ../../pages/api/graphql#Context
+      mappers:
+        User: '@prisma/client#User as CustomUser'
+      # defaultMapper: Partial<{T}>
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

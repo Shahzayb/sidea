@@ -1,19 +1,25 @@
 import { ApolloServer } from 'apollo-server-micro';
-import { PrismaClient } from '@prisma/client';
+import { MicroRequest } from 'apollo-server-micro/dist/types';
+import { User as PrismaUser } from '@prisma/client';
 import typeDefs from '../../graphql/schema';
 import resolvers from '../../graphql/resolvers/index';
-
-const prisma = new PrismaClient();
+import prisma from '../../prisma/index';
+import { getUserFromToken } from '../../utils/jwt';
 
 export interface Context {
   prisma: typeof prisma;
+  user: PrismaUser | null;
 }
 
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers: resolvers as any,
-  context: (): Context => {
-    return { prisma };
+  resolvers,
+  async context({ req }: { req: MicroRequest }): Promise<Context> {
+    const token: string = req.headers.authorization || '';
+
+    const user = await getUserFromToken(token);
+
+    return { prisma, user };
   },
 });
 
