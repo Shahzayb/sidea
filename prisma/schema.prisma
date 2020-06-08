@@ -7,6 +7,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Feature {
+  body      String   @default("")
+  createdAt DateTime @default(now())
+  id        Int      @default(autoincrement()) @id
+  ideaId    Int
+  title     String
+  Idea      Idea     @relation(fields: [ideaId], references: [id])
+
+  @@index([ideaId], name: "ideaId")
+}
+
+model Idea {
+  body      String
+  createdAt DateTime  @default(now())
+  id        Int       @default(autoincrement()) @id
+  title     String
+  userId    Int
+  User      User      @relation(fields: [userId], references: [id])
+  Feature   Feature[]
+  Like      Like[]
+  Save      Save[]
+  Tag       Tag[]
+
+  @@index([userId], name: "userId")
+}
+
+model Like {
+  createdAt DateTime @default(now())
+  id        Int      @default(autoincrement()) @id
+  ideaId    Int
+  userId    Int
+  Idea      Idea     @relation(fields: [ideaId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@index([ideaId], name: "ideaId")
+  @@index([userId], name: "userId")
+}
+
+model Save {
+  createdAt DateTime @default(now())
+  id        Int      @default(autoincrement()) @id
+  ideaId    Int
+  userId    Int
+  Idea      Idea     @relation(fields: [ideaId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@index([ideaId], name: "ideaId")
+  @@index([userId], name: "userId")
+}
+
+model Tag {
+  id     Int    @default(autoincrement()) @id
+  ideaId Int
+  value  String
+  Idea   Idea   @relation(fields: [ideaId], references: [id])
+
+  @@index([ideaId], name: "ideaId")
+}
+
 model User {
   avatar    String
   createdAt DateTime @default(now())
@@ -15,4 +74,7 @@ model User {
   name      String
   password  String
   username  String   @unique
+  Idea      Idea[]
+  Like      Like[]
+  Save      Save[]
 }

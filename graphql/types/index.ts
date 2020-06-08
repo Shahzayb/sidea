@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { User as CustomUser } from '@prisma/client';
+import { User as CustomUser, Feature as CustomFeature, Idea as CustomIdea, Like as CustomLike, Save as CustomSave, Tag as CustomTag } from '@prisma/client';
 import { Context } from '../../pages/api/graphql';
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -28,6 +28,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   login: AuthResponse;
   signup: AuthResponse;
+  createIdea: Idea;
 };
 
 
@@ -40,6 +41,11 @@ export type MutationSignupArgs = {
   input: SignupInput;
 };
 
+
+export type MutationCreateIdeaArgs = {
+  input: CreateIdeaInput;
+};
+
 export type LoginInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -50,6 +56,18 @@ export type SignupInput = {
   username: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type CreateFeatureInput = {
+  title: Scalars['String'];
+  body: Scalars['String'];
+};
+
+export type CreateIdeaInput = {
+  title: Scalars['String'];
+  body: Scalars['String'];
+  tags?: Maybe<Array<Scalars['String']>>;
+  features?: Maybe<Array<CreateFeatureInput>>;
 };
 
 export type AuthResponse = {
@@ -65,6 +83,26 @@ export type User = {
   username: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   avatar: Scalars['String'];
+  createdAt: Scalars['String'];
+};
+
+export type Idea = {
+  __typename?: 'Idea';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  body: Scalars['String'];
+  user: User;
+  tags?: Maybe<Array<Scalars['String']>>;
+  features?: Maybe<Array<Feature>>;
+  createdAt: Scalars['String'];
+};
+
+export type Feature = {
+  __typename?: 'Feature';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  body: Scalars['String'];
+  idea: Idea;
   createdAt: Scalars['String'];
 };
 
@@ -154,8 +192,12 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   LoginInput: LoginInput;
   SignupInput: SignupInput;
+  CreateFeatureInput: CreateFeatureInput;
+  CreateIdeaInput: CreateIdeaInput;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
+  Idea: ResolverTypeWrapper<CustomIdea>;
+  Feature: ResolverTypeWrapper<CustomFeature>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -167,8 +209,12 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   LoginInput: LoginInput;
   SignupInput: SignupInput;
+  CreateFeatureInput: CreateFeatureInput;
+  CreateIdeaInput: CreateIdeaInput;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
+  Idea: CustomIdea;
+  Feature: CustomFeature;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -179,6 +225,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   login?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   signup?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
+  createIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationCreateIdeaArgs, 'input'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
@@ -197,11 +244,33 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
+export type IdeaResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Idea'] = ResolversParentTypes['Idea']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  tags?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  features?: Resolver<Maybe<Array<ResolversTypes['Feature']>>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
+export type FeatureResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Feature'] = ResolversParentTypes['Feature']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  idea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   AuthResponse?: AuthResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Idea?: IdeaResolvers<ContextType>;
+  Feature?: FeatureResolvers<ContextType>;
 }>;
 
 

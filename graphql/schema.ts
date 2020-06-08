@@ -4,6 +4,7 @@ const typeDefs = gql`
   type Query {
     # newIdeas(after_id: ID, limit: Int!): [Idea!]!
     # topIdeas(interval: INTERVAL!, after_id: ID, limit: Int!): [Idea!]!
+    # idea(id: ID!): Idea
     me: User!
     user(id: ID!): User
   }
@@ -11,7 +12,7 @@ const typeDefs = gql`
   type Mutation {
     login(input: LoginInput!): AuthResponse!
     signup(input: SignupInput!): AuthResponse!
-    # createIdea(input: CreateIdeaInput!): Idea!
+    createIdea(input: CreateIdeaInput!): Idea!
     # createFeature(input: CreateFeatureInput!): Feature!
     # deleteIdea(id: ID!): Idea!
     # deleteFeature(id: ID!): Feature!
@@ -33,18 +34,17 @@ const typeDefs = gql`
     password: String!
   }
 
-  # input CreateFeatureInput {
-  #   title: String!
-  #   body: String
-  # }
+  input CreateFeatureInput {
+    title: String!
+    body: String!
+  }
 
-  # input CreateIdeaInput {
-  #   title: String!
-  #   body: String!
-  #   user: User!
-  #   tags: [String!]!
-  #   features: [CreateFeatureInput!]!
-  # }
+  input CreateIdeaInput {
+    title: String!
+    body: String!
+    tags: [String!]
+    features: [CreateFeatureInput!]
+  }
 
   # input UpdateIdeaInput {
   #   id: ID!
@@ -78,31 +78,31 @@ const typeDefs = gql`
     username: String!
     email: String
     avatar: String!
-    # ideas(after_id: ID, limit: Int!): [Idea!]!
+    # ideas(after_id: ID, limit: Int!): [Idea!]
     # savedIdeas(after_id: ID, limit: Int!): [Idea!]!
     createdAt: String!
   }
 
-  # type Idea {
-  #   id: ID!
-  #   title: String!
-  #   body: String!
-  #   user: User!
-  #   tags: [String!]!
-  #   likes: [Like!]!
-  #   likesCount: Int!
-  #   isLikedByMe: Boolean!
-  #   features: [Feature!]!
-  #   createdAt: String!
-  # }
+  type Idea {
+    id: ID!
+    title: String!
+    body: String!
+    user: User!
+    tags: [String!]
+    # likes: [Like!]!
+    # likesCount: Int!
+    # isLikedByMe: Boolean!
+    features: [Feature!]
+    createdAt: String!
+  }
 
-  # type Feature {
-  #   id: ID!
-  #   title: String!
-  #   body: String
-  #   idea: Idea!
-  #   createdAt: String!
-  # }
+  type Feature {
+    id: ID!
+    title: String!
+    body: String!
+    idea: Idea!
+    createdAt: String!
+  }
 
   # type Like {
   #   id: ID!

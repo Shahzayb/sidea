@@ -9,7 +9,12 @@ generates:
       contextType: ../../pages/api/graphql#Context
       mappers:
         User: '@prisma/client#User as CustomUser'
-      # defaultMapper: Partial<{T}>
+        Feature: '@prisma/client#Feature as CustomFeature'
+        Idea: '@prisma/client#Idea as CustomIdea'
+        Like: '@prisma/client#Like as CustomLike'
+        Save: '@prisma/client#Save as CustomSave'
+        Tag: '@prisma/client#Tag as CustomTag'
+        # defaultMapper: Partial<{T}>
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

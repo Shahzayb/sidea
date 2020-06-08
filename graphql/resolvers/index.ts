@@ -4,7 +4,11 @@ import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
 import { createJwtToken } from '../../utils/jwt';
 import { Resolvers } from '../types/index';
-import { User } from '@prisma/client';
+import {
+  User,
+  TagCreateWithoutIdeaInput,
+  IdeaCreateInput,
+} from '@prisma/client';
 
 const resolvers: Resolvers = {
   Query: {
@@ -214,13 +218,209 @@ const resolvers: Resolvers = {
         user,
       };
     },
+    async createIdea(_, { input }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+      // validate title
+      input.title = input.title.trim();
+      if (!input.title) {
+        errors.push({
+          param: 'title',
+          msg: 'title is required',
+        });
+      } else if (
+        !validator.isLength(input.title, {
+          max: 300,
+        })
+      ) {
+        errors.push({
+          param: 'title',
+          msg: 'title is too long. max character limit is 300',
+        });
+      }
+      // validate body
+      input.body = input.body.trim();
+      if (!input.body) {
+        errors.push({
+          param: 'body',
+          msg: 'body is required',
+        });
+      } else if (
+        !validator.isLength(input.body, {
+          max: 40_000,
+        })
+      ) {
+        errors.push({
+          param: 'body',
+          msg: 'body is too long. max character limit is 40,000',
+        });
+      }
+      // validate & transform tags
+      const tags: TagCreateWithoutIdeaInput[] = [];
+      if (input.tags) {
+        if (input.tags.length > 30) {
+          errors.push({
+            param: 'tags',
+            msg: 'too much tags. tags cannot be more than 30.',
+          });
+        } else {
+          for (let i = 0; i < input.tags.length; i++) {
+            const curTag = input.tags[i].trim();
+            const tagsExp = RegExp('^[0-9a-zA-Z-_.]+$');
+
+            if (!curTag) {
+              errors.push({
+                param: 'tags',
+                msg: 'tags cannot be empty',
+              });
+              break;
+            } else if (!tagsExp.test(curTag)) {
+              errors.push({
+                param: 'tags',
+                msg:
+                  'tags can only contains "letters", "numbers", ".", "-", and "_"',
+              });
+              break;
+            } else if (
+              !validator.isLength(curTag, {
+                max: 30,
+              })
+            ) {
+              errors.push({
+                param: 'tags',
+                msg: `tag "${curTag}" is too long. max character limit is 30.`,
+              });
+              break;
+            } else {
+              input.tags[i] = curTag;
+              tags.push({
+                value: curTag,
+              });
+            }
+          }
+        }
+      }
+      // validate features
+      if (input.features) {
+        for (let i = 0; i < input.features.length; i++) {
+          const curFeature = input.features[i];
+          curFeature.title = curFeature.title.trim();
+          curFeature.body = curFeature.body.trim();
+          // validate feature title
+          if (!curFeature.title) {
+            errors.push({
+              param: 'features',
+              msg: 'title of feature is required',
+            });
+            break;
+          } else if (
+            !validator.isLength(curFeature.title, {
+              max: 300,
+            })
+          ) {
+            errors.push({
+              param: 'features',
+              msg: 'title of feature is too long. max character limit is 300',
+            });
+            break;
+          }
+
+          // validate feature body
+          if (
+            !validator.isLength(curFeature.body, {
+              max: 300,
+            })
+          ) {
+            errors.push({
+              param: 'features',
+              msg: 'body of feature is too long. max character limit is 300',
+            });
+            break;
+          }
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid input', {
+          errors,
+        });
+      }
+
+      const data: IdeaCreateInput = {
+        User: {
+          connect: {
+            id: user.id,
+          },
+        },
+        title: input.title,
+        body: input.body,
+        Tag: {
+          create: tags,
+        },
+      };
+      if (input.features) {
+        data.Feature = {
+          create: input.features,
+        };
+      }
+
+      const idea = await prisma.idea.create({
+        data,
+      });
+
+      return idea;
+    },
   },
   User: {
-    email(parent, _, { user }, info) {
+    email(parent, _, { user }) {
       if (!user || parent.id !== user.id) {
         return null;
       }
       return parent.email;
+    },
+  },
+  Idea: {
+    async user(idea, _, { prisma }) {
+      const user = await prisma.user.findOne({
+        where: {
+          id: idea.userId,
+        },
+      });
+
+      // come back to null issue later
+      return user!;
+    },
+    async tags(idea, _, { prisma }) {
+      const tags = await prisma.tag.findMany({
+        where: {
+          ideaId: idea.id,
+        },
+      });
+
+      return tags.map((tag) => tag.value);
+    },
+    async features(idea, _, { prisma }) {
+      const features = await prisma.feature.findMany({
+        where: {
+          ideaId: idea.id,
+        },
+      });
+
+      return features;
+    },
+  },
+  Feature: {
+    async idea(feature, _, { prisma }) {
+      const idea = await prisma.idea.findOne({
+        where: {
+          id: feature.ideaId,
+        },
+      });
+      // come back to null issue later
+      return idea!;
     },
   },
 };
