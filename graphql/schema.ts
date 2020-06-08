@@ -14,12 +14,14 @@ const typeDefs = gql`
     signup(input: SignupInput!): AuthResponse!
     createIdea(input: CreateIdeaInput!): Idea!
     createFeature(input: CreateFeatureWithoutIdeaInput!): Feature!
+    updateIdea(input: UpdateIdeaInput!): Idea!
+    # updateFeature(input: UpdateFeatureInput!): Feature!
     # deleteIdea(id: ID!): Idea!
     # deleteFeature(id: ID!): Feature!
-    # updateIdea(input: UpdateIdeaInput!): Idea!
-    # updateFeature(input: UpdateFeatureInput!): Feature!
     # saveIdea(id: ID!): Save!
     # deleteSavedIdea(id: ID!): Save!
+    # likeIdea(id: ID!): Like!
+    # unlikeIdea(id: ID!): Like!
   }
 
   input LoginInput {
@@ -52,11 +54,12 @@ const typeDefs = gql`
     features: [CreateFeatureInput!]
   }
 
-  # input UpdateIdeaInput {
-  #   id: ID!
-  #   title: String
-  #   body: String
-  # }
+  input UpdateIdeaInput {
+    id: ID!
+    title: String
+    body: String
+    tags: [String!]
+  }
 
   # input UpdateFeatureInput {
   #   id: ID!

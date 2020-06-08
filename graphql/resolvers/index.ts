@@ -8,6 +8,7 @@ import {
   User,
   TagCreateWithoutIdeaInput,
   IdeaCreateInput,
+  IdeaUpdateArgs,
 } from '@prisma/client';
 
 const resolvers: Resolvers = {
@@ -477,6 +478,155 @@ const resolvers: Resolvers = {
       });
 
       return feature;
+    },
+    async updateIdea(_, { input }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+
+      // validate id
+      input.id = input.id.trim();
+      if (
+        !validator.isInt(input.id, {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'idea id is invalid',
+        });
+      } else {
+        const ideaId = validator.toInt(input.id);
+
+        const idea = await prisma.idea.findOne({
+          where: {
+            id: ideaId,
+          },
+        });
+
+        if (!idea) {
+          errors.push({
+            param: 'id',
+            msg: 'idea does not exists.',
+          });
+        } else if (idea.userId !== user.id) {
+          errors.push({
+            param: 'id',
+            msg: 'cannot update this idea.',
+          });
+        }
+      }
+
+      // validate title
+      input.title = input.title?.trim();
+
+      if (
+        !validator.isLength(input.title || '', {
+          max: 300,
+        })
+      ) {
+        errors.push({
+          param: 'title',
+          msg: 'title is too long. max character limit is 300',
+        });
+      }
+      // validate body
+      input.body = input.body?.trim();
+
+      if (
+        !validator.isLength(input.body || '', {
+          max: 40_000,
+        })
+      ) {
+        errors.push({
+          param: 'body',
+          msg: 'body is too long. max character limit is 40,000',
+        });
+      }
+      // validate & transform tags
+      const tags: TagCreateWithoutIdeaInput[] = [];
+      if (input.tags) {
+        if (input.tags.length > 30) {
+          errors.push({
+            param: 'tags',
+            msg: 'too much tags. tags cannot be more than 30.',
+          });
+        } else {
+          for (let i = 0; i < input.tags.length; i++) {
+            const curTag = input.tags[i].trim();
+            const tagsExp = RegExp('^[0-9a-zA-Z-_.]+$');
+
+            if (!curTag) {
+              errors.push({
+                param: 'tags',
+                msg: 'tags cannot be empty',
+              });
+              break;
+            } else if (!tagsExp.test(curTag)) {
+              errors.push({
+                param: 'tags',
+                msg:
+                  'tags can only contains "letters", "numbers", ".", "-", and "_"',
+              });
+              break;
+            } else if (
+              !validator.isLength(curTag, {
+                max: 30,
+              })
+            ) {
+              errors.push({
+                param: 'tags',
+                msg: `tag "${curTag}" is too long. max character limit is 30.`,
+              });
+              break;
+            } else {
+              input.tags[i] = curTag;
+              tags.push({
+                value: curTag,
+              });
+            }
+          }
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid input', {
+          errors,
+        });
+      }
+
+      if (input.tags) {
+        await prisma.tag.deleteMany({
+          where: {
+            ideaId: validator.toInt(input.id),
+          },
+        });
+      }
+
+      const update: IdeaUpdateArgs = {
+        where: {
+          id: validator.toInt(input.id),
+        },
+        data: {},
+      };
+
+      if (input.title) {
+        update.data.title = input.title;
+      }
+      if (input.body) {
+        update.data.body = input.body;
+      }
+      if (input.tags) {
+        update.data.Tag = {
+          create: tags,
+        };
+      }
+
+      const idea = await prisma.idea.update(update);
+
+      return idea;
     },
   },
   User: {

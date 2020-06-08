@@ -36,6 +36,7 @@ export type Mutation = {
   signup: AuthResponse;
   createIdea: Idea;
   createFeature: Feature;
+  updateIdea: Idea;
 };
 
 
@@ -56,6 +57,11 @@ export type MutationCreateIdeaArgs = {
 
 export type MutationCreateFeatureArgs = {
   input: CreateFeatureWithoutIdeaInput;
+};
+
+
+export type MutationUpdateIdeaArgs = {
+  input: UpdateIdeaInput;
 };
 
 export type LoginInput = {
@@ -86,6 +92,13 @@ export type CreateIdeaInput = {
   body: Scalars['String'];
   tags?: Maybe<Array<Scalars['String']>>;
   features?: Maybe<Array<CreateFeatureInput>>;
+};
+
+export type UpdateIdeaInput = {
+  id: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type AuthResponse = {
@@ -213,6 +226,7 @@ export type ResolversTypes = ResolversObject<{
   CreateFeatureInput: CreateFeatureInput;
   CreateFeatureWithoutIdeaInput: CreateFeatureWithoutIdeaInput;
   CreateIdeaInput: CreateIdeaInput;
+  UpdateIdeaInput: UpdateIdeaInput;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
   Idea: ResolverTypeWrapper<CustomIdea>;
@@ -231,6 +245,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateFeatureInput: CreateFeatureInput;
   CreateFeatureWithoutIdeaInput: CreateFeatureWithoutIdeaInput;
   CreateIdeaInput: CreateIdeaInput;
+  UpdateIdeaInput: UpdateIdeaInput;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
   Idea: CustomIdea;
@@ -248,6 +263,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   signup?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
   createIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationCreateIdeaArgs, 'input'>>;
   createFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationCreateFeatureArgs, 'input'>>;
+  updateIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationUpdateIdeaArgs, 'input'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
