@@ -17,7 +17,7 @@ const typeDefs = gql`
     updateIdea(input: UpdateIdeaInput!): Idea!
     updateFeature(input: UpdateFeatureInput!): Feature!
     # deleteIdea(id: ID!): Idea!
-    # deleteFeature(id: ID!): Feature!
+    deleteFeature(id: ID!): Feature!
     # saveIdea(id: ID!): Save!
     # deleteSavedIdea(id: ID!): Save!
     # likeIdea(id: ID!): Like!

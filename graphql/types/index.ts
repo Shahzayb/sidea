@@ -38,6 +38,7 @@ export type Mutation = {
   createFeature: Feature;
   updateIdea: Idea;
   updateFeature: Feature;
+  deleteFeature: Feature;
 };
 
 
@@ -68,6 +69,11 @@ export type MutationUpdateIdeaArgs = {
 
 export type MutationUpdateFeatureArgs = {
   input: UpdateFeatureInput;
+};
+
+
+export type MutationDeleteFeatureArgs = {
+  id: Scalars['ID'];
 };
 
 export type LoginInput = {
@@ -280,6 +286,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationCreateFeatureArgs, 'input'>>;
   updateIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationUpdateIdeaArgs, 'input'>>;
   updateFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationUpdateFeatureArgs, 'input'>>;
+  deleteFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationDeleteFeatureArgs, 'id'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{

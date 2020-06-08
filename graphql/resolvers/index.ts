@@ -740,6 +740,60 @@ const resolvers: Resolvers = {
 
       return feature;
     },
+    async deleteFeature(_, { id }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: 'id'; msg: string }[] = [];
+
+      // validate id
+      if (
+        !validator.isInt(id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'id is invalid',
+        });
+      } else {
+        const featureId = validator.toInt(id);
+        const feature = await prisma.feature.findOne({
+          where: {
+            id: featureId,
+          },
+          select: {
+            userId: true,
+          },
+        });
+        if (!feature) {
+          errors.push({
+            param: 'id',
+            msg: 'feature does not exists.',
+          });
+        } else if (feature.userId !== user.id) {
+          errors.push({
+            param: 'id',
+            msg: 'you are not authorized to delete the feature.',
+          });
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const feature = await prisma.feature.delete({
+        where: {
+          id: validator.toInt(id),
+        },
+      });
+
+      return feature;
+    },
   },
   User: {
     email(parent, _, { user }) {
