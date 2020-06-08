@@ -373,6 +373,94 @@ const resolvers: Resolvers = {
 
       return idea;
     },
+    async createFeature(_, { input }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+
+      input.title = input.title.trim();
+      input.body = input.body.trim();
+      input.ideaId = input.ideaId.trim();
+      const ideaId = validator.toInt(input.ideaId);
+
+      // check if ideaId is valid
+      if (
+        !validator.isInt(input.ideaId.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'ideaId',
+          msg: 'ideaId is invalid.',
+        });
+      } else {
+        const ideaId = validator.toInt(input.ideaId);
+
+        const ideaCount = await prisma.idea.count({
+          where: {
+            id: ideaId,
+          },
+        });
+
+        if (!ideaCount) {
+          errors.push({
+            param: 'ideaId',
+            msg: 'idea does not exist.',
+          });
+        }
+      }
+
+      // validate feature title
+      if (!input.title) {
+        errors.push({
+          param: 'title',
+          msg: 'title of feature is required',
+        });
+      } else if (
+        !validator.isLength(input.title, {
+          max: 300,
+        })
+      ) {
+        errors.push({
+          param: 'title',
+          msg: 'title of feature is too long. max character limit is 300',
+        });
+      }
+
+      // validate feature body
+      if (
+        !validator.isLength(input.body, {
+          max: 300,
+        })
+      ) {
+        errors.push({
+          param: 'body',
+          msg: 'body of feature is too long. max character limit is 300',
+        });
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid input', {
+          errors,
+        });
+      }
+
+      const feature = await prisma.feature.create({
+        data: {
+          Idea: {
+            connect: {
+              id: ideaId,
+            },
+          },
+          title: input.title,
+          body: input.body,
+        },
+      });
+
+      return feature;
+    },
   },
   User: {
     email(parent, _, { user }) {

@@ -29,6 +29,7 @@ export type Mutation = {
   login: AuthResponse;
   signup: AuthResponse;
   createIdea: Idea;
+  createFeature: Feature;
 };
 
 
@@ -46,6 +47,11 @@ export type MutationCreateIdeaArgs = {
   input: CreateIdeaInput;
 };
 
+
+export type MutationCreateFeatureArgs = {
+  input: CreateFeatureWithoutIdeaInput;
+};
+
 export type LoginInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -59,6 +65,12 @@ export type SignupInput = {
 };
 
 export type CreateFeatureInput = {
+  title: Scalars['String'];
+  body: Scalars['String'];
+};
+
+export type CreateFeatureWithoutIdeaInput = {
+  ideaId: Scalars['ID'];
   title: Scalars['String'];
   body: Scalars['String'];
 };
@@ -193,6 +205,7 @@ export type ResolversTypes = ResolversObject<{
   LoginInput: LoginInput;
   SignupInput: SignupInput;
   CreateFeatureInput: CreateFeatureInput;
+  CreateFeatureWithoutIdeaInput: CreateFeatureWithoutIdeaInput;
   CreateIdeaInput: CreateIdeaInput;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
@@ -210,6 +223,7 @@ export type ResolversParentTypes = ResolversObject<{
   LoginInput: LoginInput;
   SignupInput: SignupInput;
   CreateFeatureInput: CreateFeatureInput;
+  CreateFeatureWithoutIdeaInput: CreateFeatureWithoutIdeaInput;
   CreateIdeaInput: CreateIdeaInput;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
@@ -226,6 +240,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   login?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   signup?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
   createIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationCreateIdeaArgs, 'input'>>;
+  createFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationCreateFeatureArgs, 'input'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{

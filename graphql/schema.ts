@@ -13,7 +13,7 @@ const typeDefs = gql`
     login(input: LoginInput!): AuthResponse!
     signup(input: SignupInput!): AuthResponse!
     createIdea(input: CreateIdeaInput!): Idea!
-    # createFeature(input: CreateFeatureInput!): Feature!
+    createFeature(input: CreateFeatureWithoutIdeaInput!): Feature!
     # deleteIdea(id: ID!): Idea!
     # deleteFeature(id: ID!): Feature!
     # updateIdea(input: UpdateIdeaInput!): Idea!
@@ -35,6 +35,12 @@ const typeDefs = gql`
   }
 
   input CreateFeatureInput {
+    title: String!
+    body: String!
+  }
+
+  input CreateFeatureWithoutIdeaInput {
+    ideaId: ID!
     title: String!
     body: String!
   }
