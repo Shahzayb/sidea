@@ -13,9 +13,12 @@ model Feature {
   id        Int      @default(autoincrement()) @id
   ideaId    Int
   title     String
+  userId    Int
   Idea      Idea     @relation(fields: [ideaId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 
   @@index([ideaId], name: "ideaId")
+  @@index([userId], name: "userId")
 }
 
 model Idea {
@@ -68,12 +71,13 @@ model Tag {
 
 model User {
   avatar    String
-  createdAt DateTime @default(now())
-  email     String   @unique
-  id        Int      @default(autoincrement()) @id
+  createdAt DateTime  @default(now())
+  email     String    @unique
+  id        Int       @default(autoincrement()) @id
   name      String
   password  String
-  username  String   @unique
+  username  String    @unique
+  Feature   Feature[]
   Idea      Idea[]
   Like      Like[]
   Save      Save[]

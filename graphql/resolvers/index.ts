@@ -9,6 +9,7 @@ import {
   TagCreateWithoutIdeaInput,
   IdeaCreateInput,
   IdeaUpdateArgs,
+  FeatureUpdateArgs,
 } from '@prisma/client';
 
 const resolvers: Resolvers = {
@@ -380,8 +381,19 @@ const resolvers: Resolvers = {
         },
       };
       if (input.features) {
+        const features = input.features.map((feature) => {
+          return {
+            title: feature.title,
+            body: feature.body,
+            User: {
+              connect: {
+                id: user.id,
+              },
+            },
+          };
+        });
         data.Feature = {
-          create: input.features,
+          create: features,
         };
       }
 
@@ -474,6 +486,11 @@ const resolvers: Resolvers = {
           },
           title: input.title,
           body: input.body,
+          User: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       });
 
@@ -628,6 +645,101 @@ const resolvers: Resolvers = {
 
       return idea;
     },
+    async updateFeature(_, { input }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+
+      // validate id
+      input.id = input.id.trim();
+      if (
+        !validator.isInt(input.id, {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'feature id is invalid',
+        });
+      } else {
+        const featureId = validator.toInt(input.id);
+
+        const feature = await prisma.feature.findOne({
+          where: {
+            id: featureId,
+          },
+          select: {
+            userId: true,
+          },
+        });
+
+        if (!feature) {
+          errors.push({
+            param: 'id',
+            msg: 'feature does not exists.',
+          });
+        } else if (feature.userId !== user.id) {
+          errors.push({
+            param: 'id',
+            msg: 'cannot update this feature.',
+          });
+        }
+      }
+
+      // validate title
+      input.title = input.title?.trim();
+
+      if (
+        !validator.isLength(input.title || '', {
+          max: 300,
+        })
+      ) {
+        errors.push({
+          param: 'title',
+          msg: 'title is too long. max character limit is 300',
+        });
+      }
+      // validate body
+      input.body = input.body?.trim();
+
+      if (
+        !validator.isLength(input.body || '', {
+          max: 300,
+        })
+      ) {
+        errors.push({
+          param: 'body',
+          msg: 'body is too long. max character limit is 300',
+        });
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid input', {
+          errors,
+        });
+      }
+
+      const update: FeatureUpdateArgs = {
+        where: {
+          id: validator.toInt(input.id),
+        },
+        data: {},
+      };
+
+      if (input.title) {
+        update.data.title = input.title;
+      }
+      // body can be empty
+      if (input.body || input.body === '') {
+        update.data.body = input.body;
+      }
+
+      const feature = await prisma.feature.update(update);
+
+      return feature;
+    },
   },
   User: {
     email(parent, _, { user }) {
@@ -676,6 +788,15 @@ const resolvers: Resolvers = {
       });
       // come back to null issue later
       return idea!;
+    },
+    async user(feature, _, { prisma }) {
+      const user = await prisma.user.findOne({
+        where: {
+          id: feature.userId,
+        },
+      });
+
+      return user!;
     },
   },
 };

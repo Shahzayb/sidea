@@ -15,7 +15,7 @@ const typeDefs = gql`
     createIdea(input: CreateIdeaInput!): Idea!
     createFeature(input: CreateFeatureWithoutIdeaInput!): Feature!
     updateIdea(input: UpdateIdeaInput!): Idea!
-    # updateFeature(input: UpdateFeatureInput!): Feature!
+    updateFeature(input: UpdateFeatureInput!): Feature!
     # deleteIdea(id: ID!): Idea!
     # deleteFeature(id: ID!): Feature!
     # saveIdea(id: ID!): Save!
@@ -61,11 +61,11 @@ const typeDefs = gql`
     tags: [String!]
   }
 
-  # input UpdateFeatureInput {
-  #   id: ID!
-  #   title: String
-  #   body: String
-  # }
+  input UpdateFeatureInput {
+    id: ID!
+    title: String
+    body: String
+  }
 
   # enum INTERVAL {
   #   DAY
@@ -110,6 +110,7 @@ const typeDefs = gql`
     title: String!
     body: String!
     idea: Idea!
+    user: User!
     createdAt: String!
   }
 

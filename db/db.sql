@@ -17,10 +17,13 @@ CREATE TABLE `Feature` (
   `title` varchar(300) NOT NULL,
   `body` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `ideaId` int unsigned NOT NULL,
+  `userId` int unsigned NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `ideaId` (`ideaId`),
-  CONSTRAINT `Feature_ibfk_1` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE
+  KEY `userId` (`userId`),
+  CONSTRAINT `Feature_ibfk_1` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Feature_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -91,4 +94,4 @@ CREATE TABLE `User` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-07 09:07:31
+-- 2020-06-08 13:20:51
