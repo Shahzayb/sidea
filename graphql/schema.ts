@@ -4,7 +4,7 @@ const typeDefs = gql`
   type Query {
     # newIdeas(after_id: ID, limit: Int!): [Idea!]!
     # topIdeas(interval: INTERVAL!, after_id: ID, limit: Int!): [Idea!]!
-    # idea(id: ID!): Idea
+    idea(id: ID!): Idea
     me: User!
     user(id: ID!): User
   }

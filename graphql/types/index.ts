@@ -15,8 +15,14 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  idea?: Maybe<Idea>;
   me: User;
   user?: Maybe<User>;
+};
+
+
+export type QueryIdeaArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -232,6 +238,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  idea?: Resolver<Maybe<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryIdeaArgs, 'id'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 }>;

@@ -34,6 +34,23 @@ const resolvers: Resolvers = {
         },
       });
     },
+    idea(_, { id }, { prisma }) {
+      if (
+        !validator.isInt(id, {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        return null;
+      }
+
+      const ideaId = validator.toInt(id);
+
+      return prisma.idea.findOne({
+        where: {
+          id: ideaId,
+        },
+      });
+    },
   },
   Mutation: {
     async login(_, { input: { username, password } }, { prisma }) {
