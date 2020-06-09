@@ -1183,6 +1183,19 @@ const resolvers: Resolvers = {
 
       return count;
     },
+    async isLikedByMe(idea, _, { prisma, user }) {
+      if (!user) {
+        return false;
+      }
+      const count = await prisma.like.count({
+        where: {
+          ideaId: idea.id,
+          userId: user.id,
+        },
+      });
+
+      return count ? true : false;
+    },
   },
   Feature: {
     async idea(feature, _, { prisma }) {
