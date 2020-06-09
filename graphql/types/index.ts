@@ -15,9 +15,16 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  newIdeas: Array<Idea>;
   idea?: Maybe<Idea>;
   me: User;
   user?: Maybe<User>;
+};
+
+
+export type QueryNewIdeasArgs = {
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
 };
 
 
@@ -315,6 +322,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   LoginInput: LoginInput;
   SignupInput: SignupInput;
@@ -325,7 +333,6 @@ export type ResolversTypes = ResolversObject<{
   UpdateFeatureInput: UpdateFeatureInput;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Idea: ResolverTypeWrapper<CustomIdea>;
   Feature: ResolverTypeWrapper<CustomFeature>;
   Like: ResolverTypeWrapper<CustomLike>;
@@ -338,6 +345,7 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   Query: {};
   ID: Scalars['ID'];
+  Int: Scalars['Int'];
   Mutation: {};
   LoginInput: LoginInput;
   SignupInput: SignupInput;
@@ -348,7 +356,6 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateFeatureInput: UpdateFeatureInput;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
-  Int: Scalars['Int'];
   Idea: CustomIdea;
   Feature: CustomFeature;
   Like: CustomLike;
@@ -356,6 +363,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  newIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryNewIdeasArgs, 'limit'>>;
   idea?: Resolver<Maybe<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryIdeaArgs, 'id'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;

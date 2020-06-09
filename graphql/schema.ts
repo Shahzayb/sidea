@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-micro';
 
 const typeDefs = gql`
   type Query {
-    # newIdeas(after_id: ID, limit: Int!): [Idea!]!
+    newIdeas(after_id: ID, limit: Int!): [Idea!]!
     # topIdeas(interval: INTERVAL!, after_id: ID, limit: Int!): [Idea!]!
     idea(id: ID!): Idea
     me: User!
@@ -100,7 +100,6 @@ const typeDefs = gql`
     body: String!
     user: User!
     tags: [String!]
-    # likes(after_id: ID, limit: Int!): [Like!]!
     likesCount: Int!
     isLikedByMe: Boolean!
     isSavedByMe: Boolean!

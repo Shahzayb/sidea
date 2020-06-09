@@ -12,6 +12,7 @@ import {
   FeatureUpdateArgs,
   FindManyFeatureArgs,
   FindManyIdeaArgs,
+  Idea,
 } from '@prisma/client';
 
 const resolvers: Resolvers = {
@@ -54,6 +55,48 @@ const resolvers: Resolvers = {
           id: ideaId,
         },
       });
+    },
+    async newIdeas(_, input, { prisma }) {
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+
+      // validate id
+      if (
+        input.after_id &&
+        !validator.isInt(input.after_id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'after_id',
+          msg: 'after_id is invalid.',
+        });
+      }
+      if (input.limit <= 0) {
+        errors.push({
+          param: 'limit',
+          msg: 'limit should be greater than 0.',
+        });
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const ideas = await prisma.idea.findMany({
+        where: {
+          id: {
+            lt: input.after_id ? validator.toInt(input.after_id) : undefined,
+          },
+        },
+        take: input.limit,
+        orderBy: {
+          id: 'desc',
+        },
+      });
+
+      return ideas;
     },
   },
   Mutation: {
@@ -1190,7 +1233,7 @@ const resolvers: Resolvers = {
         ORDER BY Idea.id ASC 
         LIMIT ${input.limit}`;
 
-      const ideas = await prisma.queryRaw(QUERY);
+      const ideas = await prisma.queryRaw<Idea[]>(QUERY);
 
       return ideas;
     },
@@ -1230,7 +1273,7 @@ const resolvers: Resolvers = {
         ORDER BY Idea.id ASC 
         LIMIT ${input.limit}`;
 
-      const ideas = await prisma.queryRaw(QUERY);
+      const ideas = await prisma.queryRaw<Idea[]>(QUERY);
 
       return ideas;
     },
