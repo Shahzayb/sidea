@@ -164,6 +164,7 @@ export type User = {
   avatar: Scalars['String'];
   ideas: Array<Idea>;
   savedIdeas: Array<Idea>;
+  likedIdeas: Array<Idea>;
   createdAt: Scalars['String'];
 };
 
@@ -175,6 +176,12 @@ export type UserIdeasArgs = {
 
 
 export type UserSavedIdeasArgs = {
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+};
+
+
+export type UserLikedIdeasArgs = {
   after_id?: Maybe<Scalars['ID']>;
   limit: Scalars['Int'];
 };
@@ -383,6 +390,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   avatar?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   ideas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserIdeasArgs, 'limit'>>;
   savedIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserSavedIdeasArgs, 'limit'>>;
+  likedIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserLikedIdeasArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
