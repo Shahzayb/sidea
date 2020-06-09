@@ -40,6 +40,7 @@ export type Mutation = {
   updateFeature: Feature;
   deleteIdea: Idea;
   deleteFeature: Feature;
+  saveIdea: Save;
 };
 
 
@@ -79,6 +80,11 @@ export type MutationDeleteIdeaArgs = {
 
 
 export type MutationDeleteFeatureArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSaveIdeaArgs = {
   id: Scalars['ID'];
 };
 
@@ -159,6 +165,14 @@ export type Feature = {
   body: Scalars['String'];
   idea: Idea;
   user: User;
+  createdAt: Scalars['String'];
+};
+
+export type Save = {
+  __typename?: 'Save';
+  id: Scalars['ID'];
+  user: User;
+  idea: Idea;
   createdAt: Scalars['String'];
 };
 
@@ -257,6 +271,7 @@ export type ResolversTypes = ResolversObject<{
   User: ResolverTypeWrapper<CustomUser>;
   Idea: ResolverTypeWrapper<CustomIdea>;
   Feature: ResolverTypeWrapper<CustomFeature>;
+  Save: ResolverTypeWrapper<CustomSave>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -277,6 +292,7 @@ export type ResolversParentTypes = ResolversObject<{
   User: CustomUser;
   Idea: CustomIdea;
   Feature: CustomFeature;
+  Save: CustomSave;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -294,6 +310,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   updateFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationUpdateFeatureArgs, 'input'>>;
   deleteIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationDeleteIdeaArgs, 'id'>>;
   deleteFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationDeleteFeatureArgs, 'id'>>;
+  saveIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationSaveIdeaArgs, 'id'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
@@ -333,6 +350,14 @@ export type FeatureResolvers<ContextType = Context, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
+export type SaveResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Save'] = ResolversParentTypes['Save']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  idea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -340,6 +365,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   User?: UserResolvers<ContextType>;
   Idea?: IdeaResolvers<ContextType>;
   Feature?: FeatureResolvers<ContextType>;
+  Save?: SaveResolvers<ContextType>;
 }>;
 
 

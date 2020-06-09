@@ -18,7 +18,7 @@ const typeDefs = gql`
     updateFeature(input: UpdateFeatureInput!): Feature!
     deleteIdea(id: ID!): Idea!
     deleteFeature(id: ID!): Feature!
-    # saveIdea(id: ID!): Save!
+    saveIdea(id: ID!): Save!
     # deleteSavedIdea(id: ID!): Save!
     # likeIdea(id: ID!): Like!
     # unlikeIdea(id: ID!): Like!
@@ -121,12 +121,12 @@ const typeDefs = gql`
   #   createdAt: String!
   # }
 
-  # type Save {
-  #   id: ID!
-  #   user: User!
-  #   idea: Idea!
-  #   createdAt: String!
-  # }
+  type Save {
+    id: ID!
+    user: User!
+    idea: Idea!
+    createdAt: String!
+  }
 `;
 
 export default typeDefs;

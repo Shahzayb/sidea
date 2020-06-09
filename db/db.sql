@@ -61,6 +61,7 @@ CREATE TABLE `Save` (
   `ideaId` int unsigned NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `userId_ideaId` (`userId`,`ideaId`),
   KEY `userId` (`userId`),
   KEY `ideaId` (`ideaId`),
   CONSTRAINT `Save_ibfk_3` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
