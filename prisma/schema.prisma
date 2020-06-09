@@ -46,6 +46,7 @@ model Like {
 
   @@index([ideaId], name: "ideaId")
   @@index([userId], name: "userId")
+  @@unique([userId, ideaId], name: "userId_ideaId")
 }
 
 model Save {
@@ -58,6 +59,7 @@ model Save {
 
   @@index([ideaId], name: "ideaId")
   @@index([userId], name: "userId")
+  @@unique([userId, ideaId], name: "userId_ideaId")
 }
 
 model Tag {
