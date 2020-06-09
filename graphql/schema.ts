@@ -16,7 +16,7 @@ const typeDefs = gql`
     createFeature(input: CreateFeatureWithoutIdeaInput!): Feature!
     updateIdea(input: UpdateIdeaInput!): Idea!
     updateFeature(input: UpdateFeatureInput!): Feature!
-    # deleteIdea(id: ID!): Idea!
+    deleteIdea(id: ID!): Idea!
     deleteFeature(id: ID!): Feature!
     # saveIdea(id: ID!): Save!
     # deleteSavedIdea(id: ID!): Save!

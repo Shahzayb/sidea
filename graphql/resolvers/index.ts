@@ -794,6 +794,64 @@ const resolvers: Resolvers = {
 
       return feature;
     },
+    async deleteIdea(_, { id }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: 'id'; msg: string }[] = [];
+
+      // validate id
+      if (
+        !validator.isInt(id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'id is invalid',
+        });
+      } else {
+        const ideaId = validator.toInt(id);
+        const idea = await prisma.idea.findOne({
+          where: {
+            id: ideaId,
+          },
+          select: {
+            userId: true,
+          },
+        });
+        if (!idea) {
+          errors.push({
+            param: 'id',
+            msg: 'idea does not exists.',
+          });
+        } else if (idea.userId !== user.id) {
+          errors.push({
+            param: 'id',
+            msg: 'you are not authorized to delete this idea.',
+          });
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const idea = await prisma.idea.findOne({
+        where: {
+          id: validator.toInt(id),
+        },
+      });
+
+      await prisma.executeRaw`DELETE FROM Idea where id = ${validator.toInt(
+        id
+      )}`;
+
+      return idea!;
+    },
   },
   User: {
     email(parent, _, { user }) {

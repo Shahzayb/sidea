@@ -22,8 +22,8 @@ CREATE TABLE `Feature` (
   PRIMARY KEY (`id`),
   KEY `ideaId` (`ideaId`),
   KEY `userId` (`userId`),
-  CONSTRAINT `Feature_ibfk_1` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Feature_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Feature_ibfk_3` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Feature_ibfk_4` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -36,7 +36,7 @@ CREATE TABLE `Idea` (
   `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
-  CONSTRAINT `Idea_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Idea_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -49,8 +49,8 @@ CREATE TABLE `Like` (
   PRIMARY KEY (`id`),
   KEY `ideaId` (`ideaId`),
   KEY `userId` (`userId`),
-  CONSTRAINT `Like_ibfk_1` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Like_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Like_ibfk_3` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Like_ibfk_4` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -63,8 +63,8 @@ CREATE TABLE `Save` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   KEY `ideaId` (`ideaId`),
-  CONSTRAINT `Save_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Save_ibfk_2` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Save_ibfk_3` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Save_ibfk_4` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -75,7 +75,7 @@ CREATE TABLE `Tag` (
   `ideaId` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ideaId` (`ideaId`),
-  CONSTRAINT `Tag_ibfk_1` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Tag_ibfk_2` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -94,4 +94,4 @@ CREATE TABLE `User` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-08 13:20:51
+-- 2020-06-09 03:15:41

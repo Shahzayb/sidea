@@ -38,6 +38,7 @@ export type Mutation = {
   createFeature: Feature;
   updateIdea: Idea;
   updateFeature: Feature;
+  deleteIdea: Idea;
   deleteFeature: Feature;
 };
 
@@ -69,6 +70,11 @@ export type MutationUpdateIdeaArgs = {
 
 export type MutationUpdateFeatureArgs = {
   input: UpdateFeatureInput;
+};
+
+
+export type MutationDeleteIdeaArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -286,6 +292,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationCreateFeatureArgs, 'input'>>;
   updateIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationUpdateIdeaArgs, 'input'>>;
   updateFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationUpdateFeatureArgs, 'input'>>;
+  deleteIdea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType, RequireFields<MutationDeleteIdeaArgs, 'id'>>;
   deleteFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationDeleteFeatureArgs, 'id'>>;
 }>;
 
