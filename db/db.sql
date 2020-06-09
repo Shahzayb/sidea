@@ -47,6 +47,7 @@ CREATE TABLE `Like` (
   `userId` int unsigned NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `userId_ideaId` (`userId`,`ideaId`),
   KEY `ideaId` (`ideaId`),
   KEY `userId` (`userId`),
   CONSTRAINT `Like_ibfk_3` FOREIGN KEY (`ideaId`) REFERENCES `Idea` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

@@ -20,7 +20,7 @@ const typeDefs = gql`
     deleteFeature(id: ID!): Feature!
     saveIdea(id: ID!): Save!
     deleteSavedIdea(id: ID!): Save!
-    # likeIdea(id: ID!): Like!
+    likeIdea(id: ID!): Like!
     # unlikeIdea(id: ID!): Like!
   }
 
@@ -89,6 +89,7 @@ const typeDefs = gql`
     avatar: String!
     # ideas(after_id: ID, limit: Int!): [Idea!]
     # savedIdeas(after_id: ID, limit: Int!): [Idea!]!
+    # likedIdeas(after_id: ID, limit: Int!): [Idea!]!
     createdAt: String!
   }
 
@@ -114,12 +115,12 @@ const typeDefs = gql`
     createdAt: String!
   }
 
-  # type Like {
-  #   id: ID!
-  #   idea: Idea!
-  #   user: User!
-  #   createdAt: String!
-  # }
+  type Like {
+    id: ID!
+    idea: Idea!
+    user: User!
+    createdAt: String!
+  }
 
   type Save {
     id: ID!

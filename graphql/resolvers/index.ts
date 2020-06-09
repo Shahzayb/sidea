@@ -976,6 +976,76 @@ const resolvers: Resolvers = {
 
       return save;
     },
+    async likeIdea(_, { id }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: 'id'; msg: string }[] = [];
+
+      // validate id
+      if (
+        !validator.isInt(id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'id is invalid',
+        });
+      } else {
+        const ideaId = validator.toInt(id);
+        const ideaCount = await prisma.idea.count({
+          where: {
+            id: ideaId,
+          },
+        });
+        if (!ideaCount) {
+          errors.push({
+            param: 'id',
+            msg: 'idea does not exists.',
+          });
+        } else {
+          // check if idea is already saved
+          const saveCount = await prisma.like.count({
+            where: {
+              ideaId,
+              userId: user.id,
+            },
+          });
+
+          if (saveCount > 0) {
+            errors.push({
+              param: 'id',
+              msg: 'idea is already liked by you.',
+            });
+          }
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const like = await prisma.like.create({
+        data: {
+          Idea: {
+            connect: {
+              id: validator.toInt(id),
+            },
+          },
+          User: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      });
+
+      return like;
+    },
   },
   User: {
     email(parent, _, { user }) {
@@ -1049,6 +1119,26 @@ const resolvers: Resolvers = {
       const user = await prisma.user.findOne({
         where: {
           id: save.userId,
+        },
+      });
+
+      return user!;
+    },
+  },
+  Like: {
+    async idea(like, _, { prisma }) {
+      const idea = await prisma.idea.findOne({
+        where: {
+          id: like.ideaId,
+        },
+      });
+
+      return idea!;
+    },
+    async user(like, _, { prisma }) {
+      const user = await prisma.user.findOne({
+        where: {
+          id: like.userId,
         },
       });
 

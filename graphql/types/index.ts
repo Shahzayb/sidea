@@ -42,6 +42,7 @@ export type Mutation = {
   deleteFeature: Feature;
   saveIdea: Save;
   deleteSavedIdea: Save;
+  likeIdea: Like;
 };
 
 
@@ -91,6 +92,11 @@ export type MutationSaveIdeaArgs = {
 
 
 export type MutationDeleteSavedIdeaArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationLikeIdeaArgs = {
   id: Scalars['ID'];
 };
 
@@ -169,6 +175,14 @@ export type Feature = {
   id: Scalars['ID'];
   title: Scalars['String'];
   body: Scalars['String'];
+  idea: Idea;
+  user: User;
+  createdAt: Scalars['String'];
+};
+
+export type Like = {
+  __typename?: 'Like';
+  id: Scalars['ID'];
   idea: Idea;
   user: User;
   createdAt: Scalars['String'];
@@ -277,6 +291,7 @@ export type ResolversTypes = ResolversObject<{
   User: ResolverTypeWrapper<CustomUser>;
   Idea: ResolverTypeWrapper<CustomIdea>;
   Feature: ResolverTypeWrapper<CustomFeature>;
+  Like: ResolverTypeWrapper<CustomLike>;
   Save: ResolverTypeWrapper<CustomSave>;
 }>;
 
@@ -298,6 +313,7 @@ export type ResolversParentTypes = ResolversObject<{
   User: CustomUser;
   Idea: CustomIdea;
   Feature: CustomFeature;
+  Like: CustomLike;
   Save: CustomSave;
 }>;
 
@@ -318,6 +334,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   deleteFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationDeleteFeatureArgs, 'id'>>;
   saveIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationSaveIdeaArgs, 'id'>>;
   deleteSavedIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationDeleteSavedIdeaArgs, 'id'>>;
+  likeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeIdeaArgs, 'id'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
@@ -357,6 +374,14 @@ export type FeatureResolvers<ContextType = Context, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
+export type LikeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  idea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type SaveResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Save'] = ResolversParentTypes['Save']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -372,6 +397,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   User?: UserResolvers<ContextType>;
   Idea?: IdeaResolvers<ContextType>;
   Feature?: FeatureResolvers<ContextType>;
+  Like?: LikeResolvers<ContextType>;
   Save?: SaveResolvers<ContextType>;
 }>;
 
