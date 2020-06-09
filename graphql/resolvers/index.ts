@@ -922,6 +922,60 @@ const resolvers: Resolvers = {
 
       return save;
     },
+    async deleteSavedIdea(_, { id }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: 'id'; msg: string }[] = [];
+
+      // validate id
+      if (
+        !validator.isInt(id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'id is invalid',
+        });
+      } else {
+        const saveId = validator.toInt(id);
+        const save = await prisma.save.findOne({
+          where: {
+            id: saveId,
+          },
+          select: {
+            userId: true,
+          },
+        });
+        if (!save) {
+          errors.push({
+            param: 'id',
+            msg: 'saved idea does not exists.',
+          });
+        } else if (save.userId !== user.id) {
+          errors.push({
+            param: 'id',
+            msg: 'you are not authorized to delete this saved idea.',
+          });
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const save = await prisma.save.delete({
+        where: {
+          id: validator.toInt(id),
+        },
+      });
+
+      return save;
+    },
   },
   User: {
     email(parent, _, { user }) {

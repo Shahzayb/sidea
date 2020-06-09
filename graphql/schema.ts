@@ -19,7 +19,7 @@ const typeDefs = gql`
     deleteIdea(id: ID!): Idea!
     deleteFeature(id: ID!): Feature!
     saveIdea(id: ID!): Save!
-    # deleteSavedIdea(id: ID!): Save!
+    deleteSavedIdea(id: ID!): Save!
     # likeIdea(id: ID!): Like!
     # unlikeIdea(id: ID!): Like!
   }
