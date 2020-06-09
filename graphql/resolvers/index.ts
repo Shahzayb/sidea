@@ -1046,6 +1046,58 @@ const resolvers: Resolvers = {
 
       return like;
     },
+    async unlikeIdea(_, { id }, { prisma, user }) {
+      if (!user) {
+        throw new AuthenticationError('login is required');
+      }
+
+      const errors: { param: 'id'; msg: string }[] = [];
+
+      // validate id
+      if (
+        !validator.isInt(id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'id',
+          msg: 'id is invalid',
+        });
+      } else {
+        const likeId = validator.toInt(id);
+        const likeCount = await prisma.like.count({
+          where: {
+            id: likeId,
+          },
+        });
+        if (!likeCount) {
+          errors.push({
+            param: 'id',
+            msg: `like with id "${id}" does not exist.`,
+          });
+        }
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const like = await prisma.like.findOne({
+        where: {
+          id: validator.toInt(id),
+        },
+      });
+
+      await prisma.like.delete({
+        where: {
+          id: validator.toInt(id),
+        },
+      });
+
+      return like!;
+    },
   },
   User: {
     email(parent, _, { user }) {

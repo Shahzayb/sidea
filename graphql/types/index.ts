@@ -43,6 +43,7 @@ export type Mutation = {
   saveIdea: Save;
   deleteSavedIdea: Save;
   likeIdea: Like;
+  unlikeIdea: Like;
 };
 
 
@@ -97,6 +98,11 @@ export type MutationDeleteSavedIdeaArgs = {
 
 
 export type MutationLikeIdeaArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationUnlikeIdeaArgs = {
   id: Scalars['ID'];
 };
 
@@ -335,6 +341,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   saveIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationSaveIdeaArgs, 'id'>>;
   deleteSavedIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationDeleteSavedIdeaArgs, 'id'>>;
   likeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeIdeaArgs, 'id'>>;
+  unlikeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationUnlikeIdeaArgs, 'id'>>;
 }>;
 
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{

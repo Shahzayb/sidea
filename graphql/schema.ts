@@ -12,6 +12,7 @@ const typeDefs = gql`
   type Mutation {
     login(input: LoginInput!): AuthResponse!
     signup(input: SignupInput!): AuthResponse!
+    # deleteUser(id: ID!): User!
     createIdea(input: CreateIdeaInput!): Idea!
     createFeature(input: CreateFeatureWithoutIdeaInput!): Feature!
     updateIdea(input: UpdateIdeaInput!): Idea!
@@ -21,7 +22,7 @@ const typeDefs = gql`
     saveIdea(id: ID!): Save!
     deleteSavedIdea(id: ID!): Save!
     likeIdea(id: ID!): Like!
-    # unlikeIdea(id: ID!): Like!
+    unlikeIdea(id: ID!): Like!
   }
 
   input LoginInput {
