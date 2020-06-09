@@ -162,7 +162,14 @@ export type User = {
   username: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   avatar: Scalars['String'];
+  ideas?: Maybe<Array<Idea>>;
   createdAt: Scalars['String'];
+};
+
+
+export type UserIdeasArgs = {
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
 };
 
 export type Idea = {
@@ -304,8 +311,8 @@ export type ResolversTypes = ResolversObject<{
   UpdateFeatureInput: UpdateFeatureInput;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
-  Idea: ResolverTypeWrapper<CustomIdea>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Idea: ResolverTypeWrapper<CustomIdea>;
   Feature: ResolverTypeWrapper<CustomFeature>;
   Like: ResolverTypeWrapper<CustomLike>;
   Save: ResolverTypeWrapper<CustomSave>;
@@ -327,8 +334,8 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateFeatureInput: UpdateFeatureInput;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
-  Idea: CustomIdea;
   Int: Scalars['Int'];
+  Idea: CustomIdea;
   Feature: CustomFeature;
   Like: CustomLike;
   Save: CustomSave;
@@ -367,6 +374,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   avatar?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ideas?: Resolver<Maybe<Array<ResolversTypes['Idea']>>, ParentType, ContextType, RequireFields<UserIdeasArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
