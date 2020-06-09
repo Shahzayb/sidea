@@ -1154,6 +1154,46 @@ const resolvers: Resolvers = {
 
       return ideas;
     },
+    async savedIdeas(user, input, { prisma }) {
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+
+      // validate id
+      if (
+        input.after_id &&
+        !validator.isInt(input.after_id.trim(), {
+          allow_leading_zeroes: true,
+        })
+      ) {
+        errors.push({
+          param: 'after_id',
+          msg: 'after_id is invalid.',
+        });
+      }
+      if (input.limit <= 0) {
+        errors.push({
+          param: 'limit',
+          msg: 'limit should be greater than 0.',
+        });
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      const QUERY = `SELECT Idea.* 
+        FROM Save INNER JOIN Idea ON Save.ideaId = Idea.id 
+        WHERE Save.userId = ${user.id} ${
+        input.after_id ? `AND Idea.id > ${validator.toInt(input.after_id)}` : ''
+      } 
+        ORDER BY Idea.id ASC 
+        LIMIT ${input.limit}`;
+
+      const ideas = await prisma.queryRaw(`${QUERY}`);
+
+      return ideas;
+    },
   },
   Idea: {
     async user(idea, _, { prisma }) {

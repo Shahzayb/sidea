@@ -88,8 +88,8 @@ const typeDefs = gql`
     username: String!
     email: String
     avatar: String!
-    ideas(after_id: ID, limit: Int!): [Idea!]
-    # savedIdeas(after_id: ID, limit: Int!): [Idea!]!
+    ideas(after_id: ID, limit: Int!): [Idea!]!
+    savedIdeas(after_id: ID, limit: Int!): [Idea!]!
     # likedIdeas(after_id: ID, limit: Int!): [Idea!]!
     createdAt: String!
   }

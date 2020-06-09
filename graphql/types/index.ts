@@ -162,12 +162,19 @@ export type User = {
   username: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   avatar: Scalars['String'];
-  ideas?: Maybe<Array<Idea>>;
+  ideas: Array<Idea>;
+  savedIdeas: Array<Idea>;
   createdAt: Scalars['String'];
 };
 
 
 export type UserIdeasArgs = {
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+};
+
+
+export type UserSavedIdeasArgs = {
   after_id?: Maybe<Scalars['ID']>;
   limit: Scalars['Int'];
 };
@@ -374,7 +381,8 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   avatar?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  ideas?: Resolver<Maybe<Array<ResolversTypes['Idea']>>, ParentType, ContextType, RequireFields<UserIdeasArgs, 'limit'>>;
+  ideas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserIdeasArgs, 'limit'>>;
+  savedIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserSavedIdeasArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
