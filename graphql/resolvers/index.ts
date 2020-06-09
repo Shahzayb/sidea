@@ -1174,6 +1174,15 @@ const resolvers: Resolvers = {
 
       return features;
     },
+    async likesCount(idea, _, { prisma }) {
+      const count = await prisma.like.count({
+        where: {
+          ideaId: idea.id,
+        },
+      });
+
+      return count;
+    },
   },
   Feature: {
     async idea(feature, _, { prisma }) {

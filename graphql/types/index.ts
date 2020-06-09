@@ -172,6 +172,8 @@ export type Idea = {
   body: Scalars['String'];
   user: User;
   tags?: Maybe<Array<Scalars['String']>>;
+  likesCount: Scalars['Int'];
+  isLikedByMe: Scalars['Boolean'];
   features?: Maybe<Array<Feature>>;
   createdAt: Scalars['String'];
 };
@@ -374,6 +376,8 @@ export type IdeaResolvers<ContextType = Context, ParentType extends ResolversPar
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   tags?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  likesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  isLikedByMe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   features?: Resolver<Maybe<Array<ResolversTypes['Feature']>>, ParentType, ContextType, RequireFields<IdeaFeaturesArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;

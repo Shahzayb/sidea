@@ -101,8 +101,8 @@ const typeDefs = gql`
     user: User!
     tags: [String!]
     # likes(after_id: ID, limit: Int!): [Like!]!
-    # likesCount: Int!
-    # isLikedByMe: Boolean!
+    likesCount: Int!
+    isLikedByMe: Boolean!
     features(after_id: ID, limit: Int!): [Feature!]
     createdAt: String!
   }
