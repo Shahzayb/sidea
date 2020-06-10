@@ -3,7 +3,7 @@ import validator from 'validator';
 import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
 import { createJwtToken } from '../../utils/jwt';
-import { Resolvers } from '../types/index';
+import { Resolvers, Interval } from '../types/index';
 import {
   User,
   TagCreateWithoutIdeaInput,
@@ -95,6 +95,47 @@ const resolvers: Resolvers = {
           id: 'desc',
         },
       });
+
+      return ideas;
+    },
+    async topIdeas(_, input, { prisma }) {
+      const errors: { param: keyof typeof input; msg: string }[] = [];
+
+      // validate id
+      if (input.skip < 0) {
+        errors.push({
+          param: 'skip',
+          msg: 'skip is invalid. cannot be less than 0.',
+        });
+      }
+      if (input.limit <= 0) {
+        errors.push({
+          param: 'limit',
+          msg: 'limit should be greater than 0.',
+        });
+      }
+
+      if (errors.length) {
+        throw new UserInputError('invalid data', {
+          errors,
+        });
+      }
+
+      // interval
+      const QUERY = `
+      select Idea.id, Idea.title, Idea.body, Idea.userId, Idea.createdAt, count(sidea.Like.id) as likeCount 
+      from Idea left join sidea.Like on Idea.id = sidea.Like.ideaId
+      group by Idea.id, Idea.title, Idea.body, Idea.userId, Idea.createdAt
+      ${
+        input.interval !== Interval.AllTime
+          ? `having Idea.createdAt > DATE_SUB(NOW(), INTERVAL 1 ${input.interval})`
+          : ''
+      }
+      order by likeCount desc
+      limit ${input.skip}, ${input.limit}
+      `;
+
+      const ideas = await prisma.queryRaw<Idea[]>(QUERY);
 
       return ideas;
     },

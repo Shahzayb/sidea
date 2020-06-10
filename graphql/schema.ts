@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-micro';
 const typeDefs = gql`
   type Query {
     newIdeas(after_id: ID, limit: Int!): [Idea!]!
-    # topIdeas(interval: INTERVAL!, after_id: ID, limit: Int!): [Idea!]!
+    topIdeas(interval: INTERVAL!, skip: Int = 0, limit: Int!): [Idea!]!
     idea(id: ID!): Idea
     me: User!
     user(id: ID!): User
@@ -68,12 +68,12 @@ const typeDefs = gql`
     body: String
   }
 
-  # enum INTERVAL {
-  #   DAY
-  #   WEEK
-  #   YEAR
-  #   ALL_TIME
-  # }
+  enum INTERVAL {
+    DAY
+    WEEK
+    YEAR
+    ALL_TIME
+  }
 
   # models
 

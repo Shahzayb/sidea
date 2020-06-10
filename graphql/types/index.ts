@@ -16,6 +16,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   newIdeas: Array<Idea>;
+  topIdeas: Array<Idea>;
   idea?: Maybe<Idea>;
   me: User;
   user?: Maybe<User>;
@@ -24,6 +25,13 @@ export type Query = {
 
 export type QueryNewIdeasArgs = {
   after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+};
+
+
+export type QueryTopIdeasArgs = {
+  interval: Interval;
+  skip?: Maybe<Scalars['Int']>;
   limit: Scalars['Int'];
 };
 
@@ -155,6 +163,13 @@ export type UpdateFeatureInput = {
   title?: Maybe<Scalars['String']>;
   body?: Maybe<Scalars['String']>;
 };
+
+export enum Interval {
+  Day = 'DAY',
+  Week = 'WEEK',
+  Year = 'YEAR',
+  AllTime = 'ALL_TIME'
+}
 
 export type AuthResponse = {
   __typename?: 'AuthResponse';
@@ -331,6 +346,7 @@ export type ResolversTypes = ResolversObject<{
   CreateIdeaInput: CreateIdeaInput;
   UpdateIdeaInput: UpdateIdeaInput;
   UpdateFeatureInput: UpdateFeatureInput;
+  INTERVAL: Interval;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
   Idea: ResolverTypeWrapper<CustomIdea>;
@@ -354,6 +370,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateIdeaInput: CreateIdeaInput;
   UpdateIdeaInput: UpdateIdeaInput;
   UpdateFeatureInput: UpdateFeatureInput;
+  INTERVAL: Interval;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
   Idea: CustomIdea;
@@ -364,6 +381,7 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   newIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryNewIdeasArgs, 'limit'>>;
+  topIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryTopIdeasArgs, 'interval' | 'skip' | 'limit'>>;
   idea?: Resolver<Maybe<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryIdeaArgs, 'id'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
