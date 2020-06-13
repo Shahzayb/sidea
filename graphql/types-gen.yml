@@ -1,9 +1,7 @@
 overwrite: true
-schema: 'graphql/schema.ts'
-# documents is for client side
-# documents: "src/**/*.graphql"
+schema: 'graphql/server/schema.ts'
 generates:
-  graphql/types/index.ts:
+  graphql/server/types.ts:
     config:
       useIndexSignature: true
       contextType: ../../pages/api/graphql#Context
@@ -18,3 +16,13 @@ generates:
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
+  graphql/client/types.tsx:
+    documents: 'graphql/client/**/*.tsx'
+    config:
+      withComponent: false
+      withHOC: false
+      withHooks: true
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo

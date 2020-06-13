@@ -1,0 +1,63 @@
+// import App from 'next/app'
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import React from 'react';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+
+const client = new ApolloClient({
+  uri: 'http://localhost:3000/api/graphql',
+});
+
+// client
+//   .query({
+//     query: gql`
+//       {
+//         idea(id: "10") {
+//           id
+//           title
+//           body
+//         }
+//       }
+//     `,
+//   })
+//   .then((result) => console.log(result));
+
+function MyApp({ Component, pageProps }: AppProps) {
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector('#jss-server-side');
+    if (jssStyles) {
+      jssStyles.parentElement?.removeChild(jssStyles);
+    }
+  }, []);
+
+  return (
+    <ApolloProvider client={client}>
+      <CssBaseline />
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+        <title>Sidea</title>
+      </Head>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  );
+}
+
+// Only uncomment this method if you have blocking data requirements for
+// every single page in your application. This disables the ability to
+// perform automatic static optimization, causing every page in your app to
+// be server-side rendered.
+//
+// MyApp.getInitialProps = async (appContext) => {
+//   // calls page's `getInitialProps` and fills `appProps.pageProps`
+//   const appProps = await App.getInitialProps(appContext);
+//
+//   return { ...appProps }
+// }
+
+export default MyApp;

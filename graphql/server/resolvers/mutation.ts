@@ -9,8 +9,8 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import gravatar from 'gravatar';
 import { AuthenticationError, UserInputError } from 'apollo-server-micro';
-import { createJwtToken } from '../../utils/jwt';
-import { MutationResolvers } from '../types/index';
+import { createJwtToken } from '../../../utils/jwt';
+import { MutationResolvers } from '../types';
 
 export const Mutation: MutationResolvers = {
   async login(_, { input: { username, password } }, { prisma }) {

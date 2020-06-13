@@ -1,4 +1,4 @@
-import { Resolvers } from '../types/index';
+import { Resolvers } from '../types';
 
 import { Query } from './query';
 import { Mutation } from './mutation';

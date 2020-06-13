@@ -1,8 +1,8 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { MicroRequest } from 'apollo-server-micro/dist/types';
 import { User as PrismaUser } from '@prisma/client';
-import typeDefs from '../../graphql/schema';
-import resolvers from '../../graphql/resolvers/index';
+import typeDefs from '../../graphql/server/schema';
+import resolvers from '../../graphql/server/resolvers/index';
 import prisma from '../../prisma/index';
 import { getUserFromToken } from '../../utils/jwt';
 
