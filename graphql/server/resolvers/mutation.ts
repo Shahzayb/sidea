@@ -15,7 +15,6 @@ import { MutationResolvers } from '../types';
 export const Mutation: MutationResolvers = {
   async login(_, { input: { username, password } }, { prisma }) {
     username = username.trim();
-    password = password.trim();
     // a username cannot be an email address
     let user: User | null = null;
     if (validator.isEmail(username)) {
@@ -53,7 +52,6 @@ export const Mutation: MutationResolvers = {
     input.email = input.email.trim();
     input.name = input.name.trim();
     input.username = input.username.trim();
-    input.password = input.password.trim();
 
     // check if name is valid
     if (!input.name) {

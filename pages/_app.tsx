@@ -5,24 +5,21 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { AuthProvider } from '../context/auth-context';
 
 const client = new ApolloClient({
   uri: 'http://localhost:3000/api/graphql',
+  request: (operation) => {
+    if (typeof window !== undefined) {
+      const token = localStorage.getItem('sidea_auth_token');
+      operation.setContext({
+        headers: {
+          authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+    }
+  },
 });
-
-// client
-//   .query({
-//     query: gql`
-//       {
-//         idea(id: "10") {
-//           id
-//           title
-//           body
-//         }
-//       }
-//     `,
-//   })
-//   .then((result) => console.log(result));
 
 function MyApp({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
@@ -35,15 +32,17 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ApolloProvider client={client}>
-      <CssBaseline />
-      <Head>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
-        <title>Sidea</title>
-      </Head>
-      <Component {...pageProps} />
+      <AuthProvider>
+        <CssBaseline />
+        <Head>
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width"
+          />
+          <title>Sidea</title>
+        </Head>
+        <Component {...pageProps} />
+      </AuthProvider>
     </ApolloProvider>
   );
 }
