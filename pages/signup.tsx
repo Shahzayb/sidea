@@ -105,10 +105,8 @@ function Signup() {
       >
         <TextField
           variant="outlined"
-          required
           fullWidth
           label="Full Name"
-          autoFocus
           {...formik.getFieldProps('name')}
           error={formik.touched.name && !!formik.errors.name}
           helperText={formik.touched.name && formik.errors.name}
@@ -116,7 +114,6 @@ function Signup() {
 
         <TextField
           variant="outlined"
-          required
           fullWidth
           label="Username"
           {...formik.getFieldProps('username')}
@@ -126,7 +123,6 @@ function Signup() {
 
         <TextField
           variant="outlined"
-          required
           fullWidth
           label="Email Address"
           {...formik.getFieldProps('email')}
@@ -136,7 +132,6 @@ function Signup() {
 
         <TextField
           variant="outlined"
-          required
           fullWidth
           label="Password"
           type="password"
@@ -158,11 +153,7 @@ function Signup() {
           )}
         </Button>
 
-        <Link
-          //  disabled={formik.isSubmitting}
-          variant="body2"
-          href="/login"
-        >
+        <Link variant="body2" href="/login">
           Already have an account? Sign in
         </Link>
       </form>
