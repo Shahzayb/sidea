@@ -8,7 +8,6 @@ datasource db {
 }
 
 model Feature {
-  body      String   @default("")
   createdAt DateTime @default(now())
   id        Int      @default(autoincrement()) @id
   ideaId    Int

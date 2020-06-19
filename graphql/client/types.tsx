@@ -134,13 +134,11 @@ export type SignupInput = {
 
 export type CreateFeatureInput = {
   title: Scalars['String'];
-  body: Scalars['String'];
 };
 
 export type CreateFeatureWithoutIdeaInput = {
   ideaId: Scalars['ID'];
   title: Scalars['String'];
-  body: Scalars['String'];
 };
 
 export type CreateIdeaInput = {
@@ -159,8 +157,7 @@ export type UpdateIdeaInput = {
 
 export type UpdateFeatureInput = {
   id: Scalars['ID'];
-  title?: Maybe<Scalars['String']>;
-  body?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export enum Interval {
@@ -231,7 +228,6 @@ export type Feature = {
   __typename?: 'Feature';
   id: Scalars['ID'];
   title: Scalars['String'];
-  body: Scalars['String'];
   idea: Idea;
   user: User;
   createdAt: Scalars['String'];

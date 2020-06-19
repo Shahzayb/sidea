@@ -30,10 +30,10 @@ function Navbar() {
         <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h5">Sidea</Typography>
 
-          <div>
+          <nav>
             <ButtonLink href="/login">Login</ButtonLink>
             <ButtonLink href="/signup">Sign Up</ButtonLink>
-          </div>
+          </nav>
         </Toolbar>
       </AppBar>
     </HideOnScroll>

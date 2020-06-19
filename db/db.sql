@@ -15,7 +15,6 @@ DROP TABLE IF EXISTS `Feature`;
 CREATE TABLE `Feature` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(300) NOT NULL,
-  `body` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `ideaId` int unsigned NOT NULL,
   `userId` int unsigned NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -96,4 +95,4 @@ CREATE TABLE `User` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-09 03:15:41
+-- 2020-06-18 15:44:42

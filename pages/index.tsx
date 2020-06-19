@@ -1,40 +1,34 @@
-import Navbar from '../components/Navbar';
 import Illustration from '../components/Illustration';
 import { Typography, Button, Container } from '@material-ui/core';
-// import { useGetIdeaByIdQuery } from '../graphql/client/types';
+import ButtonLink from '../components/ButtonLink';
+import withNavbar from '../hoc/withNavbar';
 
-export default () => {
-  // const query = useGetIdeaByIdQuery({
-  //   variables: {
-  //     id: '10',
-  //   },
-  // });
-
-  // console.log('query', query);
+const Index = () => {
   return (
     <div>
-      <Navbar />
-      <Container
-        maxWidth="lg"
-        style={{ display: 'flex', alignItems: 'center', height: '100vh' }}
-      >
-        <div style={{ flex: 1 }}>
-          <Typography component="h1" variant="h3">
-            Find Idea For Your Next Full-Stack Web Project
-          </Typography>
-          <div>
-            <Button style={{ marginRight: '1rem' }}>explore</Button>
-            <Button>create idea</Button>
+      <Container maxWidth="lg">
+        <div style={{ display: 'flex', alignItems: 'center', height: '100vh' }}>
+          <div style={{ flex: 1 }}>
+            <Typography component="h1" variant="h3">
+              Find Idea For Your Next Full-Stack Web Project
+            </Typography>
+            <div>
+              <Button style={{ marginRight: '1rem' }}>explore</Button>
+              <ButtonLink href="/create-idea">create idea</ButtonLink>
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Illustration />
           </div>
         </div>
-        <div style={{ flex: 1 }}>
-          <Illustration />
-          {/* <img
-            src="/assets/undraw_lightbulb_moment_evxr.svg"
-            alt="idea"
-          /> */}
-        </div>
+        <main>
+          {/* ideas list section */}
+          <section></section>
+        </main>
       </Container>
+      <footer>Footer</footer>
     </div>
   );
 };
+
+export default withNavbar(Index);

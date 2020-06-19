@@ -283,7 +283,7 @@ export const Mutation: MutationResolvers = {
       for (let i = 0; i < input.features.length; i++) {
         const curFeature = input.features[i];
         curFeature.title = curFeature.title.trim();
-        curFeature.body = curFeature.body.trim();
+
         // validate feature title
         if (!curFeature.title) {
           errors.push({
@@ -299,19 +299,6 @@ export const Mutation: MutationResolvers = {
           errors.push({
             param: 'features',
             msg: 'title of feature is too long. max character limit is 300',
-          });
-          break;
-        }
-
-        // validate feature body
-        if (
-          !validator.isLength(curFeature.body, {
-            max: 300,
-          })
-        ) {
-          errors.push({
-            param: 'features',
-            msg: 'body of feature is too long. max character limit is 300',
           });
           break;
         }
@@ -340,7 +327,6 @@ export const Mutation: MutationResolvers = {
       const features = input.features.map((feature) => {
         return {
           title: feature.title,
-          body: feature.body,
           User: {
             connect: {
               id: user.id,
@@ -367,7 +353,7 @@ export const Mutation: MutationResolvers = {
     const errors: { param: keyof typeof input; msg: string }[] = [];
 
     input.title = input.title.trim();
-    input.body = input.body.trim();
+
     input.ideaId = input.ideaId.trim();
     const ideaId = validator.toInt(input.ideaId);
 
@@ -415,18 +401,6 @@ export const Mutation: MutationResolvers = {
       });
     }
 
-    // validate feature body
-    if (
-      !validator.isLength(input.body, {
-        max: 300,
-      })
-    ) {
-      errors.push({
-        param: 'body',
-        msg: 'body of feature is too long. max character limit is 300',
-      });
-    }
-
     if (errors.length) {
       throw new UserInputError('invalid input', {
         errors,
@@ -441,7 +415,6 @@ export const Mutation: MutationResolvers = {
           },
         },
         title: input.title,
-        body: input.body,
         User: {
           connect: {
             id: user.id,
@@ -645,29 +618,20 @@ export const Mutation: MutationResolvers = {
     }
 
     // validate title
-    input.title = input.title?.trim();
-
-    if (
-      !validator.isLength(input.title || '', {
+    input.title = input.title.trim();
+    if (!input.title) {
+      errors.push({
+        param: 'title',
+        msg: 'title of feature is required',
+      });
+    } else if (
+      !validator.isLength(input.title, {
         max: 300,
       })
     ) {
       errors.push({
         param: 'title',
         msg: 'title is too long. max character limit is 300',
-      });
-    }
-    // validate body
-    input.body = input.body?.trim();
-
-    if (
-      !validator.isLength(input.body || '', {
-        max: 300,
-      })
-    ) {
-      errors.push({
-        param: 'body',
-        msg: 'body is too long. max character limit is 300',
       });
     }
 
@@ -681,16 +645,10 @@ export const Mutation: MutationResolvers = {
       where: {
         id: validator.toInt(input.id),
       },
-      data: {},
+      data: {
+        title: input.title,
+      },
     };
-
-    if (input.title) {
-      update.data.title = input.title;
-    }
-    // body can be empty
-    if (input.body || input.body === '') {
-      update.data.body = input.body;
-    }
 
     const feature = await prisma.feature.update(update);
 

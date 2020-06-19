@@ -1,11 +1,14 @@
 // import App from 'next/app'
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
+import 'react-quill/dist/quill.snow.css';
+
 import { AuthProvider } from '../context/auth-context';
+import { theme } from '../theme';
 
 const client = new ApolloClient({
   uri: 'http://localhost:3000/api/graphql',
@@ -31,19 +34,23 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <ApolloProvider client={client}>
-      <AuthProvider>
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+        <title>Sidea</title>
+      </Head>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width"
-          />
-          <title>Sidea</title>
-        </Head>
-        <Component {...pageProps} />
-      </AuthProvider>
-    </ApolloProvider>
+        <ApolloProvider client={client}>
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </ApolloProvider>
+      </ThemeProvider>
+    </>
   );
 }
 

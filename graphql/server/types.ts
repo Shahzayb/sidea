@@ -135,13 +135,11 @@ export type SignupInput = {
 
 export type CreateFeatureInput = {
   title: Scalars['String'];
-  body: Scalars['String'];
 };
 
 export type CreateFeatureWithoutIdeaInput = {
   ideaId: Scalars['ID'];
   title: Scalars['String'];
-  body: Scalars['String'];
 };
 
 export type CreateIdeaInput = {
@@ -160,8 +158,7 @@ export type UpdateIdeaInput = {
 
 export type UpdateFeatureInput = {
   id: Scalars['ID'];
-  title?: Maybe<Scalars['String']>;
-  body?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export enum Interval {
@@ -232,7 +229,6 @@ export type Feature = {
   __typename?: 'Feature';
   id: Scalars['ID'];
   title: Scalars['String'];
-  body: Scalars['String'];
   idea: Idea;
   user: User;
   createdAt: Scalars['String'];
@@ -438,7 +434,6 @@ export type IdeaResolvers<ContextType = Context, ParentType extends ResolversPar
 export type FeatureResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Feature'] = ResolversParentTypes['Feature']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   idea?: Resolver<ResolversTypes['Idea'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

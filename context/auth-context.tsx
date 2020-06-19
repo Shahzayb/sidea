@@ -35,9 +35,9 @@ const AuthProvider: React.FC = ({ children }) => {
     data?.me,
   ]);
 
-  if (loading) {
-    return <FullPageSpinner />;
-  }
+  // if (loading) {
+  //   return <FullPageSpinner />;
+  // }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

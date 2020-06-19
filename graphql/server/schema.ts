@@ -39,13 +39,11 @@ const typeDefs = gql`
 
   input CreateFeatureInput {
     title: String!
-    body: String!
   }
 
   input CreateFeatureWithoutIdeaInput {
     ideaId: ID!
     title: String!
-    body: String!
   }
 
   input CreateIdeaInput {
@@ -64,8 +62,7 @@ const typeDefs = gql`
 
   input UpdateFeatureInput {
     id: ID!
-    title: String
-    body: String
+    title: String!
   }
 
   enum INTERVAL {
@@ -110,7 +107,6 @@ const typeDefs = gql`
   type Feature {
     id: ID!
     title: String!
-    body: String!
     idea: Idea!
     user: User!
     createdAt: String!
