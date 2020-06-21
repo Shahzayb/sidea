@@ -9,14 +9,31 @@ export const theme = createMuiTheme({
       disableRipple: true,
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 660,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '.MuiIconButton-root': {
-          borderRadius: 0,
-        },
-        '.MuiIconButton-sizeSmall': {
-          padding: '5px',
+        // dont create square icon button globally
+        // '.MuiIconButton-root': {
+        //   borderRadius: 0,
+        // },
+        // '.MuiIconButton-sizeSmall': {
+        //   padding: '5px',
+        // },
+        '.MuiTypography-root': {
+          overflowWrap: 'break-word',
+          wordWrap: 'break-word',
+          wordBreak: 'break-word',
+          hyphens: 'auto',
+          margin: 0,
         },
       },
     },

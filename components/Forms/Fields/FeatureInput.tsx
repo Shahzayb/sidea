@@ -1,8 +1,9 @@
 import React from 'react';
 import * as yup from 'yup';
-import { TextField, IconButton } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { useFormik } from 'formik';
+import MultilineTextField from './MultilineTextField';
+import SquareIconButton from '../../SquareIconButton';
 
 interface Props {
   onChange: (value: string) => void;
@@ -29,11 +30,12 @@ function FeatureInput({ onChange }: Props) {
       formik.setSubmitting(false);
       formik.resetForm();
     },
+    validateOnMount: true,
   });
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <TextField
+      <MultilineTextField
         style={{ flex: 1, marginRight: 10 }}
         {...formik.getFieldProps('feature')}
         placeholder="Enter feature"
@@ -41,29 +43,13 @@ function FeatureInput({ onChange }: Props) {
         spellCheck="false"
         margin="none"
         size="small"
-        multiline
-        fullWidth
         inputProps={{
           maxLength: 300,
-          style: {
-            paddingRight: '3.5rem',
-          },
         }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-          }
-        }}
-        FormHelperTextProps={{
-          style: {
-            position: 'absolute',
-            right: 0,
-            bottom: 0,
-          },
-        }}
+        disableEnterKey
         helperText={`${formik.values.feature.length}/300`}
       />
-      <IconButton
+      <SquareIconButton
         size="small"
         color="secondary"
         title="add feature"
@@ -71,7 +57,7 @@ function FeatureInput({ onChange }: Props) {
         disabled={!formik.isValid || formik.isSubmitting}
       >
         <Add />
-      </IconButton>
+      </SquareIconButton>
     </div>
   );
 }

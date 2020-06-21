@@ -47,9 +47,10 @@ interface Props {
   onChange: (html: string) => void;
   onBlur?: () => void;
   error?: string;
+  placeholder: string;
 }
 
-function RichTextEditor({ onChange, onBlur, error }: Props) {
+function RichTextEditor({ onChange, onBlur, error, placeholder }: Props) {
   const classes = useStyles();
   return (
     <div id="quill_editor">
@@ -65,7 +66,7 @@ function RichTextEditor({ onChange, onBlur, error }: Props) {
         }}
         onBlur={onBlur}
         bounds="#quill_editor"
-        placeholder="enter some value"
+        placeholder={placeholder}
       />
       {/* {error && <Typography color="textSecondary">{error}</Typography>} */}
     </div>

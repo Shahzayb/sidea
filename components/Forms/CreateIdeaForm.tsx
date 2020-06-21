@@ -2,7 +2,6 @@ import React from 'react';
 import {
   makeStyles,
   Typography,
-  TextField,
   Button,
   CircularProgress,
 } from '@material-ui/core';
@@ -13,10 +12,11 @@ import * as yup from 'yup';
 import TagsInput from './Fields/TagsInput';
 import MultiFeatureInput from './Fields/MultiFeatureInput';
 import RichTextEditor from './Fields/RichTextEditor';
+import MultilineTextField from './Fields/MultilineTextField';
 
 const useStyles = makeStyles((theme) => ({
   gutterAllChild: {
-    '& > *': {
+    '& > *:not(:last-child)': {
       marginBottom: theme.spacing(2),
     },
   },
@@ -29,17 +29,25 @@ const initialValues = {
   features: [] as CreateFeatureInput[],
 };
 
-const RE_QUILL_EMPTY = /^<p>(<br>|<br\/>|<br\s\/>|\s+|)<\/p>$/gm;
-
 const validationSchema = yup.object().shape({
   title: yup.string().trim().required('required').max(300, 'title is too long'),
   body: yup
     .string()
     .trim()
-    .required('required')
-    .test('body', 'required', (value) => {
-      return !RE_QUILL_EMPTY.test(value);
-    }),
+    .test('body', '', function (value) {
+      const { path, createError } = this;
+      const parser = new DOMParser();
+
+      const { textContent } = parser.parseFromString(
+        value,
+        'text/html'
+      ).documentElement;
+
+      const empty = !textContent?.trim();
+
+      return !empty || createError({ path, message: 'empty' });
+    })
+    .required('required'),
   tags: yup
     .array()
     .of(
@@ -78,17 +86,9 @@ function CreateIdeaForm() {
     },
   });
 
-  // console.dir(formik);
-
-  // formik.errors.features
-
-  // console.log(formik.values);
-  // console.log(formik.errors);
-  // console.log(formik.touched);
-
   return (
-    <div style={{ margin: '1rem' }}>
-      <Typography component="h1" variant="h4">
+    <div className={classes.gutterAllChild}>
+      <Typography component="h1" variant="h5">
         Create Idea
       </Typography>
       <form
@@ -98,34 +98,18 @@ function CreateIdeaForm() {
         autoComplete="off"
         className={classes.gutterAllChild}
       >
-        <TextField
+        <MultilineTextField
           {...formik.getFieldProps('title')}
-          placeholder="title"
+          placeholder="Title"
           variant="outlined"
           spellCheck="false"
           margin="none"
           size="small"
-          multiline
           fullWidth
           inputProps={{
             maxLength: 300,
-            style: {
-              paddingRight: '3rem',
-            },
           }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-            }
-          }}
-          onBlur={undefined}
-          FormHelperTextProps={{
-            style: {
-              position: 'absolute',
-              right: 0,
-              bottom: 0,
-            },
-          }}
+          disableEnterKey
           error={formik.touched.title && !!formik.errors.title}
           helperText={`${formik.values.title.length}/300`}
         />
@@ -133,10 +117,11 @@ function CreateIdeaForm() {
           onChange={(html: string) => {
             formik.setFieldValue('body', html);
           }}
-          // onBlur={() => {
-          //   formik.setFieldTouched('body', true);
-          // }}
+          onBlur={() => {
+            formik.setFieldTouched('body', true);
+          }}
           error={formik.touched.body ? formik.errors.body : undefined}
+          placeholder="Text"
         />
         <TagsInput
           value={formik.values.tags}

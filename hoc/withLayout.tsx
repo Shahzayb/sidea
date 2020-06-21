@@ -1,12 +1,14 @@
 import React from 'react';
 import { Container } from '@material-ui/core';
 
-const withNavbar = (Component: () => JSX.Element) => {
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+
+const withLayout = (Component: () => JSX.Element, maxWidth: Size = 'lg') => {
   return () => (
-    <Container maxWidth="lg">
+    <Container maxWidth={maxWidth}>
       <Component />
     </Container>
   );
 };
 
-export default withNavbar;
+export default withLayout;

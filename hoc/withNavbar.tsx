@@ -5,7 +5,7 @@ const withNavbar = (Component: () => JSX.Element) => {
   return () => (
     <>
       <Navbar />
-      <div style={{ marginTop: '2rem' }}>
+      <div style={{ marginTop: '5rem' }}>
         <Component />
       </div>
     </>

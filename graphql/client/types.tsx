@@ -283,6 +283,19 @@ export type SignUpMutation = (
   ) }
 );
 
+export type CreateIdeaMutationVariables = Exact<{
+  input: CreateIdeaInput;
+}>;
+
+
+export type CreateIdeaMutation = (
+  { __typename?: 'Mutation' }
+  & { createIdea: (
+    { __typename?: 'Idea' }
+    & Pick<Idea, 'id' | 'title' | 'body' | 'tags'>
+  ) }
+);
+
 export type GetIdeaByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -378,6 +391,41 @@ export function useSignUpMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = ApolloReactCommon.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = ApolloReactCommon.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const CreateIdeaDocument = gql`
+    mutation CreateIdea($input: CreateIdeaInput!) {
+  createIdea(input: $input) {
+    id
+    title
+    body
+    tags
+  }
+}
+    `;
+export type CreateIdeaMutationFn = ApolloReactCommon.MutationFunction<CreateIdeaMutation, CreateIdeaMutationVariables>;
+
+/**
+ * __useCreateIdeaMutation__
+ *
+ * To run a mutation, you first call `useCreateIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIdeaMutation, { data, loading, error }] = useCreateIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateIdeaMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateIdeaMutation, CreateIdeaMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateIdeaMutation, CreateIdeaMutationVariables>(CreateIdeaDocument, baseOptions);
+      }
+export type CreateIdeaMutationHookResult = ReturnType<typeof useCreateIdeaMutation>;
+export type CreateIdeaMutationResult = ApolloReactCommon.MutationResult<CreateIdeaMutation>;
+export type CreateIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateIdeaMutation, CreateIdeaMutationVariables>;
 export const GetIdeaByIdDocument = gql`
     query GetIdeaById($id: ID!) {
   idea(id: $id) {

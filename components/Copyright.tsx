@@ -3,9 +3,14 @@ import Typography from '@material-ui/core/Typography';
 
 export default function Copyright() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography
+      style={{ padding: '10px' }}
+      variant="body2"
+      color="textSecondary"
+      align="center"
+    >
       {'Copyright © '}
-      Sidea {new Date().getFullYear()}
+      {new Date().getFullYear()}, Shahzaib Sarwar
       {'.'}
     </Typography>
   );

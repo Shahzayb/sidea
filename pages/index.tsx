@@ -14,7 +14,7 @@ const Index = () => {
             </Typography>
             <div>
               <Button style={{ marginRight: '1rem' }}>explore</Button>
-              <ButtonLink href="/create-idea">create idea</ButtonLink>
+              <ButtonLink href="/idea/create">create idea</ButtonLink>
             </div>
           </div>
           <div style={{ flex: 1 }}>

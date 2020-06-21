@@ -71,13 +71,7 @@ function MultiFeatureInput({ onChange }: Props) {
       <List>
         {formik.values.features.map((feat, index) => (
           <ListItem className={classes.paper} divider key={feat.title}>
-            <ListItemText
-              primary={
-                <Typography style={{ wordBreak: 'break-all' }}>
-                  {feat.title}
-                </Typography>
-              }
-            />
+            <ListItemText primary={<Typography>{feat.title}</Typography>} />
             <ListItemSecondaryAction>
               <IconButton
                 onClick={() => {

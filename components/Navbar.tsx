@@ -5,7 +5,9 @@ import {
   AppBar,
   Toolbar,
   Typography,
+  Link,
 } from '@material-ui/core';
+import NextLink from 'next/link';
 
 import ButtonLink from '../components/ButtonLink';
 
@@ -28,7 +30,11 @@ function Navbar() {
     <HideOnScroll>
       <AppBar>
         <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h5">Sidea</Typography>
+          <NextLink href="/">
+            <Link color="inherit">
+              <Typography variant="h5">Sidea</Typography>
+            </Link>
+          </NextLink>
 
           <nav>
             <ButtonLink href="/login">Login</ButtonLink>
