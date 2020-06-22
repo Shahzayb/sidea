@@ -67,7 +67,11 @@ function Signup() {
   });
 
   return (
-    <Container style={{ marginTop: '4rem' }} component="main" maxWidth="xs">
+    <Container
+      style={{ marginTop: '4rem', marginBottom: '4rem' }}
+      component="main"
+      maxWidth="xs"
+    >
       <Paper className={classes.gutterAllChild} style={{ padding: '1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link
@@ -85,7 +89,7 @@ function Signup() {
             <Typography component="div" variant="h3">
               <EmojiObjectsIcon fontSize="inherit" />
             </Typography>
-            <Typography component="div" variant="h5">
+            <Typography component="div" variant="h6">
               Sidea
             </Typography>
           </Link>
