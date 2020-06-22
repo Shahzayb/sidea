@@ -198,7 +198,7 @@ function Signup() {
             }
             fullWidth
           >
-            Sign Up{' '}
+            Create account{' '}
             {formik.isSubmitting && (
               <CircularProgress size={16} style={{ marginLeft: '10px' }} />
             )}

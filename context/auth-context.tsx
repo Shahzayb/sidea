@@ -1,8 +1,9 @@
 import React from 'react';
-import FullPageSpinner from '../components/FullPageSpinner';
 import { useGetMyProfileQuery, User } from '../graphql/client/types';
 
 type AuthContext = {
+  loading: boolean;
+  authenticated: boolean;
   user?: Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'email'>;
   login: (token: string) => void;
   logout: () => void;
@@ -29,15 +30,12 @@ const AuthProvider: React.FC = ({ children }) => {
     client.resetStore();
   }, []);
 
-  const value = React.useMemo(() => ({ user: data?.me, login, logout }), [
-    login,
-    logout,
-    data?.me,
-  ]);
+  const authenticated = !loading && !!data?.me;
 
-  // if (loading) {
-  //   return <FullPageSpinner />;
-  // }
+  const value = React.useMemo(
+    () => ({ loading, authenticated, user: data?.me, login, logout }),
+    [loading, authenticated, login, logout, data?.me]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

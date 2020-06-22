@@ -95,7 +95,7 @@ function Signup() {
           </Link>
         </div>
         <Typography align="center" component="h1" variant="h5">
-          Welcome back, login to continue
+          Welcome back, sign in to continue
         </Typography>
         <div>
           {!loading && error?.networkError && (
@@ -163,7 +163,7 @@ function Signup() {
             disabled={formik.isSubmitting || !formik.isValid}
             fullWidth
           >
-            Login{' '}
+            Sign in{' '}
             {formik.isSubmitting && (
               <CircularProgress
                 color="secondary"

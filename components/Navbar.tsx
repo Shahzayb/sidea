@@ -5,13 +5,28 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Link,
+  makeStyles,
 } from '@material-ui/core';
-import NextLink from 'next/link';
 
-import ButtonLink from '../components/ButtonLink';
+import ResponsiveButton from './ResponsiveButton';
+import Link from './Link';
+import { useAuth } from '../context/auth-context';
+import { Skeleton } from '@material-ui/lab';
 
-// const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  marginRightAllChild: {
+    '& > *:not(:last-child)': {
+      marginRight: theme.spacing(1),
+    },
+  },
+  [theme.breakpoints.up('sm')]: {
+    marginRightAllChild: {
+      '& > *:not(:last-child)': {
+        marginRight: theme.spacing(2),
+      },
+    },
+  },
+}));
 
 function HideOnScroll(props: { children: any }) {
   const { children } = props;
@@ -26,20 +41,41 @@ function HideOnScroll(props: { children: any }) {
 }
 
 function Navbar() {
+  const classes = useStyles();
+  const { loading, authenticated } = useAuth();
   return (
     <HideOnScroll>
-      <AppBar>
+      <AppBar color="default" variant="outlined">
         <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <NextLink href="/">
-            <Link color="inherit">
-              <Typography variant="h5">Sidea</Typography>
-            </Link>
-          </NextLink>
+          <Link color="inherit" href="/">
+            <Typography variant="h5">Sidea</Typography>
+          </Link>
 
-          <nav>
-            <ButtonLink href="/login">Login</ButtonLink>
-            <ButtonLink href="/signup">Sign Up</ButtonLink>
-          </nav>
+          {loading && (
+            <nav
+              style={{ display: 'flex' }}
+              className={classes.marginRightAllChild}
+            >
+              <Skeleton variant="circle" width={40} height={40} />
+              <Skeleton variant="circle" width={40} height={40} />
+            </nav>
+          )}
+
+          {!loading && !authenticated && (
+            <nav
+              style={{ display: 'flex' }}
+              className={classes.marginRightAllChild}
+            >
+              <Link underline="none" href={'/login'}>
+                <ResponsiveButton color="default">Sign in</ResponsiveButton>
+              </Link>
+              <Link underline="none" href={'/signup'}>
+                <ResponsiveButton color="default" variant="outlined">
+                  Sign up
+                </ResponsiveButton>
+              </Link>
+            </nav>
+          )}
         </Toolbar>
       </AppBar>
     </HideOnScroll>
