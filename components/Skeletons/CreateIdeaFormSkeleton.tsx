@@ -1,17 +1,10 @@
 import React from 'react';
 import { Skeleton } from '@material-ui/lab';
-import { Typography, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles((theme) => ({
-  gutterAllChild: {
-    '& > *': {
-      marginBottom: theme.spacing(2),
-    },
-  },
-}));
+import { Typography } from '@material-ui/core';
+import useGutterAllChild from '../../hooks/useGutterAllChild';
 
 function CreateIdeaFormSkeleton() {
-  const classes = useStyles();
+  const classes = useGutterAllChild({ spacing: 3 });
   return (
     <div className={classes.gutterAllChild}>
       <Typography component="div" variant="h4">

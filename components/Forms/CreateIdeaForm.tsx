@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  makeStyles,
-  Typography,
-  Button,
-  CircularProgress,
-} from '@material-ui/core';
+import { Typography, Button, CircularProgress } from '@material-ui/core';
 
 import { CreateFeatureInput } from '../../graphql/client/types';
 import { useFormik } from 'formik';
@@ -13,14 +8,7 @@ import TagsInput from './Fields/TagsInput';
 import MultiFeatureInput from './Fields/MultiFeatureInput';
 import RichTextEditor from './Fields/RichTextEditor';
 import MultilineTextField from './Fields/MultilineTextField';
-
-const useStyles = makeStyles((theme) => ({
-  gutterAllChild: {
-    '& > *:not(:last-child)': {
-      marginBottom: theme.spacing(2),
-    },
-  },
-}));
+import useGutterAllChild from '../../hooks/useGutterAllChild';
 
 const initialValues = {
   title: '',
@@ -77,7 +65,7 @@ const validationSchema = yup.object().shape({
 });
 
 function CreateIdeaForm() {
-  const classes = useStyles();
+  const classes = useGutterAllChild({ spacing: 3 });
   const formik = useFormik({
     initialValues,
     validationSchema,

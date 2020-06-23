@@ -6,6 +6,7 @@ import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import 'react-quill/dist/quill.snow.css';
+import '../public/styles/main.css';
 
 import { AuthProvider } from '../context/auth-context';
 import { theme } from '../theme';

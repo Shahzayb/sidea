@@ -2,6 +2,7 @@ import Illustration from '../components/Illustration';
 import { Typography, Button, Container } from '@material-ui/core';
 import ButtonLink from '../components/ButtonLink';
 import withNavbar from '../hoc/withNavbar';
+import withFooter from '../hoc/withFooter';
 
 const Index = () => {
   return (
@@ -26,9 +27,8 @@ const Index = () => {
           <section></section>
         </main>
       </Container>
-      <footer>Footer</footer>
     </div>
   );
 };
 
-export default withNavbar(Index);
+export default withFooter(withNavbar(Index));

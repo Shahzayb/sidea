@@ -9,7 +9,12 @@ function Footer() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '2rem',
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        height: '3rem',
+        width: '100%',
+        overflow: 'hidden',
       }}
     >
       <Copyright />
