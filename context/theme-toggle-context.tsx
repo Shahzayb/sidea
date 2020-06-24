@@ -81,7 +81,6 @@ export const ThemeToggleProvider: React.FC = ({ children }) => {
   );
 
   const theme = React.useMemo(() => {
-    console.log('change');
     let theme: ThemeOptions;
     if (mode === 'light') {
       theme = { ...BASE_THEME, ...LIGHT_THEME };

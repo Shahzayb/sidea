@@ -6,7 +6,7 @@ import { Idea } from '@prisma/client';
 export const Query: QueryResolvers = {
   me(_, __, { user }) {
     if (!user) {
-      throw new AuthenticationError('your are not logged in');
+      throw new AuthenticationError('you are not logged in');
     }
     return user;
   },

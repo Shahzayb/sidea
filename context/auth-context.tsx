@@ -24,14 +24,13 @@ const AuthProvider: React.FC = ({ children }) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(AUTH_TOKEN_KEY, token);
       client.resetStore();
-      router.push('/');
     }
   }, []);
 
   const logout = React.useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(AUTH_TOKEN_KEY);
-      client.resetStore();
+      window.location.reload(true);
     }
   }, []);
 

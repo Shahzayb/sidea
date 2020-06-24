@@ -11,6 +11,7 @@ import {
   Menu,
   MenuItem,
   Switch,
+  Tooltip,
 } from '@material-ui/core';
 
 import ResponsiveButton from './ResponsiveButton';
@@ -51,7 +52,7 @@ function HideOnScroll(props: { children: any }) {
 
 function Navbar() {
   const classes = useStyles();
-  const { loading, authenticated, user } = useAuth();
+  const { loading, authenticated, user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const { mode, toggle } = useToggleTheme();
@@ -93,11 +94,17 @@ function Navbar() {
           )}
           {!loading && user && (
             <nav className={classes.nav}>
-              <Link underline="none" href="/idea/create">
-                <IconButton size="small">
-                  <IdeaAdd color="primary" fontSize="large" />
-                </IconButton>
-              </Link>
+              <Tooltip
+                placement="bottom"
+                title="Create Idea"
+                aria-label="create idea"
+              >
+                <Link underline="none" href="/idea/create">
+                  <IconButton size="small">
+                    <IdeaAdd fontSize="large" />
+                  </IconButton>
+                </Link>
+              </Tooltip>
               <div>
                 <IconButton
                   size="small"
@@ -135,7 +142,14 @@ function Navbar() {
                       inputProps={{ 'aria-label': 'primary checkbox' }}
                     />
                   </MenuItem>
-                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      logout();
+                      handleClose();
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
                 </Menu>
               </div>
             </nav>
