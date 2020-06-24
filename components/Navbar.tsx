@@ -18,15 +18,18 @@ import Link from './Link';
 import { useAuth } from '../context/auth-context';
 import { Skeleton } from '@material-ui/lab';
 import { useToggleTheme } from '../context/theme-toggle-context';
+import IdeaAdd from './Icons/IdeaAdd';
 
 const useStyles = makeStyles((theme) => ({
-  marginRightAllChild: {
+  nav: {
+    display: 'flex',
+    alignItems: 'center',
     '& > *:not(:last-child)': {
       marginRight: theme.spacing(1),
     },
   },
   [theme.breakpoints.up('sm')]: {
-    marginRightAllChild: {
+    nav: {
       '& > *:not(:last-child)': {
         marginRight: theme.spacing(2),
       },
@@ -70,20 +73,14 @@ function Navbar() {
           </Link>
 
           {loading && (
-            <nav
-              style={{ display: 'flex' }}
-              className={classes.marginRightAllChild}
-            >
+            <nav className={classes.nav}>
               <Skeleton variant="circle" width={40} height={40} />
               <Skeleton variant="circle" width={40} height={40} />
             </nav>
           )}
 
           {!loading && !authenticated && (
-            <nav
-              style={{ display: 'flex' }}
-              className={classes.marginRightAllChild}
-            >
+            <nav className={classes.nav}>
               <Link underline="none" href={'/login'}>
                 <ResponsiveButton color="default">Sign in</ResponsiveButton>
               </Link>
@@ -95,7 +92,12 @@ function Navbar() {
             </nav>
           )}
           {!loading && user && (
-            <nav>
+            <nav className={classes.nav}>
+              <Link underline="none" href="/idea/create">
+                <IconButton size="small">
+                  <IdeaAdd color="primary" fontSize="large" />
+                </IconButton>
+              </Link>
               <div>
                 <IconButton
                   size="small"
