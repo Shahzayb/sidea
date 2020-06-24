@@ -1,7 +1,10 @@
 import React from 'react';
-import { Typography, Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 
-import { CreateFeatureInput } from '../../graphql/client/types';
+import {
+  CreateFeatureInput,
+  useCreateIdeaMutation,
+} from '../../graphql/client/types';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import TagsInput from './Fields/TagsInput';
@@ -9,6 +12,8 @@ import MultiFeatureInput from './Fields/MultiFeatureInput';
 import RichTextEditor from './Fields/RichTextEditor';
 import MultilineTextField from './Fields/MultilineTextField';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
+import { Alert } from '@material-ui/lab';
+import { useRouter } from 'next/router';
 
 const initialValues = {
   title: '',
@@ -16,6 +21,8 @@ const initialValues = {
   tags: [] as string[],
   features: [] as CreateFeatureInput[],
 };
+
+type Errors = { param: keyof typeof initialValues; msg: string }[];
 
 const validationSchema = yup.object().shape({
   title: yup.string().trim().required('required').max(300, 'title is too long'),
@@ -66,19 +73,60 @@ const validationSchema = yup.object().shape({
 
 function CreateIdeaForm() {
   const classes = useGutterAllChild({ spacing: 3 });
+  const [createIdeaMutation, { loading, error }] = useCreateIdeaMutation();
+  const router = useRouter();
+
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values, formik) => {
-      console.log('values', values);
+      createIdeaMutation({
+        variables: {
+          input: values,
+        },
+      })
+        .then(({ data }) => {
+          if (data) {
+            router.push('/idea/[ideaId]', `/idea/${data.createIdea.id}`);
+          }
+        })
+        .catch((err) => {
+          console.dir(err);
+          if (err.graphQLErrors[0]) {
+            const errors: Errors = err.graphQLErrors[0]?.extensions?.errors;
+            errors.forEach(({ param, msg }) => {
+              formik.setFieldError(param, msg);
+            });
+          }
+        })
+        .finally(() => {
+          formik.setSubmitting(false);
+        });
     },
   });
 
   return (
     <div className={classes.gutterAllChild}>
-      <Typography component="h1" variant="h5">
-        Create Idea
-      </Typography>
+      <div>
+        {!loading && error?.networkError && (
+          <Alert
+            action={
+              <Button
+                onClick={() => {
+                  formik.submitForm();
+                }}
+                color="inherit"
+                size="small"
+              >
+                retry
+              </Button>
+            }
+            severity="error"
+          >
+            Ooops! Something went wrong.
+          </Alert>
+        )}
+      </div>
       <form
         onSubmit={formik.handleSubmit}
         action=""

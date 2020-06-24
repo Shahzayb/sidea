@@ -2,9 +2,9 @@ import { createMuiTheme, responsiveFontSizes } from '@material-ui/core';
 
 export const theme = responsiveFontSizes(
   createMuiTheme({
-    // palette: {
-    //   type: 'dark',
-    // },
+    palette: {
+      type: 'light',
+    },
     props: {
       MuiButtonBase: {
         disableRipple: true,
@@ -22,13 +22,6 @@ export const theme = responsiveFontSizes(
     overrides: {
       MuiCssBaseline: {
         '@global': {
-          // dont create square icon button globally
-          // '.MuiIconButton-root': {
-          //   borderRadius: 0,
-          // },
-          // '.MuiIconButton-sizeSmall': {
-          //   padding: '5px',
-          // },
           '.MuiTypography-root': {
             overflowWrap: 'break-word',
             wordWrap: 'break-word',

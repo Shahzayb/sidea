@@ -11,7 +11,7 @@ const disableEnterKeyHandler = (e: React.KeyboardEvent) => {
   }
 };
 
-function MultilineTextEditor({
+function MultilineTextField({
   disableEnterKey,
   ...props
 }: TextFieldProps & Props) {
@@ -53,4 +53,4 @@ function MultilineTextEditor({
   );
 }
 
-export default MultilineTextEditor;
+export default MultilineTextField;

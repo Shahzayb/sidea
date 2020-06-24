@@ -6,12 +6,18 @@ import {
   Toolbar,
   Typography,
   makeStyles,
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Switch,
 } from '@material-ui/core';
 
 import ResponsiveButton from './ResponsiveButton';
 import Link from './Link';
 import { useAuth } from '../context/auth-context';
 import { Skeleton } from '@material-ui/lab';
+import { useToggleTheme } from '../context/theme-toggle-context';
 
 const useStyles = makeStyles((theme) => ({
   marginRightAllChild: {
@@ -42,7 +48,19 @@ function HideOnScroll(props: { children: any }) {
 
 function Navbar() {
   const classes = useStyles();
-  const { loading, authenticated } = useAuth();
+  const { loading, authenticated, user } = useAuth();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const { mode, toggle } = useToggleTheme();
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <HideOnScroll>
       <AppBar color="default" variant="outlined">
@@ -74,6 +92,50 @@ function Navbar() {
                   Sign up
                 </ResponsiveButton>
               </Link>
+            </nav>
+          )}
+          {!loading && user && (
+            <nav>
+              <div>
+                <IconButton
+                  size="small"
+                  aria-label="account of current user"
+                  aria-controls="user-menu"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <Avatar alt={user.name} src={user.avatar} />
+                </IconButton>
+                <Menu
+                  id="user-menu"
+                  anchorEl={anchorEl}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  keepMounted
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem>
+                    Dark Mode:{' '}
+                    <Switch
+                      checked={mode === 'dark'}
+                      onChange={() => toggle()}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                </Menu>
+              </div>
             </nav>
           )}
         </Toolbar>

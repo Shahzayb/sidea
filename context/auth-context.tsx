@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGetMyProfileQuery, User } from '../graphql/client/types';
+import { useRouter } from 'next/router';
 
 type AuthContext = {
   loading: boolean;
@@ -13,27 +14,44 @@ const AuthContext = React.createContext<AuthContext | undefined>(undefined);
 
 AuthContext.displayName = 'AuthContext';
 
+export const AUTH_TOKEN_KEY = 'sidea_auth_token';
+
 const AuthProvider: React.FC = ({ children }) => {
   const { data, loading, client } = useGetMyProfileQuery();
+  const router = useRouter();
 
   const login = React.useCallback((token) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('sidea_auth_token', token);
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+      client.resetStore();
+      router.push('/');
     }
-    client.resetStore();
   }, []);
 
   const logout = React.useCallback(() => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('sidea_auth_token');
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      client.resetStore();
     }
-    client.resetStore();
   }, []);
 
-  const authenticated = !loading && !!data?.me;
+  const authenticated = !!data?.me;
+
+  // if authentication is failed, then remove token
+  React.useEffect(() => {
+    if (!loading && !authenticated) {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
+  }, [authenticated, loading]);
 
   const value = React.useMemo(
-    () => ({ loading, authenticated, user: data?.me, login, logout }),
+    () => ({
+      loading,
+      authenticated,
+      user: data?.me,
+      login,
+      logout,
+    }),
     [loading, authenticated, login, logout, data?.me]
   );
 

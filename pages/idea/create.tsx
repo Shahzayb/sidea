@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import CreateIdeaFormSkeleton from '../../components/Skeletons/CreateIdeaFormSkeleton';
 import withNavbar from '../../hoc/withNavbar';
 import withLayout from '../../hoc/withLayout';
-import { Paper, Box } from '@material-ui/core';
+import { Paper, Box, Typography } from '@material-ui/core';
 import withFooter from '../../hoc/withFooter';
 import { useAuth } from '../../context/auth-context';
 import withRouteProtection from '../../hoc/withRouteProtection';
@@ -21,6 +21,9 @@ function CreateIdea() {
   return (
     <Paper>
       <Box p={2} py={4} style={{ marginTop: '6rem' }}>
+        <Typography component="h1" variant="h5">
+          Create Idea
+        </Typography>
         {authenticated && <CreateIdeaForm />}
         {(loading || !authenticated) && <CreateIdeaFormSkeleton />}
       </Box>

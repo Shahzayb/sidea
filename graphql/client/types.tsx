@@ -292,7 +292,7 @@ export type CreateIdeaMutation = (
   { __typename?: 'Mutation' }
   & { createIdea: (
     { __typename?: 'Idea' }
-    & Pick<Idea, 'id' | 'title' | 'body' | 'tags'>
+    & Pick<Idea, 'id'>
   ) }
 );
 
@@ -395,9 +395,6 @@ export const CreateIdeaDocument = gql`
     mutation CreateIdea($input: CreateIdeaInput!) {
   createIdea(input: $input) {
     id
-    title
-    body
-    tags
   }
 }
     `;

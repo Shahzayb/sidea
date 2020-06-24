@@ -26,9 +26,6 @@ export const CreateIdea = gql`
   mutation CreateIdea($input: CreateIdeaInput!) {
     createIdea(input: $input) {
       id
-      title
-      body
-      tags
     }
   }
 `;

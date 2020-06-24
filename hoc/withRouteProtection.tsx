@@ -17,8 +17,7 @@ const withRouteProtection = (
         !loading &&
         !authenticated
       ) {
-        const path = router.asPath;
-        router.push(`/login?next=${path}`);
+        router.push(`/login`);
       } else if (
         protectionType === 'UNAUTHENTICATED_ONLY' &&
         !loading &&

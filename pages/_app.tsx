@@ -1,21 +1,21 @@
 // import App from 'next/app'
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import React from 'react';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import 'react-quill/dist/quill.snow.css';
 import '../public/styles/main.css';
 
-import { AuthProvider } from '../context/auth-context';
-import { theme } from '../theme';
+import { AuthProvider, AUTH_TOKEN_KEY } from '../context/auth-context';
+import { ThemeToggleProvider } from '../context/theme-toggle-context';
 
 const client = new ApolloClient({
   uri: 'http://localhost:3000/api/graphql',
   request: (operation) => {
     if (typeof window !== undefined) {
-      const token = localStorage.getItem('sidea_auth_token');
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
       operation.setContext({
         headers: {
           authorization: token ? `Bearer ${token}` : '',
@@ -39,14 +39,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Sidea</title>
       </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+
+      <ThemeToggleProvider>
         <ApolloProvider client={client}>
           <AuthProvider>
             <Component {...pageProps} />
           </AuthProvider>
         </ApolloProvider>
-      </ThemeProvider>
+      </ThemeToggleProvider>
     </>
   );
 }
