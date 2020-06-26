@@ -18,6 +18,7 @@ export type Query = {
   newIdeas: Array<Idea>;
   topIdeas: Array<Idea>;
   idea?: Maybe<Idea>;
+  features: Array<Feature>;
   me: User;
   user?: Maybe<User>;
 };
@@ -38,6 +39,13 @@ export type QueryTopIdeasArgs = {
 
 export type QueryIdeaArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryFeaturesArgs = {
+  idea_id: Scalars['ID'];
+  after_feature_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
 };
 
 
@@ -211,11 +219,11 @@ export type Idea = {
   title: Scalars['String'];
   body: Scalars['String'];
   user: User;
-  tags?: Maybe<Array<Scalars['String']>>;
+  tags: Array<Scalars['String']>;
   likesCount: Scalars['Int'];
   isLikedByMe: Scalars['Boolean'];
   isSavedByMe: Scalars['Boolean'];
-  features?: Maybe<Array<Feature>>;
+  features: Array<Feature>;
   createdAt: Scalars['String'];
 };
 
@@ -379,6 +387,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   newIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryNewIdeasArgs, 'limit'>>;
   topIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryTopIdeasArgs, 'interval' | 'skip' | 'limit'>>;
   idea?: Resolver<Maybe<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryIdeaArgs, 'id'>>;
+  features?: Resolver<Array<ResolversTypes['Feature']>, ParentType, ContextType, RequireFields<QueryFeaturesArgs, 'idea_id' | 'limit'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 }>;
@@ -422,11 +431,11 @@ export type IdeaResolvers<ContextType = Context, ParentType extends ResolversPar
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   likesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   isLikedByMe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isSavedByMe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  features?: Resolver<Maybe<Array<ResolversTypes['Feature']>>, ParentType, ContextType, RequireFields<IdeaFeaturesArgs, 'limit'>>;
+  features?: Resolver<Array<ResolversTypes['Feature']>, ParentType, ContextType, RequireFields<IdeaFeaturesArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;

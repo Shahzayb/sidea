@@ -5,13 +5,8 @@ import {
   Avatar,
   Typography,
   Button,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Divider,
-  makeStyles,
+  Chip,
+  Box,
 } from '@material-ui/core';
 import {
   List as ListIcon,
@@ -22,23 +17,61 @@ import {
   Edit as EditIcon,
   Share as ShareIcon,
 } from '@material-ui/icons';
+import { format as timeago_format } from 'timeago.js';
 import CreateFeatureForm from './Forms/CreateFeatureForm';
+import { useGetIdeaByIdQuery } from '../graphql/client/types';
+import IdeaSkeleton from './Skeletons/IdeaSkeleton';
+import useGutterAllChild from '../hooks/useGutterAllChild';
+import Error from './Errors/Error';
 
-const useStyles = makeStyles((theme) => ({
-  gutterAllChild: {
-    '& > *:not(:last-child)': {
-      marginBottom: theme.spacing(2),
+interface Props {
+  id: string;
+}
+
+function Idea({ id }: Props) {
+  const classes = useGutterAllChild({ spacing: 2 });
+  const { data, loading, error, refetch, networkStatus } = useGetIdeaByIdQuery({
+    variables: {
+      id,
     },
-  },
-}));
+    notifyOnNetworkStatusChange: true,
+  });
 
-function Idea() {
-  const classes = useStyles();
+  if (loading || networkStatus === 4) {
+    return <IdeaSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Error
+        errorType="network"
+        retry={() => {
+          if (refetch) {
+            refetch().catch(console.log);
+          }
+        }}
+      />
+    );
+  }
+
+  if (!data || !data.idea) {
+    return (
+      <Error
+        errorType="no-content"
+        retry={() => {
+          if (refetch) {
+            refetch().catch(console.log);
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Head>
         <title>
-          Store was losing $2,000 per month because of a slow website : Username
+          {data.idea.title} : {data.idea.user.username}
         </title>
       </Head>
       <Paper
@@ -54,60 +87,41 @@ function Idea() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar style={{ marginRight: '0.5rem' }}>H</Avatar>
+            <Avatar
+              style={{ marginRight: '0.5rem' }}
+              alt={data.idea.user.username}
+              src={data.idea.user.avatar}
+            />
             <Typography component="span" variant="subtitle2">
-              username
+              {data.idea.user.username}
             </Typography>
           </div>
           <Typography variant="caption" color="textSecondary">
-            1 hour ago
+            {timeago_format(data.idea.createdAt)}
           </Typography>
         </div>
         <Typography component="h1" variant="h5">
-          Store was losing $2,000 per month because of a slow website
+          {data.idea.title}
         </Typography>
-        <Typography component="div" variant="body1">
-          <p>
-            Three months ago an e-commerce store (doing $20,000+ in sales per
-            month) hired me to redesign their website. The very first thing I
-            noticed was how SLOW the website was. Store owners often neglect
-            this aspect because they are busy with marketing, inventory and
-            shipping. Unfortunately, slow websites do not convert well.
-          </p>
-          <p>
-            Over the past two months, new website's conversion rate has
-            increased by 9% and the bounce rate has improved tremendously. I
-            know that not everyone can code but there are still ways to
-            considerably speed up your website.
-          </p>
-          <p>
-            <br />
-          </p>
-          <ol>
-            <li>
-              Resize images - I can't stress this enough! Many of the clients
-              I've worked with use 6000x4000px professional photos when what
-              they really need is a 600x400px image for product listing.
-            </li>
-            <li>
-              Uninstall and remove all unnecessary plugins and apps - Often
-              times, once a plugin is installed, it's never removed even if it
-              no longer serves a useful function. Take your time and make sure
-              to use only what you really need.
-            </li>
-            <li>
-              Use a content delivery network (CDN) - A content delivery network
-              caches your images on its globally distributed network of servers.
-              If a customer from the middle east visits your website that is
-              hosted in the US, your website will load fast.
-            </li>
-          </ol>
-          <p>
-            Slow websites not only decrease your conversion rates but also rank
-            you lower in google search results.
-          </p>
-        </Typography>
-        {/* <div>Tags</div> */}
+        <Typography
+          component="div"
+          variant="body1"
+          dangerouslySetInnerHTML={{ __html: data.idea.body }}
+        ></Typography>
+        {!!data.idea.tags.length && (
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            {data.idea.tags.map((tag, i) => (
+              <Box key={tag + i} mr={1} mb={1}>
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label={tag}
+                  size="small"
+                />
+              </Box>
+            ))}
+          </div>
+        )}
         <div
           style={{
             display: 'flex',
@@ -140,51 +154,6 @@ function Idea() {
         <div style={{ marginTop: '2rem' }}>
           <CreateFeatureForm />
         </div>
-
-        <Typography style={{ marginTop: '2rem' }} component="h2" variant="h6">
-          Features
-        </Typography>
-
-        <Divider />
-
-        <List>
-          <ListItem divider>
-            <ListItemText primary={<Typography>User can login</Typography>} />
-            <ListItemSecondaryAction>
-              <IconButton size="small" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider>
-            <ListItemText primary={<Typography>User can logout</Typography>} />
-            <ListItemSecondaryAction>
-              <IconButton size="small" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider>
-            <ListItemText
-              primary={<Typography>User can upload picture</Typography>}
-            />
-            <ListItemSecondaryAction>
-              <IconButton size="small" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider>
-            <ListItemText
-              primary={<Typography>User can like picture</Typography>}
-            />
-            <ListItemSecondaryAction>
-              <IconButton size="small" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
       </Paper>
     </>
   );

@@ -6,6 +6,13 @@ export const GetIdeaById = gql`
       id
       title
       body
+      tags
+      createdAt
+      user {
+        id
+        username
+        avatar
+      }
     }
   }
 `;

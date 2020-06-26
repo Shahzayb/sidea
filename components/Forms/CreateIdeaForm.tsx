@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress, Box } from '@material-ui/core';
 
 import {
   CreateFeatureInput,
@@ -8,12 +8,15 @@ import {
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import TagsInput from './Fields/TagsInput';
-import MultiFeatureInput from './Fields/MultiFeatureInput';
+import MultiFeaturesInput from './Fields/MultiFeaturesInput';
 import RichTextEditor from './Fields/RichTextEditor';
 import MultilineTextField from './Fields/MultilineTextField';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
 import { Alert } from '@material-ui/lab';
 import { useRouter } from 'next/router';
+import Link from '../Link';
+import useMarginRightChild from '../../hooks/useMarginRightChild';
+import ResponsiveButton from '../ResponsiveButton';
 
 const initialValues = {
   title: '',
@@ -72,7 +75,8 @@ const validationSchema = yup.object().shape({
 });
 
 function CreateIdeaForm() {
-  const classes = useGutterAllChild({ spacing: 3 });
+  const gutterClx = useGutterAllChild({ spacing: 3 });
+  const marginClx = useMarginRightChild();
   const [createIdeaMutation, { loading, error }] = useCreateIdeaMutation();
   const router = useRouter();
 
@@ -106,33 +110,31 @@ function CreateIdeaForm() {
   });
 
   return (
-    <div className={classes.gutterAllChild}>
-      <div>
-        {!loading && error?.networkError && (
-          <Alert
-            action={
-              <Button
-                onClick={() => {
-                  formik.submitForm();
-                }}
-                color="inherit"
-                size="small"
-              >
-                retry
-              </Button>
-            }
-            severity="error"
-          >
-            Ooops! Something went wrong.
-          </Alert>
-        )}
-      </div>
+    <div className={gutterClx.gutterAllChild}>
+      {!loading && error?.networkError && (
+        <Alert
+          action={
+            <Button
+              onClick={() => {
+                formik.submitForm();
+              }}
+              color="inherit"
+              size="small"
+            >
+              retry
+            </Button>
+          }
+          severity="error"
+        >
+          Ooops! Something went wrong.
+        </Alert>
+      )}
       <form
         onSubmit={formik.handleSubmit}
         action=""
         noValidate
         autoComplete="off"
-        className={classes.gutterAllChild}
+        className={gutterClx.gutterAllChild}
       >
         <MultilineTextField
           {...formik.getFieldProps('title')}
@@ -167,24 +169,39 @@ function CreateIdeaForm() {
           errors={formik.errors.tags}
         />
 
-        <MultiFeatureInput
-          onChange={(features: CreateFeatureInput[]) => {
-            formik.setFieldValue('features', features);
+        <MultiFeaturesInput
+          onChange={(value: CreateFeatureInput[]) => {
+            formik.setFieldValue('features', value);
           }}
+          value={formik.values.features}
+          errors={formik.errors.features}
         />
-
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={formik.isSubmitting || !formik.isValid}
-          fullWidth
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          className={marginClx.root}
         >
-          Post{' '}
-          {formik.isSubmitting && (
-            <CircularProgress size={16} style={{ marginLeft: '10px' }} />
-          )}
-        </Button>
+          <Link underline="none" href="/">
+            <ResponsiveButton
+              variant="outlined"
+              color="primary"
+              disabled={formik.isSubmitting}
+            >
+              Cancel
+            </ResponsiveButton>
+          </Link>
+          <ResponsiveButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={formik.isSubmitting || !formik.isValid}
+          >
+            Post{' '}
+            {formik.isSubmitting && (
+              <CircularProgress size={16} style={{ marginLeft: '10px' }} />
+            )}
+          </ResponsiveButton>
+        </Box>
       </form>
     </div>
   );

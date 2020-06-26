@@ -17,6 +17,7 @@ export type Query = {
   newIdeas: Array<Idea>;
   topIdeas: Array<Idea>;
   idea?: Maybe<Idea>;
+  features: Array<Feature>;
   me: User;
   user?: Maybe<User>;
 };
@@ -37,6 +38,13 @@ export type QueryTopIdeasArgs = {
 
 export type QueryIdeaArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryFeaturesArgs = {
+  idea_id: Scalars['ID'];
+  after_feature_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
 };
 
 
@@ -210,11 +218,11 @@ export type Idea = {
   title: Scalars['String'];
   body: Scalars['String'];
   user: User;
-  tags?: Maybe<Array<Scalars['String']>>;
+  tags: Array<Scalars['String']>;
   likesCount: Scalars['Int'];
   isLikedByMe: Scalars['Boolean'];
   isSavedByMe: Scalars['Boolean'];
-  features?: Maybe<Array<Feature>>;
+  features: Array<Feature>;
   createdAt: Scalars['String'];
 };
 
@@ -305,7 +313,11 @@ export type GetIdeaByIdQuery = (
   { __typename?: 'Query' }
   & { idea?: Maybe<(
     { __typename?: 'Idea' }
-    & Pick<Idea, 'id' | 'title' | 'body'>
+    & Pick<Idea, 'id' | 'title' | 'body' | 'tags' | 'createdAt'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'avatar'>
+    ) }
   )> }
 );
 
@@ -429,6 +441,13 @@ export const GetIdeaByIdDocument = gql`
     id
     title
     body
+    tags
+    createdAt
+    user {
+      id
+      username
+      avatar
+    }
   }
 }
     `;

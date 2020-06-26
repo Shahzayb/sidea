@@ -2,11 +2,12 @@ import React from 'react';
 import { Skeleton } from '@material-ui/lab';
 
 import useGutterAllChild from '../../hooks/useGutterAllChild';
+import { Box } from '@material-ui/core';
 
 function CreateIdeaFormSkeleton() {
   const classes = useGutterAllChild({ spacing: 3 });
   return (
-    <div className={classes.gutterAllChild}>
+    <Box mt={3} className={classes.gutterAllChild}>
       <Skeleton variant="rect" component="div" height={40} />
       <Skeleton variant="rect" component="div" height={80} />
       <Skeleton variant="rect" component="div" height={40} />
@@ -19,7 +20,7 @@ function CreateIdeaFormSkeleton() {
         </div>
       </div>
       <Skeleton variant="rect" component="div" height={40} />
-    </div>
+    </Box>
   );
 }
 

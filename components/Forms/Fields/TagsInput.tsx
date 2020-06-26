@@ -1,13 +1,8 @@
 import React from 'react';
 import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
-import {
-  TextField,
-  Chip,
-  makeStyles,
-  Tooltip,
-  withStyles,
-} from '@material-ui/core';
+import { TextField, Chip, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import ErrorTooltip from '../../ErrorTooltip';
 
 interface CustonInputProps {
   onKeyDown?: (event: object) => void;
@@ -39,18 +34,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-const ErrorTooltip = withStyles((theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.error.main,
-    color: theme.palette.error.contrastText,
-    boxShadow: theme.shadows[1],
-    fontSize: 14,
-  },
-  arrow: {
-    color: theme.palette.error.main,
-  },
-}))(Tooltip);
 
 function TagsInput({ value: tags, onChange: setTags, errors }: Props) {
   const classes = useStyles();

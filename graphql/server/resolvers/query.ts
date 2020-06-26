@@ -1,7 +1,7 @@
 import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import validator from 'validator';
 import { Interval, QueryResolvers } from '../types';
-import { Idea } from '@prisma/client';
+import { Idea, FindManyFeatureArgs } from '@prisma/client';
 
 export const Query: QueryResolvers = {
   me(_, __, { user }) {
@@ -84,6 +84,84 @@ export const Query: QueryResolvers = {
     });
 
     return ideas;
+  },
+  async features(_, input, { prisma }) {
+    const errors: { param: keyof typeof input; msg: string }[] = [];
+
+    input.after_feature_id = input.after_feature_id?.trim();
+    input.idea_id = input.idea_id.trim();
+
+    // check if idea_id is valid
+    if (
+      !validator.isInt(input.idea_id.trim(), {
+        allow_leading_zeroes: true,
+      })
+    ) {
+      errors.push({
+        param: 'idea_id',
+        msg: 'idea_id is invalid.',
+      });
+    } else {
+      const ideaId = validator.toInt(input.idea_id);
+
+      const ideaCount = await prisma.idea.count({
+        where: {
+          id: ideaId,
+        },
+      });
+
+      if (!ideaCount) {
+        errors.push({
+          param: 'idea_id',
+          msg: 'idea does not exist.',
+        });
+      }
+    }
+
+    // validate after_feature_id
+    if (
+      input.after_feature_id &&
+      !validator.isInt(input.after_feature_id, {
+        allow_leading_zeroes: true,
+      })
+    ) {
+      errors.push({
+        param: 'after_feature_id',
+        msg: 'after_feature_id is invalid.',
+      });
+    }
+    if (input.limit <= 0) {
+      errors.push({
+        param: 'limit',
+        msg: 'limit should be greater than 0.',
+      });
+    }
+
+    if (errors.length) {
+      throw new UserInputError('invalid data', {
+        errors,
+      });
+    }
+
+    const findManyFeatureArgs: FindManyFeatureArgs = {
+      where: {
+        ideaId: validator.toInt(input.idea_id),
+        id: {
+          gt: input.after_feature_id
+            ? validator.toInt(input.after_feature_id)
+            : undefined,
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+      // take is limit
+      take: input.limit,
+    };
+
+    const features = await prisma.feature.findMany(findManyFeatureArgs);
+
+    return features;
   },
   async topIdeas(_, input, { prisma }) {
     const errors: { param: keyof typeof input; msg: string }[] = [];

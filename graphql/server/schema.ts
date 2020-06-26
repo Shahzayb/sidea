@@ -5,6 +5,7 @@ const typeDefs = gql`
     newIdeas(after_id: ID, limit: Int!): [Idea!]!
     topIdeas(interval: INTERVAL!, skip: Int = 0, limit: Int!): [Idea!]!
     idea(id: ID!): Idea
+    features(idea_id: ID!, after_feature_id: ID, limit: Int!): [Feature!]!
     me: User!
     user(id: ID!): User
   }
@@ -96,11 +97,11 @@ const typeDefs = gql`
     title: String!
     body: String!
     user: User!
-    tags: [String!]
+    tags: [String!]!
     likesCount: Int!
     isLikedByMe: Boolean!
     isSavedByMe: Boolean!
-    features(after_id: ID, limit: Int!): [Feature!]
+    features(after_id: ID, limit: Int!): [Feature!]!
     createdAt: String!
   }
 
