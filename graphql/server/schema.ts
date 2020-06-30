@@ -2,10 +2,14 @@ import { gql } from 'apollo-server-micro';
 
 const typeDefs = gql`
   type Query {
-    newIdeas(after_id: ID, limit: Int!): [Idea!]!
-    topIdeas(interval: INTERVAL!, skip: Int = 0, limit: Int!): [Idea!]!
+    newIdeas(after_id: ID, limit: Int!): IdeaPageResponse!
+    topIdeas(interval: INTERVAL!, skip: Int = 0, limit: Int!): IdeaPageResponse!
     idea(id: ID!): Idea
-    features(idea_id: ID!, after_feature_id: ID, limit: Int!): [Feature!]!
+    features(
+      idea_id: ID!
+      after_feature_id: ID
+      limit: Int!
+    ): FeaturePageResponse!
     me: User!
     user(id: ID!): User
   }
@@ -75,6 +79,21 @@ const typeDefs = gql`
 
   # models
 
+  type IdeaPageResponse {
+    page: Page!
+    entry: [Idea!]!
+  }
+
+  type FeaturePageResponse {
+    page: Page!
+    entry: [Feature!]!
+  }
+
+  type Page {
+    cursor: ID
+    hasNextPage: Boolean!
+  }
+
   type AuthResponse {
     token: String!
     user: User!
@@ -86,9 +105,9 @@ const typeDefs = gql`
     username: String!
     email: String
     avatar: String!
-    ideas(after_id: ID, limit: Int!): [Idea!]!
-    savedIdeas(after_id: ID, limit: Int!): [Idea!]!
-    likedIdeas(after_id: ID, limit: Int!): [Idea!]!
+    ideas(after_id: ID, limit: Int!): IdeaPageResponse!
+    savedIdeas(after_id: ID, limit: Int!): IdeaPageResponse!
+    likedIdeas(after_id: ID, limit: Int!): IdeaPageResponse!
     createdAt: String!
   }
 
@@ -101,7 +120,7 @@ const typeDefs = gql`
     likesCount: Int!
     isLikedByMe: Boolean!
     isSavedByMe: Boolean!
-    features(after_id: ID, limit: Int!): [Feature!]!
+    features(after_id: ID, limit: Int!): FeaturePageResponse!
     createdAt: String!
   }
 

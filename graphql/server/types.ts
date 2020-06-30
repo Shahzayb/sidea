@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { User as CustomUser, Feature as CustomFeature, Idea as CustomIdea, Like as CustomLike, Save as CustomSave, Tag as CustomTag } from '@prisma/client';
+import { FeaturePageResponse as CustomFeaturePageResponse, IdeaPageResponse as CustomIdeaPageResponse, Page as CustomPage } from './mappers/models';
 import { Context } from '../../pages/api/graphql';
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -15,10 +16,10 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  newIdeas: Array<Idea>;
-  topIdeas: Array<Idea>;
+  newIdeas: IdeaPageResponse;
+  topIdeas: IdeaPageResponse;
   idea?: Maybe<Idea>;
-  features: Array<Feature>;
+  features: FeaturePageResponse;
   me: User;
   user?: Maybe<User>;
 };
@@ -176,6 +177,24 @@ export enum Interval {
   AllTime = 'ALL_TIME'
 }
 
+export type IdeaPageResponse = {
+  __typename?: 'IdeaPageResponse';
+  page: Page;
+  entry: Array<Idea>;
+};
+
+export type FeaturePageResponse = {
+  __typename?: 'FeaturePageResponse';
+  page: Page;
+  entry: Array<Feature>;
+};
+
+export type Page = {
+  __typename?: 'Page';
+  cursor?: Maybe<Scalars['ID']>;
+  hasNextPage: Scalars['Boolean'];
+};
+
 export type AuthResponse = {
   __typename?: 'AuthResponse';
   token: Scalars['String'];
@@ -189,9 +208,9 @@ export type User = {
   username: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   avatar: Scalars['String'];
-  ideas: Array<Idea>;
-  savedIdeas: Array<Idea>;
-  likedIdeas: Array<Idea>;
+  ideas: IdeaPageResponse;
+  savedIdeas: IdeaPageResponse;
+  likedIdeas: IdeaPageResponse;
   createdAt: Scalars['String'];
 };
 
@@ -223,7 +242,7 @@ export type Idea = {
   likesCount: Scalars['Int'];
   isLikedByMe: Scalars['Boolean'];
   isSavedByMe: Scalars['Boolean'];
-  features: Array<Feature>;
+  features: FeaturePageResponse;
   createdAt: Scalars['String'];
 };
 
@@ -351,6 +370,9 @@ export type ResolversTypes = ResolversObject<{
   UpdateIdeaInput: UpdateIdeaInput;
   UpdateFeatureInput: UpdateFeatureInput;
   INTERVAL: Interval;
+  IdeaPageResponse: ResolverTypeWrapper<CustomIdeaPageResponse>;
+  FeaturePageResponse: ResolverTypeWrapper<CustomFeaturePageResponse>;
+  Page: ResolverTypeWrapper<CustomPage>;
   AuthResponse: ResolverTypeWrapper<Omit<AuthResponse, 'user'> & { user: ResolversTypes['User'] }>;
   User: ResolverTypeWrapper<CustomUser>;
   Idea: ResolverTypeWrapper<CustomIdea>;
@@ -375,6 +397,9 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateIdeaInput: UpdateIdeaInput;
   UpdateFeatureInput: UpdateFeatureInput;
   INTERVAL: Interval;
+  IdeaPageResponse: CustomIdeaPageResponse;
+  FeaturePageResponse: CustomFeaturePageResponse;
+  Page: CustomPage;
   AuthResponse: Omit<AuthResponse, 'user'> & { user: ResolversParentTypes['User'] };
   User: CustomUser;
   Idea: CustomIdea;
@@ -384,10 +409,10 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  newIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryNewIdeasArgs, 'limit'>>;
-  topIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryTopIdeasArgs, 'interval' | 'skip' | 'limit'>>;
+  newIdeas?: Resolver<ResolversTypes['IdeaPageResponse'], ParentType, ContextType, RequireFields<QueryNewIdeasArgs, 'limit'>>;
+  topIdeas?: Resolver<ResolversTypes['IdeaPageResponse'], ParentType, ContextType, RequireFields<QueryTopIdeasArgs, 'interval' | 'skip' | 'limit'>>;
   idea?: Resolver<Maybe<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryIdeaArgs, 'id'>>;
-  features?: Resolver<Array<ResolversTypes['Feature']>, ParentType, ContextType, RequireFields<QueryFeaturesArgs, 'idea_id' | 'limit'>>;
+  features?: Resolver<ResolversTypes['FeaturePageResponse'], ParentType, ContextType, RequireFields<QueryFeaturesArgs, 'idea_id' | 'limit'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 }>;
@@ -407,6 +432,24 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   unlikeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationUnlikeIdeaArgs, 'id'>>;
 }>;
 
+export type IdeaPageResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IdeaPageResponse'] = ResolversParentTypes['IdeaPageResponse']> = ResolversObject<{
+  page?: Resolver<ResolversTypes['Page'], ParentType, ContextType>;
+  entry?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
+export type FeaturePageResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FeaturePageResponse'] = ResolversParentTypes['FeaturePageResponse']> = ResolversObject<{
+  page?: Resolver<ResolversTypes['Page'], ParentType, ContextType>;
+  entry?: Resolver<Array<ResolversTypes['Feature']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
+export type PageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Page'] = ResolversParentTypes['Page']> = ResolversObject<{
+  cursor?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type AuthResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -419,9 +462,9 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   avatar?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  ideas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserIdeasArgs, 'limit'>>;
-  savedIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserSavedIdeasArgs, 'limit'>>;
-  likedIdeas?: Resolver<Array<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<UserLikedIdeasArgs, 'limit'>>;
+  ideas?: Resolver<ResolversTypes['IdeaPageResponse'], ParentType, ContextType, RequireFields<UserIdeasArgs, 'limit'>>;
+  savedIdeas?: Resolver<ResolversTypes['IdeaPageResponse'], ParentType, ContextType, RequireFields<UserSavedIdeasArgs, 'limit'>>;
+  likedIdeas?: Resolver<ResolversTypes['IdeaPageResponse'], ParentType, ContextType, RequireFields<UserLikedIdeasArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
@@ -435,7 +478,7 @@ export type IdeaResolvers<ContextType = Context, ParentType extends ResolversPar
   likesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   isLikedByMe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isSavedByMe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  features?: Resolver<Array<ResolversTypes['Feature']>, ParentType, ContextType, RequireFields<IdeaFeaturesArgs, 'limit'>>;
+  features?: Resolver<ResolversTypes['FeaturePageResponse'], ParentType, ContextType, RequireFields<IdeaFeaturesArgs, 'limit'>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
@@ -468,6 +511,9 @@ export type SaveResolvers<ContextType = Context, ParentType extends ResolversPar
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  IdeaPageResponse?: IdeaPageResponseResolvers<ContextType>;
+  FeaturePageResponse?: FeaturePageResponseResolvers<ContextType>;
+  Page?: PageResolvers<ContextType>;
   AuthResponse?: AuthResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Idea?: IdeaResolvers<ContextType>;

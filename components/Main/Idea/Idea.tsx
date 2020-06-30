@@ -18,11 +18,13 @@ import {
   Share as ShareIcon,
 } from '@material-ui/icons';
 import { format as timeago_format } from 'timeago.js';
-import CreateFeatureForm from './Forms/CreateFeatureForm';
-import { useGetIdeaByIdQuery } from '../graphql/client/types';
-import IdeaSkeleton from './Skeletons/IdeaSkeleton';
-import useGutterAllChild from '../hooks/useGutterAllChild';
-import Error from './Errors/Error';
+import CreateFeatureForm from '../../Forms/CreateFeatureForm';
+import { useGetIdeaByIdQuery } from '../../../graphql/client/types';
+import IdeaSkeleton from '../../Skeletons/IdeaSkeleton';
+import useGutterAllChild from '../../../hooks/useGutterAllChild';
+import Error from '../../Errors/Error';
+import number from '../../../utils/number';
+import LikeButton from './Menu/LikeButton';
 
 interface Props {
   id: string;
@@ -122,35 +124,37 @@ function Idea({ id }: Props) {
             ))}
           </div>
         )}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            marginTop: '2rem',
-          }}
-        >
-          <Button size="small" startIcon={<ListIcon />}>
-            12 Features
-          </Button>
-          <Button size="small" startIcon={<FavoriteIcon />}>
-            12 Likes
-          </Button>
-          <Button size="small" startIcon={<SaveIcon />}>
-            save
-          </Button>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Button size="small" startIcon={<ListIcon />}>
+              12 Features
+            </Button>
+            <LikeButton />
+            <Button size="small" startIcon={<SaveIcon />}>
+              save
+            </Button>
 
-          <Button size="small" startIcon={<ShareIcon />}>
-            share
-          </Button>
+            <Button size="small" startIcon={<ShareIcon />}>
+              share
+            </Button>
 
-          <Button size="small" startIcon={<DeleteIcon />}>
-            delete
-          </Button>
-          <Button size="small" startIcon={<EditIcon />}>
-            edit
-          </Button>
-        </div>
+            <Button size="small" startIcon={<DeleteIcon />}>
+              delete
+            </Button>
+            <Button size="small" startIcon={<EditIcon />}>
+              edit
+            </Button>
+          </div>
+          <Typography component="span" variant="overline">
+            {number.format(199948)} likes
+          </Typography>
+        </Box>
         <div style={{ marginTop: '2rem' }}>
           <CreateFeatureForm />
         </div>

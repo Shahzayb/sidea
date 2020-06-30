@@ -83,7 +83,15 @@ export const Query: QueryResolvers = {
       },
     });
 
-    return ideas;
+    const response = {
+      entry: ideas,
+      page: {
+        cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
+        hasNextPage: !!ideas.length,
+      },
+    };
+
+    return response;
   },
   async features(_, input, { prisma }) {
     const errors: { param: keyof typeof input; msg: string }[] = [];
@@ -161,7 +169,17 @@ export const Query: QueryResolvers = {
 
     const features = await prisma.feature.findMany(findManyFeatureArgs);
 
-    return features;
+    const response = {
+      entry: features,
+      page: {
+        cursor: features.length
+          ? features[features.length - 1].id
+          : input.after_feature_id,
+        hasNextPage: !!features.length,
+      },
+    };
+
+    return response;
   },
   async topIdeas(_, input, { prisma }) {
     const errors: { param: keyof typeof input; msg: string }[] = [];
@@ -186,7 +204,6 @@ export const Query: QueryResolvers = {
       });
     }
 
-    // interval
     const QUERY = `
         select Idea.id, Idea.title, Idea.body, Idea.userId, Idea.createdAt, count(sidea.Like.id) as likeCount 
         from Idea left join sidea.Like on Idea.id = sidea.Like.ideaId
@@ -202,6 +219,14 @@ export const Query: QueryResolvers = {
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);
 
-    return ideas;
+    const response = {
+      entry: ideas,
+      page: {
+        cursor: input.skip + ideas.length,
+        hasNextPage: !!ideas.length,
+      },
+    };
+
+    return response;
   },
 };

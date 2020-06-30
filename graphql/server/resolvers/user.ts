@@ -54,7 +54,15 @@ export const User: UserResolvers = {
 
     const ideas = await prisma.idea.findMany(findManyIdeaArgs);
 
-    return ideas;
+    const response = {
+      entry: ideas,
+      page: {
+        cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
+        hasNextPage: !!ideas.length,
+      },
+    };
+
+    return response;
   },
   async savedIdeas(user, input, { prisma }) {
     const errors: { param: keyof typeof input; msg: string }[] = [];
@@ -94,7 +102,15 @@ export const User: UserResolvers = {
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);
 
-    return ideas;
+    const response = {
+      entry: ideas,
+      page: {
+        cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
+        hasNextPage: !!ideas.length,
+      },
+    };
+
+    return response;
   },
   async likedIdeas(user, input, { prisma }) {
     const errors: { param: keyof typeof input; msg: string }[] = [];
@@ -134,6 +150,14 @@ export const User: UserResolvers = {
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);
 
-    return ideas;
+    const response = {
+      entry: ideas,
+      page: {
+        cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
+        hasNextPage: !!ideas.length,
+      },
+    };
+
+    return response;
   },
 };

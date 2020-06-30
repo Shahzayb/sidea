@@ -67,7 +67,17 @@ export const Idea: IdeaResolvers = {
 
     const features = await prisma.feature.findMany(findManyFeatureArgs);
 
-    return features;
+    const response = {
+      entry: features,
+      page: {
+        cursor: features.length
+          ? features[features.length - 1].id
+          : input.after_id,
+        hasNextPage: !!features.length,
+      },
+    };
+
+    return response;
   },
   async likesCount(idea, _, { prisma }) {
     const count = await prisma.like.count({

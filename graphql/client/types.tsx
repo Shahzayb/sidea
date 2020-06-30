@@ -14,10 +14,10 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  newIdeas: Array<Idea>;
-  topIdeas: Array<Idea>;
+  newIdeas: IdeaPageResponse;
+  topIdeas: IdeaPageResponse;
   idea?: Maybe<Idea>;
-  features: Array<Feature>;
+  features: FeaturePageResponse;
   me: User;
   user?: Maybe<User>;
 };
@@ -175,6 +175,24 @@ export enum Interval {
   AllTime = 'ALL_TIME'
 }
 
+export type IdeaPageResponse = {
+  __typename?: 'IdeaPageResponse';
+  page: Page;
+  entry: Array<Idea>;
+};
+
+export type FeaturePageResponse = {
+  __typename?: 'FeaturePageResponse';
+  page: Page;
+  entry: Array<Feature>;
+};
+
+export type Page = {
+  __typename?: 'Page';
+  cursor?: Maybe<Scalars['ID']>;
+  hasNextPage: Scalars['Boolean'];
+};
+
 export type AuthResponse = {
   __typename?: 'AuthResponse';
   token: Scalars['String'];
@@ -188,9 +206,9 @@ export type User = {
   username: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   avatar: Scalars['String'];
-  ideas: Array<Idea>;
-  savedIdeas: Array<Idea>;
-  likedIdeas: Array<Idea>;
+  ideas: IdeaPageResponse;
+  savedIdeas: IdeaPageResponse;
+  likedIdeas: IdeaPageResponse;
   createdAt: Scalars['String'];
 };
 
@@ -222,7 +240,7 @@ export type Idea = {
   likesCount: Scalars['Int'];
   isLikedByMe: Scalars['Boolean'];
   isSavedByMe: Scalars['Boolean'];
-  features: Array<Feature>;
+  features: FeaturePageResponse;
   createdAt: Scalars['String'];
 };
 
@@ -329,6 +347,30 @@ export type GetMyProfileQuery = (
   & { me: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'email'>
+  ) }
+);
+
+export type GetNewIdeasQueryVariables = Exact<{
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetNewIdeasQuery = (
+  { __typename?: 'Query' }
+  & { newIdeas: (
+    { __typename?: 'IdeaPageResponse' }
+    & { page: (
+      { __typename?: 'Page' }
+      & Pick<Page, 'cursor' | 'hasNextPage'>
+    ), entry: Array<(
+      { __typename?: 'Idea' }
+      & Pick<Idea, 'id' | 'title' | 'createdAt'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'avatar'>
+      ) }
+    )> }
   ) }
 );
 
@@ -513,3 +555,50 @@ export function useGetMyProfileLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
 export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery>;
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileQueryResult = ApolloReactCommon.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
+export const GetNewIdeasDocument = gql`
+    query GetNewIdeas($after_id: ID, $limit: Int!) {
+  newIdeas(after_id: $after_id, limit: $limit) {
+    page {
+      cursor
+      hasNextPage
+    }
+    entry {
+      id
+      title
+      createdAt
+      user {
+        id
+        username
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetNewIdeasQuery__
+ *
+ * To run a query within a React component, call `useGetNewIdeasQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewIdeasQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewIdeasQuery({
+ *   variables: {
+ *      after_id: // value for 'after_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetNewIdeasQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNewIdeasQuery, GetNewIdeasQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetNewIdeasQuery, GetNewIdeasQueryVariables>(GetNewIdeasDocument, baseOptions);
+      }
+export function useGetNewIdeasLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNewIdeasQuery, GetNewIdeasQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetNewIdeasQuery, GetNewIdeasQueryVariables>(GetNewIdeasDocument, baseOptions);
+        }
+export type GetNewIdeasQueryHookResult = ReturnType<typeof useGetNewIdeasQuery>;
+export type GetNewIdeasLazyQueryHookResult = ReturnType<typeof useGetNewIdeasLazyQuery>;
+export type GetNewIdeasQueryResult = ApolloReactCommon.QueryResult<GetNewIdeasQuery, GetNewIdeasQueryVariables>;
