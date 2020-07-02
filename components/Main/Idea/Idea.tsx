@@ -22,9 +22,8 @@ import CreateFeatureForm from '../../Forms/CreateFeatureForm';
 import { useGetIdeaByIdQuery } from '../../../graphql/client/types';
 import IdeaSkeleton from '../../Skeletons/IdeaSkeleton';
 import useGutterAllChild from '../../../hooks/useGutterAllChild';
-import Error from '../../Errors/Error';
+import CustomError from '../../Errors/Error';
 import number from '../../../utils/number';
-import LikeButton from './Menu/LikeButton';
 
 interface Props {
   id: string;
@@ -45,7 +44,7 @@ function Idea({ id }: Props) {
 
   if (error) {
     return (
-      <Error
+      <CustomError
         errorType="network"
         retry={() => {
           if (refetch) {
@@ -58,7 +57,7 @@ function Idea({ id }: Props) {
 
   if (!data || !data.idea) {
     return (
-      <Error
+      <CustomError
         errorType="no-content"
         retry={() => {
           if (refetch) {
@@ -135,7 +134,9 @@ function Idea({ id }: Props) {
             <Button size="small" startIcon={<ListIcon />}>
               12 Features
             </Button>
-            <LikeButton />
+            <Button size="small" startIcon={<FavoriteIcon />}>
+              Like
+            </Button>
             <Button size="small" startIcon={<SaveIcon />}>
               save
             </Button>

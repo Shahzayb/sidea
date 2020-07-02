@@ -374,6 +374,31 @@ export type GetNewIdeasQuery = (
   ) }
 );
 
+export type GetTopIdeasQueryVariables = Exact<{
+  interval: Interval;
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetTopIdeasQuery = (
+  { __typename?: 'Query' }
+  & { topIdeas: (
+    { __typename?: 'IdeaPageResponse' }
+    & { page: (
+      { __typename?: 'Page' }
+      & Pick<Page, 'cursor' | 'hasNextPage'>
+    ), entry: Array<(
+      { __typename?: 'Idea' }
+      & Pick<Idea, 'id' | 'title' | 'createdAt'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'avatar'>
+      ) }
+    )> }
+  ) }
+);
+
 
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
@@ -602,3 +627,51 @@ export function useGetNewIdeasLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type GetNewIdeasQueryHookResult = ReturnType<typeof useGetNewIdeasQuery>;
 export type GetNewIdeasLazyQueryHookResult = ReturnType<typeof useGetNewIdeasLazyQuery>;
 export type GetNewIdeasQueryResult = ApolloReactCommon.QueryResult<GetNewIdeasQuery, GetNewIdeasQueryVariables>;
+export const GetTopIdeasDocument = gql`
+    query GetTopIdeas($interval: INTERVAL!, $skip: Int!, $limit: Int!) {
+  topIdeas(interval: $interval, skip: $skip, limit: $limit) {
+    page {
+      cursor
+      hasNextPage
+    }
+    entry {
+      id
+      title
+      createdAt
+      user {
+        id
+        username
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTopIdeasQuery__
+ *
+ * To run a query within a React component, call `useGetTopIdeasQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTopIdeasQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTopIdeasQuery({
+ *   variables: {
+ *      interval: // value for 'interval'
+ *      skip: // value for 'skip'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetTopIdeasQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetTopIdeasQuery, GetTopIdeasQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetTopIdeasQuery, GetTopIdeasQueryVariables>(GetTopIdeasDocument, baseOptions);
+      }
+export function useGetTopIdeasLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetTopIdeasQuery, GetTopIdeasQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetTopIdeasQuery, GetTopIdeasQueryVariables>(GetTopIdeasDocument, baseOptions);
+        }
+export type GetTopIdeasQueryHookResult = ReturnType<typeof useGetTopIdeasQuery>;
+export type GetTopIdeasLazyQueryHookResult = ReturnType<typeof useGetTopIdeasLazyQuery>;
+export type GetTopIdeasQueryResult = ApolloReactCommon.QueryResult<GetTopIdeasQuery, GetTopIdeasQueryVariables>;

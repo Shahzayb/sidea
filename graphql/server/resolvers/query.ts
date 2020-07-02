@@ -213,7 +213,7 @@ export const Query: QueryResolvers = {
             ? `having Idea.createdAt > DATE_SUB(NOW(), INTERVAL 1 ${input.interval})`
             : ''
         }
-        order by likeCount desc
+        order by likeCount desc, Idea.id desc
         limit ${input.skip}, ${input.limit}
         `;
 

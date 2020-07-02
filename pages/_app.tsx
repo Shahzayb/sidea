@@ -9,9 +9,12 @@ import '../public/styles/main.css';
 
 import { AuthProvider, AUTH_TOKEN_KEY } from '../context/auth-context';
 import { ThemeToggleProvider } from '../context/theme-toggle-context';
+import { IdeaCategoryProvider } from '../context/idea-category-context';
+
+import { apolloClientUri } from '../client-env';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3000/api/graphql',
+  uri: apolloClientUri,
   request: (operation) => {
     if (typeof window !== undefined) {
       const token = localStorage.getItem(AUTH_TOKEN_KEY);
@@ -43,7 +46,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeToggleProvider>
         <ApolloProvider client={client}>
           <AuthProvider>
-            <Component {...pageProps} />
+            <IdeaCategoryProvider>
+              <Component {...pageProps} />
+            </IdeaCategoryProvider>
           </AuthProvider>
         </ApolloProvider>
       </ThemeToggleProvider>

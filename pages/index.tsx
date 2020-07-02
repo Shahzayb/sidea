@@ -5,16 +5,27 @@ import withFooter from '../hoc/withFooter';
 import withLayout from '../hoc/withLayout';
 import Welcome from '../components/Welcome';
 import NewIdeas from '../components/Main/Idea/NewIdeas';
+import IdeaCategoryTab from '../components/Main/Idea/IdeaCategoryTab';
+import { useIdeaCategory, Category } from '../context/idea-category-context';
+import TopIdeas from '../components/Main/Idea/TopIdeas';
+import { useAuth } from '../context/auth-context';
 
 const Index = () => {
+  const { category, interval } = useIdeaCategory();
+  const { authenticated, loading } = useAuth();
   return (
     <div>
-      <Welcome />
+      {!authenticated && !loading && <Welcome />}
       <main>
-        {/* ideas list section */}
         <section>
           <Box my={2}>
-            <NewIdeas />
+            <IdeaCategoryTab />
+          </Box>
+          <Box my={2}>
+            {category === Category.NEW_IDEAS && <NewIdeas />}
+            {category === Category.TOP_IDEAS && (
+              <TopIdeas interval={interval} />
+            )}
           </Box>
         </section>
       </main>

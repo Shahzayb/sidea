@@ -49,3 +49,24 @@ export const GetNewIdeas = gql`
     }
   }
 `;
+
+export const GetTopIdeas = gql`
+  query GetTopIdeas($interval: INTERVAL!, $skip: Int!, $limit: Int!) {
+    topIdeas(interval: $interval, skip: $skip, limit: $limit) {
+      page {
+        cursor
+        hasNextPage
+      }
+      entry {
+        id
+        title
+        createdAt
+        user {
+          id
+          username
+          avatar
+        }
+      }
+    }
+  }
+`;
