@@ -171,6 +171,7 @@ export type UpdateFeatureInput = {
 export enum Interval {
   Day = 'DAY',
   Week = 'WEEK',
+  Month = 'MONTH',
   Year = 'YEAR',
   AllTime = 'ALL_TIME'
 }
@@ -348,6 +349,19 @@ export type GetMyProfileQuery = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'email'>
   ) }
+);
+
+export type GetUserByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetUserByIdQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'createdAt'>
+  )> }
 );
 
 export type GetNewIdeasQueryVariables = Exact<{
@@ -580,6 +594,43 @@ export function useGetMyProfileLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
 export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery>;
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileQueryResult = ApolloReactCommon.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
+export const GetUserByIdDocument = gql`
+    query GetUserById($id: ID!) {
+  user(id: $id) {
+    id
+    name
+    username
+    avatar
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetUserByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserByIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, baseOptions);
+      }
+export function useGetUserByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, baseOptions);
+        }
+export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
+export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
+export type GetUserByIdQueryResult = ApolloReactCommon.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
 export const GetNewIdeasDocument = gql`
     query GetNewIdeas($after_id: ID, $limit: Int!) {
   newIdeas(after_id: $after_id, limit: $limit) {

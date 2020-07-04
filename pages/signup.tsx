@@ -10,7 +10,7 @@ import SignupForm from '../components/Forms/SignupForm';
 import SignupFormSkeleton from '../components/Skeletons/SignupFormSkeleton';
 import withRouteProtection from '../hoc/withRouteProtection';
 
-function Signup() {
+function Index() {
   const classes = useGutterAllChild({ spacing: 3 });
   const { loading, authenticated } = useAuth();
 
@@ -56,4 +56,4 @@ function Signup() {
   );
 }
 
-export default withRouteProtection(Signup, 'UNAUTHENTICATED_ONLY');
+export default withRouteProtection(Index, 'UNAUTHENTICATED_ONLY');

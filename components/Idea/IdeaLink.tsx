@@ -1,9 +1,9 @@
 import React from 'react';
 import { Paper, Avatar, Typography, makeStyles } from '@material-ui/core';
 import { format as timeago_format } from 'timeago.js';
-import { Idea, User } from '../../../graphql/client/types';
-import useGutterAllChild from '../../../hooks/useGutterAllChild';
-import Link from '../../Link';
+import { Idea, User } from '../../graphql/client/types';
+import useGutterAllChild from '../../hooks/useGutterAllChild';
+import Link from '../Link';
 
 const useStyles = makeStyles((theme) => ({
   outerLink: {

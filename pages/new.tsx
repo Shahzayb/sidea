@@ -8,6 +8,7 @@ const Index = () => {
   React.useEffect(() => {
     changeCategory(Category.NEW_IDEAS);
   }, []);
+
   return <Home />;
 };
 

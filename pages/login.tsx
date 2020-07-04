@@ -12,7 +12,7 @@ import withRouteProtection from '../hoc/withRouteProtection';
 import { useAuth } from '../context/auth-context';
 import LoginFormSkeleton from '../components/Skeletons/LoginFormSkeleton';
 
-function Login() {
+function Index() {
   const classes = useGutterAllChild({ spacing: 3 });
   const { loading, authenticated } = useAuth();
 
@@ -59,4 +59,4 @@ function Login() {
   );
 }
 
-export default withRouteProtection(Login, 'UNAUTHENTICATED_ONLY');
+export default withRouteProtection(Index, 'UNAUTHENTICATED_ONLY');

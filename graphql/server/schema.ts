@@ -73,6 +73,7 @@ const typeDefs = gql`
   enum INTERVAL {
     DAY
     WEEK
+    MONTH
     YEAR
     ALL_TIME
   }

@@ -17,11 +17,11 @@ const CreateIdeaForm = dynamic(
   }
 );
 
-function CreateIdea() {
+function Index() {
   const { loading, authenticated } = useAuth();
   const gutterClx = useGutterAllChild({ spacing: 3 });
   return (
-    <Paper>
+    <Paper component="main">
       <Box
         className={gutterClx.gutterAllChild}
         p={2}
@@ -39,5 +39,5 @@ function CreateIdea() {
 }
 
 export default withRouteProtection(
-  withFooter(withLayout(withNavbar(CreateIdea), 'md'))
+  withFooter(withLayout(withNavbar(Index), 'md'))
 );

@@ -18,12 +18,12 @@ import {
   Share as ShareIcon,
 } from '@material-ui/icons';
 import { format as timeago_format } from 'timeago.js';
-import CreateFeatureForm from '../../Forms/CreateFeatureForm';
-import { useGetIdeaByIdQuery } from '../../../graphql/client/types';
-import IdeaSkeleton from '../../Skeletons/IdeaSkeleton';
-import useGutterAllChild from '../../../hooks/useGutterAllChild';
-import CustomError from '../../Errors/Error';
-import number from '../../../utils/number';
+import CreateFeatureForm from '../Forms/CreateFeatureForm';
+import { useGetIdeaByIdQuery } from '../../graphql/client/types';
+import IdeaSkeleton from '../Skeletons/IdeaSkeleton';
+import useGutterAllChild from '../../hooks/useGutterAllChild';
+import CustomError from '../Errors/CustomError';
+import number from '../../utils/number';
 
 interface Props {
   id: string;
@@ -45,7 +45,7 @@ function Idea({ id }: Props) {
   if (error) {
     return (
       <CustomError
-        errorType="network"
+        title="Ooops. Something went wrong!"
         retry={() => {
           if (refetch) {
             refetch().catch(console.log);
@@ -56,16 +56,7 @@ function Idea({ id }: Props) {
   }
 
   if (!data || !data.idea) {
-    return (
-      <CustomError
-        errorType="no-content"
-        retry={() => {
-          if (refetch) {
-            refetch().catch(console.log);
-          }
-        }}
-      />
-    );
+    return <CustomError title="No idea found." />;
   }
 
   return (

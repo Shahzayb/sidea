@@ -47,7 +47,8 @@ interface LinkPropsBase {
 
 export type LinkProps = LinkPropsBase &
   NextComposedProps &
-  Omit<MuiLinkProps, 'href'>;
+  Omit<MuiLinkProps, 'href'> & { value?: any };
+// & {value: any}; is workaround for MenuItem
 
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/#with-link

@@ -173,6 +173,7 @@ export type UpdateFeatureInput = {
 export enum Interval {
   Day = 'DAY',
   Week = 'WEEK',
+  Month = 'MONTH',
   Year = 'YEAR',
   AllTime = 'ALL_TIME'
 }

@@ -4,12 +4,12 @@ import {
   useGetTopIdeasQuery,
   GetTopIdeasQuery,
   Interval,
-} from '../../../graphql/client/types';
-import CustomError from '../../Errors/Error';
+} from '../../graphql/client/types';
+import CustomError from '../Errors/CustomError';
 import IdeaLink from './IdeaLink';
-import useGutterAllChild from '../../../hooks/useGutterAllChild';
-import IdeaLinkSkeleton from '../../Skeletons/IdeaLinkSkeleton';
-import { clientPageQueryLimit } from '../../../client-env';
+import useGutterAllChild from '../../hooks/useGutterAllChild';
+import IdeaLinkSkeleton from '../Skeletons/IdeaLinkSkeleton';
+import { clientPageQueryLimit } from '../../client-env';
 import validator from 'validator';
 
 interface Props {
@@ -38,7 +38,7 @@ function TopIdeas({ interval = Interval.AllTime }: Props) {
   const infiniteRef = useInfiniteScroll<HTMLDivElement>({
     loading: loading || networkStatus === 4,
     hasNextPage: data ? data.topIdeas.page.hasNextPage : true,
-    onLoadMore() {
+    async onLoadMore() {
       if (data) {
         if (
           !validator.isInt(data.topIdeas.page.cursor!, {
@@ -48,23 +48,25 @@ function TopIdeas({ interval = Interval.AllTime }: Props) {
           throw new Error('Skip is not an Int');
         }
 
-        fetchMore({
-          variables: {
-            skip: validator.toInt(data.topIdeas.page.cursor!),
-          },
-          updateQuery(previousResult: GetTopIdeasQuery, { fetchMoreResult }) {
-            if (!fetchMoreResult) return previousResult;
-            const previousEntry = previousResult.topIdeas.entry;
-            const newEntry = fetchMoreResult.topIdeas.entry;
+        try {
+          await fetchMore({
+            variables: {
+              skip: validator.toInt(data.topIdeas.page.cursor!),
+            },
+            updateQuery(previousResult: GetTopIdeasQuery, { fetchMoreResult }) {
+              if (!fetchMoreResult) return previousResult;
+              const previousEntry = previousResult.topIdeas.entry;
+              const newEntry = fetchMoreResult.topIdeas.entry;
 
-            return Object.assign({}, previousResult, {
-              topIdeas: {
-                ...fetchMoreResult.topIdeas,
-                entry: [...previousEntry, ...newEntry],
-              },
-            });
-          },
-        }).catch(console.log);
+              return Object.assign({}, previousResult, {
+                topIdeas: {
+                  ...fetchMoreResult.topIdeas,
+                  entry: [...previousEntry, ...newEntry],
+                },
+              });
+            },
+          });
+        } catch {}
       }
     },
   });
@@ -78,18 +80,11 @@ function TopIdeas({ interval = Interval.AllTime }: Props) {
           ))}
         {(loading || networkStatus === 4) && <IdeaLinkSkeleton />}
         {!loading && !error && (!data || !data.topIdeas.entry.length) && (
-          <CustomError
-            errorType="no-content"
-            retry={() => {
-              if (refetch) {
-                refetch().catch(console.log);
-              }
-            }}
-          />
+          <CustomError title="No idea found." />
         )}
         {!loading && error && (
           <CustomError
-            errorType="network"
+            title="Ooops. Something went wrong!"
             retry={() => {
               if (refetch) {
                 refetch().catch(console.log);

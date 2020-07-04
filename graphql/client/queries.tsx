@@ -29,6 +29,18 @@ export const GetMyProfile = gql`
   }
 `;
 
+export const GetUserById = gql`
+  query GetUserById($id: ID!) {
+    user(id: $id) {
+      id
+      name
+      username
+      avatar
+      createdAt
+    }
+  }
+`;
+
 export const GetNewIdeas = gql`
   query GetNewIdeas($after_id: ID, $limit: Int!) {
     newIdeas(after_id: $after_id, limit: $limit) {

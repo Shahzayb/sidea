@@ -5,11 +5,11 @@ import useGutterAllChild from '../../hooks/useGutterAllChild';
 import ResponsiveButton from '../ResponsiveButton';
 
 interface Props {
-  errorType: 'network' | 'no-content';
-  retry: () => void;
+  retry?: () => void;
+  title: string;
 }
 
-function Error({ retry, errorType }: Props) {
+function CustomError({ retry, title }: Props) {
   const classes = useGutterAllChild({ spacing: 1 });
   return (
     <Box
@@ -24,19 +24,19 @@ function Error({ retry, errorType }: Props) {
         <NoIdea fontSize="inherit" />
       </Typography>
       <Typography align="center" variant="h6" color="textSecondary">
-        {errorType === 'no-content'
-          ? "Cannot find what you're looking for."
-          : 'Ooops. Something went wrong!'}
+        {title}
       </Typography>
-      <ResponsiveButton
-        color="primary"
-        variant="contained"
-        onClick={() => retry()}
-      >
-        Retry
-      </ResponsiveButton>
+      {retry && (
+        <ResponsiveButton
+          color="primary"
+          variant="contained"
+          onClick={() => retry()}
+        >
+          Retry
+        </ResponsiveButton>
+      )}
     </Box>
   );
 }
 
-export default Error;
+export default CustomError;
