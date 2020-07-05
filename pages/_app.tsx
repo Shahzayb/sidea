@@ -35,7 +35,7 @@ const defaultOptions: DefaultOptions = {
 const cache = new InMemoryCache();
 
 const request = async (operation: Operation) => {
-  if (typeof window !== undefined) {
+  if (typeof window !== 'undefined') {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
     operation.setContext({
@@ -70,8 +70,8 @@ const requestLink = new ApolloLink(
 const client = new ApolloClient({
   link: ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
-      console.log('graphqlErrors', graphQLErrors);
-      console.log('networkError', networkError);
+      // console.log('graphqlErrors', graphQLErrors);
+      // console.log('networkError', networkError);
     }),
     requestLink,
     new HttpLink({

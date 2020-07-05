@@ -14,6 +14,8 @@ interface Props {
 function UserIdeas({ id }: Props) {
   const classes = useGutterAllChild({ spacing: 2 });
 
+  const [fetchMoreFailed, setFetchMoreFailed] = React.useState(false);
+
   const {
     data,
     loading,
@@ -23,6 +25,7 @@ function UserIdeas({ id }: Props) {
     refetch,
   } = useGetUserIdeasQuery({
     notifyOnNetworkStatusChange: true,
+    partialRefetch: true,
     variables: {
       id,
       limit: clientPageQueryLimit,
@@ -31,9 +34,14 @@ function UserIdeas({ id }: Props) {
 
   const infiniteRef = useInfiniteScroll<HTMLDivElement>({
     loading: loading || networkStatus === 4,
-    hasNextPage: data && data.user ? data.user.ideas.page.hasNextPage : true,
+    hasNextPage: !!(
+      data &&
+      data.user &&
+      data.user.ideas.page.hasNextPage &&
+      !error
+    ),
     async onLoadMore() {
-      if (data && data.user) {
+      if (data && data.user && !fetchMoreFailed) {
         try {
           await fetchMore({
             variables: {
@@ -41,21 +49,32 @@ function UserIdeas({ id }: Props) {
             },
             updateQuery(previousResult, { fetchMoreResult }) {
               if (!fetchMoreResult) return previousResult;
-              const previousEntry = previousResult.user!.ideas.entry;
-              const newEntry = fetchMoreResult.user!.ideas.entry;
+              else if (!previousResult) {
+                throw new Error('previousResult are undefined');
+              } else if (!previousResult.user || !fetchMoreResult.user) {
+                throw new Error(
+                  'previousResult.user or fetchMoreResult.user are undefined'
+                );
+              } else {
+                const previousEntry = previousResult.user.ideas.entry;
+                const newEntry = fetchMoreResult.user.ideas.entry;
 
-              return Object.assign({}, previousResult, {
-                user: {
-                  ...fetchMoreResult.user,
-                  ideas: {
-                    ...fetchMoreResult.user!.ideas,
-                    entry: [...previousEntry, ...newEntry],
+                return Object.assign({}, previousResult, {
+                  user: {
+                    ...fetchMoreResult.user,
+                    ideas: {
+                      ...fetchMoreResult.user.ideas,
+                      entry: [...previousEntry, ...newEntry],
+                    },
                   },
-                },
-              });
+                });
+              }
             },
           });
-        } catch {}
+        } catch (e) {
+          console.log('failed', e);
+          setFetchMoreFailed(true);
+        }
       }
     },
   });
@@ -88,9 +107,16 @@ function UserIdeas({ id }: Props) {
           <CustomError
             title="Ooops. Something went wrong!"
             retry={() => {
-              if (refetch) {
-                refetch().catch(console.log);
-              }
+              refetch().catch(console.log);
+            }}
+          />
+        )}
+        {!loading && fetchMoreFailed && (
+          <CustomError
+            title="Ooops. Something went wrong!"
+            retry={() => {
+              refetch().catch(console.log);
+              setFetchMoreFailed(false);
             }}
           />
         )}
