@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const GetIdeaById = gql`
   query GetIdeaById($id: ID!) {
@@ -48,6 +48,27 @@ export const GetUserIdeas = gql`
       username
       avatar
       ideas(after_id: $after_id, limit: $limit) {
+        page {
+          cursor
+          hasNextPage
+        }
+        entry {
+          id
+          title
+          createdAt
+        }
+      }
+    }
+  }
+`;
+
+export const GetSavedUserIdeas = gql`
+  query GetSavedUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
+    user(id: $id) {
+      id
+      username
+      avatar
+      savedIdeas(after_id: $after_id, limit: $limit) {
         page {
           cursor
           hasNextPage

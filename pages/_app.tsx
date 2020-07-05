@@ -2,8 +2,14 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
-import ApolloClient from 'apollo-boost';
+
 import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloClient, DefaultOptions } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import { ApolloLink, Observable, Operation } from 'apollo-link';
+
 import 'react-quill/dist/quill.snow.css';
 import '../public/styles/main.css';
 
@@ -12,20 +18,69 @@ import { ThemeToggleProvider } from '../context/theme-toggle-context';
 import { IdeaCategoryProvider } from '../context/idea-category-context';
 
 import { apolloClientUri } from '../client-env';
+import { ZenObservable } from 'zen-observable-ts';
+
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    errorPolicy: 'all',
+  },
+  query: {
+    errorPolicy: 'all',
+  },
+  mutate: {
+    errorPolicy: 'all',
+  },
+};
+
+const cache = new InMemoryCache();
+
+const request = async (operation: Operation) => {
+  if (typeof window !== undefined) {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
+    operation.setContext({
+      headers: {
+        authorization: token ? `Bearer ${token}` : '',
+      },
+    });
+  }
+};
+
+const requestLink = new ApolloLink(
+  (operation, forward) =>
+    new Observable((observer) => {
+      let handle: ZenObservable.Subscription;
+      Promise.resolve(operation)
+        .then((oper) => request(oper))
+        .then(() => {
+          handle = forward(operation).subscribe({
+            next: observer.next.bind(observer),
+            error: observer.error.bind(observer),
+            complete: observer.complete.bind(observer),
+          });
+        })
+        .catch(observer.error.bind(observer));
+
+      return () => {
+        if (handle) handle.unsubscribe();
+      };
+    })
+);
 
 const client = new ApolloClient({
-  uri: apolloClientUri,
-  request: (operation) => {
-    if (typeof window !== undefined) {
-      const token = localStorage.getItem(AUTH_TOKEN_KEY);
-
-      operation.setContext({
-        headers: {
-          authorization: token ? `Bearer ${token}` : '',
-        },
-      });
-    }
-  },
+  link: ApolloLink.from([
+    onError(({ graphQLErrors, networkError }) => {
+      console.log('graphqlErrors', graphQLErrors);
+      console.log('networkError', networkError);
+    }),
+    requestLink,
+    new HttpLink({
+      uri: apolloClientUri,
+      credentials: 'include',
+    }),
+  ]),
+  cache,
+  defaultOptions,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
