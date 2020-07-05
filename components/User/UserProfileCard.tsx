@@ -32,40 +32,38 @@ function UserProfileCard({ user }: Props) {
   }, [user.createdAt]);
 
   return (
-    <div style={{ maxWidth: '270px' }}>
-      <Card elevation={0}>
-        <CardHeader
-          avatar={<Avatar alt={user.name} src={user.avatar} />}
-          title={user.name}
-          subheader={user.username}
-          action={
-            <IconButton aria-label="settings">
-              <SettingsIcon />
-            </IconButton>
-          }
-        />
-        <CardContent>
-          <Typography
-            style={{ display: 'flex', alignItems: 'center' }}
-            component="div"
-            color="textSecondary"
-            variant="body2"
-          >
-            <Box display="flex" alignItems="center" mr={1}>
-              <CalendarTodayIcon />
-            </Box>
-            Joined, {date}
-          </Typography>
-        </CardContent>
-        <CardActions disableSpacing>
-          <Link style={{ width: '100%' }} naked href="/idea/create">
-            <Button size="small" fullWidth color="primary" variant="contained">
-              New Idea
-            </Button>
-          </Link>
-        </CardActions>
-      </Card>
-    </div>
+    <Card elevation={0}>
+      <CardHeader
+        avatar={<Avatar alt={user.name} src={user.avatar} />}
+        title={user.name}
+        subheader={user.username}
+        action={
+          <IconButton aria-label="settings">
+            <SettingsIcon />
+          </IconButton>
+        }
+      />
+      <CardContent>
+        <Typography
+          style={{ display: 'flex', alignItems: 'center' }}
+          component="div"
+          color="textSecondary"
+          variant="body2"
+        >
+          <Box display="flex" alignItems="center" mr={1}>
+            <CalendarTodayIcon />
+          </Box>
+          Joined, {date}
+        </Typography>
+      </CardContent>
+      <CardActions disableSpacing>
+        <Link style={{ width: '100%' }} naked href="/idea/create">
+          <Button size="small" fullWidth color="primary" variant="contained">
+            New Idea
+          </Button>
+        </Link>
+      </CardActions>
+    </Card>
   );
 }
 

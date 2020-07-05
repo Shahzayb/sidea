@@ -364,6 +364,31 @@ export type GetUserByIdQuery = (
   )> }
 );
 
+export type GetUserIdeasQueryVariables = Exact<{
+  id: Scalars['ID'];
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetUserIdeasQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username' | 'avatar'>
+    & { ideas: (
+      { __typename?: 'IdeaPageResponse' }
+      & { page: (
+        { __typename?: 'Page' }
+        & Pick<Page, 'cursor' | 'hasNextPage'>
+      ), entry: Array<(
+        { __typename?: 'Idea' }
+        & Pick<Idea, 'id' | 'title' | 'createdAt'>
+      )> }
+    ) }
+  )> }
+);
+
 export type GetNewIdeasQueryVariables = Exact<{
   after_id?: Maybe<Scalars['ID']>;
   limit: Scalars['Int'];
@@ -631,6 +656,54 @@ export function useGetUserByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
 export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
 export type GetUserByIdQueryResult = ApolloReactCommon.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
+export const GetUserIdeasDocument = gql`
+    query GetUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
+  user(id: $id) {
+    id
+    username
+    avatar
+    ideas(after_id: $after_id, limit: $limit) {
+      page {
+        cursor
+        hasNextPage
+      }
+      entry {
+        id
+        title
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserIdeasQuery__
+ *
+ * To run a query within a React component, call `useGetUserIdeasQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserIdeasQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserIdeasQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      after_id: // value for 'after_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetUserIdeasQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserIdeasQuery, GetUserIdeasQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetUserIdeasQuery, GetUserIdeasQueryVariables>(GetUserIdeasDocument, baseOptions);
+      }
+export function useGetUserIdeasLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserIdeasQuery, GetUserIdeasQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetUserIdeasQuery, GetUserIdeasQueryVariables>(GetUserIdeasDocument, baseOptions);
+        }
+export type GetUserIdeasQueryHookResult = ReturnType<typeof useGetUserIdeasQuery>;
+export type GetUserIdeasLazyQueryHookResult = ReturnType<typeof useGetUserIdeasLazyQuery>;
+export type GetUserIdeasQueryResult = ApolloReactCommon.QueryResult<GetUserIdeasQuery, GetUserIdeasQueryVariables>;
 export const GetNewIdeasDocument = gql`
     query GetNewIdeas($after_id: ID, $limit: Int!) {
   newIdeas(after_id: $after_id, limit: $limit) {

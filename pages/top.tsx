@@ -1,4 +1,4 @@
-import Home from '../components/Home';
+import Home from '../components/Screens/Home';
 import { useIdeaCategory, Category } from '../context/idea-category-context';
 import React from 'react';
 import { useRouter } from 'next/router';

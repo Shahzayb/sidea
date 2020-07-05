@@ -9,7 +9,7 @@ interface Props {
   id: string;
 }
 
-function User({ id }: Props) {
+function UserContainer({ id }: Props) {
   const { data, loading, error, refetch, networkStatus } = useGetUserByIdQuery({
     variables: {
       id,
@@ -48,4 +48,4 @@ function User({ id }: Props) {
   );
 }
 
-export default User;
+export default UserContainer;

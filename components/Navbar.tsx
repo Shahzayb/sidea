@@ -132,7 +132,15 @@ function Navbar() {
                   open={open}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem
+                    component={Link}
+                    color="inherit"
+                    href="/user/[userId]"
+                    as={`/user/${user.id}`}
+                    onClick={handleClose}
+                  >
+                    Profile
+                  </MenuItem>
                   <MenuItem>
                     Dark Mode:{' '}
                     <Switch
