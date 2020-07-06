@@ -414,6 +414,35 @@ export type GetSavedUserIdeasQuery = (
   )> }
 );
 
+export type GetUserLikesQueryVariables = Exact<{
+  id: Scalars['ID'];
+  after_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetUserLikesQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id'>
+    & { likedIdeas: (
+      { __typename?: 'IdeaPageResponse' }
+      & { page: (
+        { __typename?: 'Page' }
+        & Pick<Page, 'cursor' | 'hasNextPage'>
+      ), entry: Array<(
+        { __typename?: 'Idea' }
+        & Pick<Idea, 'id' | 'title' | 'createdAt'>
+        & { user: (
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'username' | 'avatar'>
+        ) }
+      )> }
+    ) }
+  )> }
+);
+
 export type GetNewIdeasQueryVariables = Exact<{
   after_id?: Maybe<Scalars['ID']>;
   limit: Scalars['Int'];
@@ -777,6 +806,57 @@ export function useGetSavedUserIdeasLazyQuery(baseOptions?: ApolloReactHooks.Laz
 export type GetSavedUserIdeasQueryHookResult = ReturnType<typeof useGetSavedUserIdeasQuery>;
 export type GetSavedUserIdeasLazyQueryHookResult = ReturnType<typeof useGetSavedUserIdeasLazyQuery>;
 export type GetSavedUserIdeasQueryResult = ApolloReactCommon.QueryResult<GetSavedUserIdeasQuery, GetSavedUserIdeasQueryVariables>;
+export const GetUserLikesDocument = gql`
+    query GetUserLikes($id: ID!, $after_id: ID, $limit: Int!) {
+  user(id: $id) {
+    id
+    likedIdeas(after_id: $after_id, limit: $limit) {
+      page {
+        cursor
+        hasNextPage
+      }
+      entry {
+        id
+        title
+        createdAt
+        user {
+          id
+          username
+          avatar
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserLikesQuery__
+ *
+ * To run a query within a React component, call `useGetUserLikesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserLikesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserLikesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      after_id: // value for 'after_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetUserLikesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserLikesQuery, GetUserLikesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetUserLikesQuery, GetUserLikesQueryVariables>(GetUserLikesDocument, baseOptions);
+      }
+export function useGetUserLikesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserLikesQuery, GetUserLikesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetUserLikesQuery, GetUserLikesQueryVariables>(GetUserLikesDocument, baseOptions);
+        }
+export type GetUserLikesQueryHookResult = ReturnType<typeof useGetUserLikesQuery>;
+export type GetUserLikesLazyQueryHookResult = ReturnType<typeof useGetUserLikesLazyQuery>;
+export type GetUserLikesQueryResult = ApolloReactCommon.QueryResult<GetUserLikesQuery, GetUserLikesQueryVariables>;
 export const GetNewIdeasDocument = gql`
     query GetNewIdeas($after_id: ID, $limit: Int!) {
   newIdeas(after_id: $after_id, limit: $limit) {

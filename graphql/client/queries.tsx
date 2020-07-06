@@ -83,6 +83,30 @@ export const GetSavedUserIdeas = gql`
   }
 `;
 
+export const GetUserLikes = gql`
+  query GetUserLikes($id: ID!, $after_id: ID, $limit: Int!) {
+    user(id: $id) {
+      id
+      likedIdeas(after_id: $after_id, limit: $limit) {
+        page {
+          cursor
+          hasNextPage
+        }
+        entry {
+          id
+          title
+          createdAt
+          user {
+            id
+            username
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GetNewIdeas = gql`
   query GetNewIdeas($after_id: ID, $limit: Int!) {
     newIdeas(after_id: $after_id, limit: $limit) {

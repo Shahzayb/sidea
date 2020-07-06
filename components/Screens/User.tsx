@@ -11,6 +11,7 @@ import UserIdeas from '../User/UserIdeas';
 import SavedUserIdeas from '../User/SavedUserIdeas';
 import UserProfileCardSkeleton from '../Skeletons/UserProfileCardSkeleton';
 import IdeaLinkSkeleton from '../Skeletons/IdeaLinkSkeleton';
+import UserLikes from '../User/UserLikes';
 
 const useStyles = makeStyles((theme) => ({
   columnLayout: {
@@ -90,7 +91,7 @@ function User({ page }: Props) {
               <UserIdeas id={userId} />
             </TabPanel>
             <TabPanel value={page} index="likes" name="user">
-              <div>likes</div>
+              <UserLikes id={userId} />
             </TabPanel>
             <TabPanel value={page} index="saved" name="user">
               <SavedUserIdeas id={userId} />

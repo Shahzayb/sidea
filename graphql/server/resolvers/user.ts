@@ -143,9 +143,9 @@ export const User: UserResolvers = {
     const QUERY = `SELECT Idea.* 
           FROM sidea.Like INNER JOIN Idea ON sidea.Like.ideaId = Idea.id 
           WHERE sidea.Like.userId = ${user.id} ${
-      input.after_id ? `AND Idea.id > ${validator.toInt(input.after_id)}` : ''
+      input.after_id ? `AND Idea.id < ${validator.toInt(input.after_id)}` : ''
     } 
-          ORDER BY Idea.id ASC 
+          ORDER BY Idea.id DESC 
           LIMIT ${input.limit}`;
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);
