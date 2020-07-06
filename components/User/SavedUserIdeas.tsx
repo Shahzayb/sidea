@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetUserIdeasQuery } from '../../graphql/client/types';
+import { useGetSavedUserIdeasQuery } from '../../graphql/client/types';
 import { clientPageQueryLimit } from '../../client-env';
 import { useInfiniteScroll } from 'react-infinite-scroll-hook';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
@@ -11,7 +11,7 @@ interface Props {
   id: string;
 }
 
-function UserIdeas({ id }: Props) {
+function SavedUserIdeas({ id }: Props) {
   const classes = useGutterAllChild({ spacing: 2 });
 
   const [fetchMoreFailed, setFetchMoreFailed] = React.useState(false);
@@ -23,9 +23,8 @@ function UserIdeas({ id }: Props) {
     fetchMore,
     error,
     refetch,
-  } = useGetUserIdeasQuery({
+  } = useGetSavedUserIdeasQuery({
     notifyOnNetworkStatusChange: true,
-    partialRefetch: true,
     variables: {
       id,
       limit: clientPageQueryLimit,
@@ -37,7 +36,7 @@ function UserIdeas({ id }: Props) {
     hasNextPage: !!(
       data &&
       data.user &&
-      data.user.ideas.page.hasNextPage &&
+      data.user.savedIdeas.page.hasNextPage &&
       !error &&
       !fetchMoreFailed
     ),
@@ -46,30 +45,22 @@ function UserIdeas({ id }: Props) {
         try {
           await fetchMore({
             variables: {
-              after_id: data.user.ideas.page.cursor,
+              after_id: data.user.savedIdeas.page.cursor,
             },
             updateQuery(previousResult, { fetchMoreResult }) {
               if (!fetchMoreResult) return previousResult;
-              else if (!previousResult) {
-                throw new Error('previousResult are undefined');
-              } else if (!previousResult.user || !fetchMoreResult.user) {
-                throw new Error(
-                  'previousResult.user or fetchMoreResult.user are undefined'
-                );
-              } else {
-                const previousEntry = previousResult.user.ideas.entry;
-                const newEntry = fetchMoreResult.user.ideas.entry;
+              const previousEntry = previousResult.user!.savedIdeas.entry;
+              const newEntry = fetchMoreResult.user!.savedIdeas.entry;
 
-                return Object.assign({}, previousResult, {
-                  user: {
-                    ...fetchMoreResult.user,
-                    ideas: {
-                      ...fetchMoreResult.user.ideas,
-                      entry: [...previousEntry, ...newEntry],
-                    },
+              return Object.assign({}, previousResult, {
+                user: {
+                  ...fetchMoreResult.user,
+                  savedIdeas: {
+                    ...fetchMoreResult.user!.savedIdeas,
+                    entry: [...previousEntry, ...newEntry],
                   },
-                });
-              }
+                },
+              });
             },
           });
         } catch {
@@ -84,7 +75,7 @@ function UserIdeas({ id }: Props) {
       <div className={classes.gutterAllChild}>
         {!!data &&
           !!data.user &&
-          data.user.ideas.entry.map((idea) => (
+          data.user.savedIdeas.entry.map((idea) => (
             <IdeaLink
               key={idea.id}
               idea={{
@@ -100,7 +91,7 @@ function UserIdeas({ id }: Props) {
         {(loading || networkStatus === 4) && <IdeaLinkSkeleton />}
         {!loading &&
           !error &&
-          (!data || !data.user || !data.user.ideas.entry.length) && (
+          (!data || !data.user || !data.user.savedIdeas.entry.length) && (
             <CustomError title="No idea found." />
           )}
         {!loading && error && (
@@ -126,4 +117,4 @@ function UserIdeas({ id }: Props) {
   );
 }
 
-export default UserIdeas;
+export default SavedUserIdeas;

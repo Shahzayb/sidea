@@ -4,6 +4,8 @@ import CustomError from '../Errors/CustomError';
 
 import Head from 'next/head';
 import UserProfileCard from './UserProfileCard';
+import UserProfileCardSkeleton from '../Skeletons/UserProfileCardSkeleton';
+import { Paper } from '@material-ui/core';
 
 interface Props {
   id: string;
@@ -18,24 +20,30 @@ function UserContainer({ id }: Props) {
   });
 
   if (loading || networkStatus === 4) {
-    return <div>loading</div>;
+    return <UserProfileCardSkeleton />;
   }
 
   if (error) {
     return (
-      <CustomError
-        title="Ooops. Something went wrong!"
-        retry={() => {
-          if (refetch) {
-            refetch().catch(console.log);
-          }
-        }}
-      />
+      <Paper elevation={0}>
+        <CustomError
+          title="Ooops. Something went wrong!"
+          retry={() => {
+            if (refetch) {
+              refetch().catch(console.log);
+            }
+          }}
+        />
+      </Paper>
     );
   }
 
   if (!data || !data.user) {
-    return <CustomError title="No user found." />;
+    return (
+      <Paper elevation={0}>
+        <CustomError title="No user found." />
+      </Paper>
+    );
   }
 
   return (

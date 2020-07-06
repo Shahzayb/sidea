@@ -42,11 +42,11 @@ export const User: UserResolvers = {
       where: {
         userId: user.id,
         id: {
-          gt: input.after_id ? validator.toInt(input.after_id) : undefined,
+          lt: input.after_id ? validator.toInt(input.after_id) : undefined,
         },
       },
       orderBy: {
-        id: 'asc',
+        id: 'desc',
       },
       // take is limit
       take: input.limit,
@@ -95,9 +95,9 @@ export const User: UserResolvers = {
     const QUERY = `SELECT Idea.* 
           FROM Save INNER JOIN Idea ON Save.ideaId = Idea.id 
           WHERE Save.userId = ${user.id} ${
-      input.after_id ? `AND Idea.id > ${validator.toInt(input.after_id)}` : ''
+      input.after_id ? `AND Idea.id < ${validator.toInt(input.after_id)}` : ''
     } 
-          ORDER BY Idea.id ASC 
+          ORDER BY Idea.id DESC 
           LIMIT ${input.limit}`;
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);

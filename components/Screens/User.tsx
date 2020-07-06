@@ -8,6 +8,9 @@ import Footer from '../Footer';
 import { Container, Box, makeStyles } from '@material-ui/core';
 import TabPanel from '../Tabs/TabPanel';
 import UserIdeas from '../User/UserIdeas';
+import SavedUserIdeas from '../User/SavedUserIdeas';
+import UserProfileCardSkeleton from '../Skeletons/UserProfileCardSkeleton';
+import IdeaLinkSkeleton from '../Skeletons/IdeaLinkSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   columnLayout: {
@@ -44,7 +47,25 @@ function User({ page }: Props) {
   } = useRouter();
 
   if (!userId) {
-    return <div> userId loading</div>;
+    return (
+      <div>
+        <Navbar />
+        <Container
+          maxWidth="lg"
+          className={classes.columnLayout}
+          style={{ marginTop: '5rem' }}
+        >
+          <div className={classes.columnTwo}>
+            <UserProfileCardSkeleton />
+          </div>
+
+          <div className={classes.columnOne}>
+            <IdeaLinkSkeleton />
+          </div>
+        </Container>
+        <Footer />
+      </div>
+    );
   }
 
   if (Array.isArray(userId)) {
@@ -72,7 +93,7 @@ function User({ page }: Props) {
               <div>likes</div>
             </TabPanel>
             <TabPanel value={page} index="saved" name="user">
-              <div>saved</div>
+              <SavedUserIdeas id={userId} />
             </TabPanel>
           </Box>
         </div>
