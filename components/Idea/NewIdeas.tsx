@@ -10,6 +10,8 @@ import { clientPageQueryLimit } from '../../client-env';
 function NewIdeas() {
   const classes = useGutterAllChild({ spacing: 2 });
 
+  const [fetchMoreFailed, setFetchMoreFailed] = React.useState(false);
+
   const {
     data,
     loading,
@@ -26,7 +28,12 @@ function NewIdeas() {
 
   const infiniteRef = useInfiniteScroll<HTMLDivElement>({
     loading: loading || networkStatus === 4,
-    hasNextPage: data ? data.newIdeas.page.hasNextPage : true,
+    hasNextPage: !!(
+      data &&
+      data.newIdeas.page.hasNextPage &&
+      !error &&
+      !fetchMoreFailed
+    ),
     async onLoadMore() {
       if (data) {
         try {
@@ -47,7 +54,9 @@ function NewIdeas() {
               });
             },
           });
-        } catch {}
+        } catch {
+          setFetchMoreFailed(true);
+        }
       }
     },
   });
@@ -66,10 +75,18 @@ function NewIdeas() {
         {!loading && error && (
           <CustomError
             title="Ooops. Something went wrong!"
+            retry={async () => {
+              try {
+                await refetch();
+              } catch {}
+            }}
+          />
+        )}
+        {!loading && fetchMoreFailed && (
+          <CustomError
+            title="Ooops. Something went wrong!"
             retry={() => {
-              if (refetch) {
-                refetch().catch(console.log);
-              }
+              setFetchMoreFailed(false);
             }}
           />
         )}

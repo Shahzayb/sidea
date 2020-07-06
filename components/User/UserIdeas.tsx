@@ -38,10 +38,11 @@ function UserIdeas({ id }: Props) {
       data &&
       data.user &&
       data.user.ideas.page.hasNextPage &&
-      !error
+      !error &&
+      !fetchMoreFailed
     ),
     async onLoadMore() {
-      if (data && data.user && !fetchMoreFailed) {
+      if (data && data.user) {
         try {
           await fetchMore({
             variables: {
@@ -71,8 +72,7 @@ function UserIdeas({ id }: Props) {
               }
             },
           });
-        } catch (e) {
-          console.log('failed', e);
+        } catch {
           setFetchMoreFailed(true);
         }
       }
@@ -106,16 +106,17 @@ function UserIdeas({ id }: Props) {
         {!loading && error && (
           <CustomError
             title="Ooops. Something went wrong!"
-            retry={() => {
-              refetch().catch(console.log);
+            retry={async () => {
+              try {
+                await refetch();
+              } catch {}
             }}
           />
         )}
         {!loading && fetchMoreFailed && (
           <CustomError
             title="Ooops. Something went wrong!"
-            retry={() => {
-              refetch().catch(console.log);
+            retry={async () => {
               setFetchMoreFailed(false);
             }}
           />

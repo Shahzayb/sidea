@@ -19,6 +19,8 @@ interface Props {
 function TopIdeas({ interval = Interval.AllTime }: Props) {
   const classes = useGutterAllChild({ spacing: 2 });
 
+  const [fetchMoreFailed, setFetchMoreFailed] = React.useState(false);
+
   const {
     data,
     loading,
@@ -37,7 +39,12 @@ function TopIdeas({ interval = Interval.AllTime }: Props) {
 
   const infiniteRef = useInfiniteScroll<HTMLDivElement>({
     loading: loading || networkStatus === 4,
-    hasNextPage: data ? data.topIdeas.page.hasNextPage : true,
+    hasNextPage: !!(
+      data &&
+      data.topIdeas.page.hasNextPage &&
+      !error &&
+      !fetchMoreFailed
+    ),
     async onLoadMore() {
       if (data) {
         if (
@@ -66,7 +73,9 @@ function TopIdeas({ interval = Interval.AllTime }: Props) {
               });
             },
           });
-        } catch {}
+        } catch {
+          setFetchMoreFailed(true);
+        }
       }
     },
   });
@@ -85,10 +94,18 @@ function TopIdeas({ interval = Interval.AllTime }: Props) {
         {!loading && error && (
           <CustomError
             title="Ooops. Something went wrong!"
+            retry={async () => {
+              try {
+                await refetch();
+              } catch {}
+            }}
+          />
+        )}
+        {!loading && fetchMoreFailed && (
+          <CustomError
+            title="Ooops. Something went wrong!"
             retry={() => {
-              if (refetch) {
-                refetch().catch(console.log);
-              }
+              setFetchMoreFailed(false);
             }}
           />
         )}
