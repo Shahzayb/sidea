@@ -14,8 +14,6 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     '& + #card': {
       padding: theme.spacing(1),
-      border: `1px solid transparent`,
-      borderRadius: theme.shape.borderRadius,
       transition: theme.transitions.create('border', {
         duration: theme.transitions.duration.shortest,
         easing: theme.transitions.easing.easeIn,
@@ -55,7 +53,7 @@ function IdeaLink({ idea }: Props) {
         naked
         className={classes.outerLink}
       />
-      <Paper className={gutterClx.gutterAllChild} elevation={0} id="card">
+      <Paper className={gutterClx.gutterAllChild} id="card">
         <div
           style={{
             display: 'flex',

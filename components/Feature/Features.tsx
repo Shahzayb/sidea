@@ -13,7 +13,6 @@ import { Delete as DeleteIcon } from '@material-ui/icons';
 function Features() {
   return (
     <>
-      {' '}
       <Typography style={{ marginTop: '2rem' }} component="h2" variant="h6">
         Features
       </Typography>

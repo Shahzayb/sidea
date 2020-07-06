@@ -39,7 +39,7 @@ function IdeaCategoryTab() {
   };
 
   return (
-    <Paper elevation={0}>
+    <Paper>
       <Box p={1}>
         <Tabs
           value={category}

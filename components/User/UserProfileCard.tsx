@@ -32,7 +32,7 @@ function UserProfileCard({ user }: Props) {
   }, [user.createdAt]);
 
   return (
-    <Card elevation={0}>
+    <Card>
       <CardHeader
         avatar={<Avatar alt={user.name} src={user.avatar} />}
         title={user.name}

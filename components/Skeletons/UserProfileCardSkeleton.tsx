@@ -3,7 +3,7 @@ import { Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 function UserProfileCardSkeleton() {
   return (
-    <Card elevation={0}>
+    <Card>
       <CardHeader
         avatar={<Skeleton variant="circle" width={40} height={40}></Skeleton>}
         title={<Skeleton width="20%" />}

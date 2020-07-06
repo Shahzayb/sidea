@@ -25,7 +25,7 @@ function UserContainer({ id }: Props) {
 
   if (error) {
     return (
-      <Paper elevation={0}>
+      <Paper>
         <CustomError
           title="Ooops. Something went wrong!"
           retry={() => {
@@ -40,7 +40,7 @@ function UserContainer({ id }: Props) {
 
   if (!data || !data.user) {
     return (
-      <Paper elevation={0}>
+      <Paper>
         <CustomError title="No user found." />
       </Paper>
     );

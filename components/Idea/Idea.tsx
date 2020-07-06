@@ -66,11 +66,7 @@ function Idea({ id }: Props) {
           {data.idea.title} : {data.idea.user.username}
         </title>
       </Head>
-      <Paper
-        className={classes.gutterAllChild}
-        elevation={0}
-        style={{ padding: '1rem' }}
-      >
+      <Paper className={classes.gutterAllChild} style={{ padding: '1rem' }}>
         <div
           style={{
             display: 'flex',

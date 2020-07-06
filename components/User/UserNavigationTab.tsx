@@ -16,7 +16,7 @@ function UserNavigationTab({ userId, page }: Props) {
     setCurTab(value);
   };
   return (
-    <Paper elevation={0}>
+    <Paper>
       <Box p={1}>
         <Tabs value={curTab} onChange={handleChange} aria-label="user tabs">
           <Tab

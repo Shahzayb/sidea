@@ -7,7 +7,7 @@ import useGutterAllChild from '../hooks/useGutterAllChild';
 function Welcome() {
   const classes = useGutterAllChild({ spacing: 2 });
   return (
-    <Paper elevation={0}>
+    <Paper>
       <Box
         display="flex"
         flexDirection="column"

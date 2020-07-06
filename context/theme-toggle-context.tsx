@@ -12,6 +12,10 @@ const BASE_THEME: ThemeOptions = {
     MuiButtonBase: {
       disableRipple: true,
     },
+    MuiPaper: {
+      variant: 'outlined',
+      elevation: 0,
+    },
   },
   breakpoints: {
     values: {

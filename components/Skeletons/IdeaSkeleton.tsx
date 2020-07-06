@@ -6,11 +6,7 @@ import { Skeleton } from '@material-ui/lab';
 function IdeaSkeleton() {
   const classes = useGutterAllChild({ spacing: 2 });
   return (
-    <Paper
-      className={classes.gutterAllChild}
-      elevation={0}
-      style={{ padding: '1rem' }}
-    >
+    <Paper className={classes.gutterAllChild} style={{ padding: '1rem' }}>
       <div
         style={{
           display: 'flex',
