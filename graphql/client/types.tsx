@@ -63,7 +63,7 @@ export type Mutation = {
   deleteIdea: Idea;
   deleteFeature: Feature;
   saveIdea: Save;
-  deleteSavedIdea: Save;
+  unsaveIdea: Save;
   likeIdea: Like;
   unlikeIdea: Like;
 };
@@ -110,12 +110,12 @@ export type MutationDeleteFeatureArgs = {
 
 
 export type MutationSaveIdeaArgs = {
-  id: Scalars['ID'];
+  idea_id: Scalars['ID'];
 };
 
 
-export type MutationDeleteSavedIdeaArgs = {
-  id: Scalars['ID'];
+export type MutationUnsaveIdeaArgs = {
+  idea_id: Scalars['ID'];
 };
 
 
@@ -285,6 +285,15 @@ export type ToggleLikeBodyFragment = (
   ) }
 );
 
+export type ToggleSaveBodyFragment = (
+  { __typename?: 'Save' }
+  & Pick<Save, 'id'>
+  & { idea: (
+    { __typename?: 'Idea' }
+    & Pick<Idea, 'id' | 'isSavedByMe'>
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -358,6 +367,32 @@ export type UnlikeIdeaMutation = (
   ) }
 );
 
+export type SaveIdeaMutationVariables = Exact<{
+  idea_id: Scalars['ID'];
+}>;
+
+
+export type SaveIdeaMutation = (
+  { __typename?: 'Mutation' }
+  & { saveIdea: (
+    { __typename?: 'Save' }
+    & ToggleSaveBodyFragment
+  ) }
+);
+
+export type UnsaveIdeaMutationVariables = Exact<{
+  idea_id: Scalars['ID'];
+}>;
+
+
+export type UnsaveIdeaMutation = (
+  { __typename?: 'Mutation' }
+  & { unsaveIdea: (
+    { __typename?: 'Save' }
+    & ToggleSaveBodyFragment
+  ) }
+);
+
 export type UserBodyFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'name' | 'username' | 'email' | 'avatar' | 'createdAt'>
@@ -370,7 +405,7 @@ export type UserShortBodyFragment = (
 
 export type IdeaBodyFragment = (
   { __typename?: 'Idea' }
-  & Pick<Idea, 'id' | 'title' | 'body' | 'tags' | 'isLikedByMe' | 'likesCount' | 'createdAt'>
+  & Pick<Idea, 'id' | 'title' | 'body' | 'tags' | 'isLikedByMe' | 'likesCount' | 'isSavedByMe' | 'createdAt'>
 );
 
 export type IdeaShortBodyFragment = (
@@ -562,6 +597,15 @@ export const ToggleLikeBodyFragmentDoc = gql`
   }
 }
     `;
+export const ToggleSaveBodyFragmentDoc = gql`
+    fragment ToggleSaveBody on Save {
+  id
+  idea {
+    id
+    isSavedByMe
+  }
+}
+    `;
 export const UserBodyFragmentDoc = gql`
     fragment UserBody on User {
   id
@@ -587,6 +631,7 @@ export const IdeaBodyFragmentDoc = gql`
   tags
   isLikedByMe
   likesCount
+  isSavedByMe
   createdAt
 }
     `;
@@ -769,6 +814,70 @@ export function useUnlikeIdeaMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type UnlikeIdeaMutationHookResult = ReturnType<typeof useUnlikeIdeaMutation>;
 export type UnlikeIdeaMutationResult = ApolloReactCommon.MutationResult<UnlikeIdeaMutation>;
 export type UnlikeIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<UnlikeIdeaMutation, UnlikeIdeaMutationVariables>;
+export const SaveIdeaDocument = gql`
+    mutation SaveIdea($idea_id: ID!) {
+  saveIdea(idea_id: $idea_id) {
+    ...ToggleSaveBody
+  }
+}
+    ${ToggleSaveBodyFragmentDoc}`;
+export type SaveIdeaMutationFn = ApolloReactCommon.MutationFunction<SaveIdeaMutation, SaveIdeaMutationVariables>;
+
+/**
+ * __useSaveIdeaMutation__
+ *
+ * To run a mutation, you first call `useSaveIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveIdeaMutation, { data, loading, error }] = useSaveIdeaMutation({
+ *   variables: {
+ *      idea_id: // value for 'idea_id'
+ *   },
+ * });
+ */
+export function useSaveIdeaMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SaveIdeaMutation, SaveIdeaMutationVariables>) {
+        return ApolloReactHooks.useMutation<SaveIdeaMutation, SaveIdeaMutationVariables>(SaveIdeaDocument, baseOptions);
+      }
+export type SaveIdeaMutationHookResult = ReturnType<typeof useSaveIdeaMutation>;
+export type SaveIdeaMutationResult = ApolloReactCommon.MutationResult<SaveIdeaMutation>;
+export type SaveIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<SaveIdeaMutation, SaveIdeaMutationVariables>;
+export const UnsaveIdeaDocument = gql`
+    mutation UnsaveIdea($idea_id: ID!) {
+  unsaveIdea(idea_id: $idea_id) {
+    ...ToggleSaveBody
+  }
+}
+    ${ToggleSaveBodyFragmentDoc}`;
+export type UnsaveIdeaMutationFn = ApolloReactCommon.MutationFunction<UnsaveIdeaMutation, UnsaveIdeaMutationVariables>;
+
+/**
+ * __useUnsaveIdeaMutation__
+ *
+ * To run a mutation, you first call `useUnsaveIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnsaveIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unsaveIdeaMutation, { data, loading, error }] = useUnsaveIdeaMutation({
+ *   variables: {
+ *      idea_id: // value for 'idea_id'
+ *   },
+ * });
+ */
+export function useUnsaveIdeaMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UnsaveIdeaMutation, UnsaveIdeaMutationVariables>) {
+        return ApolloReactHooks.useMutation<UnsaveIdeaMutation, UnsaveIdeaMutationVariables>(UnsaveIdeaDocument, baseOptions);
+      }
+export type UnsaveIdeaMutationHookResult = ReturnType<typeof useUnsaveIdeaMutation>;
+export type UnsaveIdeaMutationResult = ApolloReactCommon.MutationResult<UnsaveIdeaMutation>;
+export type UnsaveIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<UnsaveIdeaMutation, UnsaveIdeaMutationVariables>;
 export const GetIdeaByIdDocument = gql`
     query GetIdeaById($id: ID!) {
   idea(id: $id) {

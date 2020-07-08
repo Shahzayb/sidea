@@ -764,25 +764,25 @@ export const Mutation: MutationResolvers = {
 
     return idea!;
   },
-  async saveIdea(_, { id }, { prisma, user }) {
+  async saveIdea(_, { idea_id }, { prisma, user }) {
     if (!user) {
       throw new AuthenticationError('login is required');
     }
 
-    const errors: { param: 'id'; msg: string }[] = [];
+    const errors: { param: 'idea_id'; msg: string }[] = [];
 
     // validate id
     if (
-      !validator.isInt(id.trim(), {
+      !validator.isInt(idea_id.trim(), {
         allow_leading_zeroes: true,
       })
     ) {
       errors.push({
-        param: 'id',
-        msg: 'id is invalid',
+        param: 'idea_id',
+        msg: 'idea_id is invalid',
       });
     } else {
-      const ideaId = validator.toInt(id);
+      const ideaId = validator.toInt(idea_id);
       const ideaCount = await prisma.idea.count({
         where: {
           id: ideaId,
@@ -790,7 +790,7 @@ export const Mutation: MutationResolvers = {
       });
       if (!ideaCount) {
         errors.push({
-          param: 'id',
+          param: 'idea_id',
           msg: 'idea does not exists.',
         });
       } else {
@@ -804,8 +804,8 @@ export const Mutation: MutationResolvers = {
 
         if (saveCount > 0) {
           errors.push({
-            param: 'id',
-            msg: 'idea is already saved by you.',
+            param: 'idea_id',
+            msg: `idea:${ideaId} is already saved by user:${user.id}.`,
           });
         }
       }
@@ -821,7 +821,7 @@ export const Mutation: MutationResolvers = {
       data: {
         Idea: {
           connect: {
-            id: validator.toInt(id),
+            id: validator.toInt(idea_id),
           },
         },
         User: {
@@ -834,42 +834,35 @@ export const Mutation: MutationResolvers = {
 
     return save;
   },
-  async deleteSavedIdea(_, { id }, { prisma, user }) {
+  async unsaveIdea(_, { idea_id }, { prisma, user }) {
     if (!user) {
       throw new AuthenticationError('login is required');
     }
 
-    const errors: { param: 'id'; msg: string }[] = [];
+    const errors: { param: 'idea_id'; msg: string }[] = [];
 
     // validate id
     if (
-      !validator.isInt(id.trim(), {
+      !validator.isInt(idea_id.trim(), {
         allow_leading_zeroes: true,
       })
     ) {
       errors.push({
-        param: 'id',
-        msg: 'id is invalid',
+        param: 'idea_id',
+        msg: 'idea_id is invalid',
       });
     } else {
-      const saveId = validator.toInt(id);
-      const save = await prisma.save.findOne({
+      const ideaId = validator.toInt(idea_id);
+      const save = await prisma.save.count({
         where: {
-          id: saveId,
-        },
-        select: {
-          userId: true,
+          ideaId,
+          userId: user.id,
         },
       });
       if (!save) {
         errors.push({
-          param: 'id',
-          msg: 'saved idea does not exists.',
-        });
-      } else if (save.userId !== user.id) {
-        errors.push({
-          param: 'id',
-          msg: 'you are not authorized to delete this saved idea.',
+          param: 'idea_id',
+          msg: `user:${user.id} did not saved idea:${ideaId}.`,
         });
       }
     }
@@ -882,7 +875,8 @@ export const Mutation: MutationResolvers = {
 
     const save = await prisma.save.delete({
       where: {
-        id: validator.toInt(id),
+        ideaId: validator.toInt(idea_id),
+        userId: user.id,
       },
     });
 

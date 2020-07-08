@@ -27,6 +27,7 @@ export const IdeaBody = gql`
     tags
     isLikedByMe
     likesCount
+    isSavedByMe
     createdAt
   }
 `;

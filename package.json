@@ -2,7 +2,7 @@
   "name": "sidea",
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently \"next\" \"npm run types:generate -- --watch\"",
+    "dev": "concurrently \"next\" \"npm run types:generate:watch\"",
     "build": "next build",
     "export": "next export",
     "start": "next start",
@@ -10,6 +10,7 @@
     "prisma:introspect": "prisma introspect",
     "postprisma:introspect": "npm run prisma:generate",
     "types:generate": "graphql-codegen --config graphql/types-gen.yml",
+    "types:generate:watch": "npm run types:generate -- --watch",
     "db:start": "cd db && docker-compose up -d",
     "db:stop": "cd db && docker-compose down"
   },

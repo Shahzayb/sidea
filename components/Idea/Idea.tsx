@@ -26,6 +26,7 @@ import CustomError from '../Errors/CustomError';
 import number from '../../utils/number';
 import UserAvatar from '../User/UserAvatar';
 import ToggleLike from './IdeaActions/ToggleLike';
+import ToggleSave from './IdeaActions/ToggleSave';
 
 interface Props {
   id: string;
@@ -115,9 +116,7 @@ function Idea({ id }: Props) {
               12 Features
             </Button>
             <ToggleLike idea={data.idea} />
-            <Button size="small" startIcon={<SaveIcon />}>
-              save
-            </Button>
+            <ToggleSave idea={data.idea} />
 
             <Button size="small" startIcon={<ShareIcon />}>
               share

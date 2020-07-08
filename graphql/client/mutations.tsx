@@ -11,6 +11,16 @@ export const ToggleLikeBody = gql`
   }
 `;
 
+export const ToggleSaveBody = gql`
+  fragment ToggleSaveBody on Save {
+    id
+    idea {
+      id
+      isSavedByMe
+    }
+  }
+`;
+
 export const Login = gql`
   mutation Login($input: LoginInput!) {
     login(input: $input) {
@@ -53,6 +63,22 @@ export const UnlikeIdea = gql`
   mutation UnlikeIdea($idea_id: ID!) {
     unlikeIdea(idea_id: $idea_id) {
       ...ToggleLikeBody
+    }
+  }
+`;
+
+export const SaveIdea = gql`
+  mutation SaveIdea($idea_id: ID!) {
+    saveIdea(idea_id: $idea_id) {
+      ...ToggleSaveBody
+    }
+  }
+`;
+
+export const UnsaveIdea = gql`
+  mutation UnsaveIdea($idea_id: ID!) {
+    unsaveIdea(idea_id: $idea_id) {
+      ...ToggleSaveBody
     }
   }
 `;
