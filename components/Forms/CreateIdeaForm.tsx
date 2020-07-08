@@ -89,9 +89,11 @@ function CreateIdeaForm() {
           input: values,
         },
       })
-        .then(({ data }) => {
+        .then(({ data, errors }) => {
           if (data) {
             router.push('/idea/[ideaId]', `/idea/${data.createIdea.id}`);
+          } else {
+            return Promise.reject({ graphQLErrors: errors });
           }
         })
         .catch((err) => {

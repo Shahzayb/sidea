@@ -40,9 +40,11 @@ function LoginForm() {
           input: values,
         },
       })
-        .then(({ data }) => {
+        .then(({ data, errors }) => {
           if (data) {
             login(data.login.token);
+          } else {
+            return Promise.reject({ graphQLErrors: errors });
           }
         })
         .catch((err) => {

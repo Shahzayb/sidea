@@ -47,9 +47,11 @@ function SignupForm() {
           input: values,
         },
       })
-        .then(({ data }) => {
+        .then(({ data, errors }) => {
           if (data) {
             login(data.signup.token);
+          } else {
+            return Promise.reject({ graphQLErrors: errors });
           }
         })
         .catch((err) => {

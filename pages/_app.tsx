@@ -89,8 +89,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
-  console.log('isSmallScreen', isSmallScreen);
-
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
