@@ -120,12 +120,12 @@ export type MutationDeleteSavedIdeaArgs = {
 
 
 export type MutationLikeIdeaArgs = {
-  id: Scalars['ID'];
+  idea_id: Scalars['ID'];
 };
 
 
 export type MutationUnlikeIdeaArgs = {
-  id: Scalars['ID'];
+  idea_id: Scalars['ID'];
 };
 
 export type LoginInput = {
@@ -276,6 +276,15 @@ export type Save = {
   createdAt: Scalars['String'];
 };
 
+export type ToggleLikeBodyFragment = (
+  { __typename?: 'Like' }
+  & Pick<Like, 'id'>
+  & { idea: (
+    { __typename?: 'Idea' }
+    & Pick<Idea, 'id' | 'likesCount' | 'isLikedByMe'>
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -323,6 +332,57 @@ export type CreateIdeaMutation = (
   ) }
 );
 
+export type LikeIdeaMutationVariables = Exact<{
+  idea_id: Scalars['ID'];
+}>;
+
+
+export type LikeIdeaMutation = (
+  { __typename?: 'Mutation' }
+  & { likeIdea: (
+    { __typename?: 'Like' }
+    & ToggleLikeBodyFragment
+  ) }
+);
+
+export type UnlikeIdeaMutationVariables = Exact<{
+  idea_id: Scalars['ID'];
+}>;
+
+
+export type UnlikeIdeaMutation = (
+  { __typename?: 'Mutation' }
+  & { unlikeIdea: (
+    { __typename?: 'Like' }
+    & ToggleLikeBodyFragment
+  ) }
+);
+
+export type UserBodyFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'name' | 'username' | 'email' | 'avatar' | 'createdAt'>
+);
+
+export type UserShortBodyFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username' | 'avatar'>
+);
+
+export type IdeaBodyFragment = (
+  { __typename?: 'Idea' }
+  & Pick<Idea, 'id' | 'title' | 'body' | 'tags' | 'isLikedByMe' | 'likesCount' | 'createdAt'>
+);
+
+export type IdeaShortBodyFragment = (
+  { __typename?: 'Idea' }
+  & Pick<Idea, 'id' | 'title' | 'createdAt'>
+);
+
+export type PageBodyFragment = (
+  { __typename?: 'Page' }
+  & Pick<Page, 'cursor' | 'hasNextPage'>
+);
+
 export type GetIdeaByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -332,11 +392,11 @@ export type GetIdeaByIdQuery = (
   { __typename?: 'Query' }
   & { idea?: Maybe<(
     { __typename?: 'Idea' }
-    & Pick<Idea, 'id' | 'title' | 'body' | 'tags' | 'createdAt'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username' | 'avatar'>
+      & UserShortBodyFragment
     ) }
+    & IdeaBodyFragment
   )> }
 );
 
@@ -347,7 +407,7 @@ export type GetMyProfileQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'email'>
+    & UserBodyFragment
   ) }
 );
 
@@ -360,7 +420,7 @@ export type GetUserByIdQuery = (
   { __typename?: 'Query' }
   & { user?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'createdAt'>
+    & UserBodyFragment
   )> }
 );
 
@@ -375,17 +435,17 @@ export type GetUserIdeasQuery = (
   { __typename?: 'Query' }
   & { user?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'avatar'>
     & { ideas: (
       { __typename?: 'IdeaPageResponse' }
       & { page: (
         { __typename?: 'Page' }
-        & Pick<Page, 'cursor' | 'hasNextPage'>
+        & PageBodyFragment
       ), entry: Array<(
         { __typename?: 'Idea' }
-        & Pick<Idea, 'id' | 'title' | 'createdAt'>
+        & IdeaShortBodyFragment
       )> }
     ) }
+    & UserShortBodyFragment
   )> }
 );
 
@@ -400,17 +460,17 @@ export type GetSavedUserIdeasQuery = (
   { __typename?: 'Query' }
   & { user?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'avatar'>
     & { savedIdeas: (
       { __typename?: 'IdeaPageResponse' }
       & { page: (
         { __typename?: 'Page' }
-        & Pick<Page, 'cursor' | 'hasNextPage'>
+        & PageBodyFragment
       ), entry: Array<(
         { __typename?: 'Idea' }
-        & Pick<Idea, 'id' | 'title' | 'createdAt'>
+        & IdeaShortBodyFragment
       )> }
     ) }
+    & UserShortBodyFragment
   )> }
 );
 
@@ -430,14 +490,14 @@ export type GetUserLikesQuery = (
       { __typename?: 'IdeaPageResponse' }
       & { page: (
         { __typename?: 'Page' }
-        & Pick<Page, 'cursor' | 'hasNextPage'>
+        & PageBodyFragment
       ), entry: Array<(
         { __typename?: 'Idea' }
-        & Pick<Idea, 'id' | 'title' | 'createdAt'>
         & { user: (
           { __typename?: 'User' }
-          & Pick<User, 'id' | 'username' | 'avatar'>
+          & UserShortBodyFragment
         ) }
+        & IdeaShortBodyFragment
       )> }
     ) }
   )> }
@@ -455,14 +515,14 @@ export type GetNewIdeasQuery = (
     { __typename?: 'IdeaPageResponse' }
     & { page: (
       { __typename?: 'Page' }
-      & Pick<Page, 'cursor' | 'hasNextPage'>
+      & PageBodyFragment
     ), entry: Array<(
       { __typename?: 'Idea' }
-      & Pick<Idea, 'id' | 'title' | 'createdAt'>
       & { user: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'username' | 'avatar'>
+        & UserShortBodyFragment
       ) }
+      & IdeaShortBodyFragment
     )> }
   ) }
 );
@@ -480,19 +540,69 @@ export type GetTopIdeasQuery = (
     { __typename?: 'IdeaPageResponse' }
     & { page: (
       { __typename?: 'Page' }
-      & Pick<Page, 'cursor' | 'hasNextPage'>
+      & PageBodyFragment
     ), entry: Array<(
       { __typename?: 'Idea' }
-      & Pick<Idea, 'id' | 'title' | 'createdAt'>
       & { user: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'username' | 'avatar'>
+        & UserShortBodyFragment
       ) }
+      & IdeaShortBodyFragment
     )> }
   ) }
 );
 
-
+export const ToggleLikeBodyFragmentDoc = gql`
+    fragment ToggleLikeBody on Like {
+  id
+  idea {
+    id
+    likesCount
+    isLikedByMe
+  }
+}
+    `;
+export const UserBodyFragmentDoc = gql`
+    fragment UserBody on User {
+  id
+  name
+  username
+  email
+  avatar
+  createdAt
+}
+    `;
+export const UserShortBodyFragmentDoc = gql`
+    fragment UserShortBody on User {
+  id
+  username
+  avatar
+}
+    `;
+export const IdeaBodyFragmentDoc = gql`
+    fragment IdeaBody on Idea {
+  id
+  title
+  body
+  tags
+  isLikedByMe
+  likesCount
+  createdAt
+}
+    `;
+export const IdeaShortBodyFragmentDoc = gql`
+    fragment IdeaShortBody on Idea {
+  id
+  title
+  createdAt
+}
+    `;
+export const PageBodyFragmentDoc = gql`
+    fragment PageBody on Page {
+  cursor
+  hasNextPage
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
@@ -595,22 +705,81 @@ export function useCreateIdeaMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateIdeaMutationHookResult = ReturnType<typeof useCreateIdeaMutation>;
 export type CreateIdeaMutationResult = ApolloReactCommon.MutationResult<CreateIdeaMutation>;
 export type CreateIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateIdeaMutation, CreateIdeaMutationVariables>;
+export const LikeIdeaDocument = gql`
+    mutation LikeIdea($idea_id: ID!) {
+  likeIdea(idea_id: $idea_id) {
+    ...ToggleLikeBody
+  }
+}
+    ${ToggleLikeBodyFragmentDoc}`;
+export type LikeIdeaMutationFn = ApolloReactCommon.MutationFunction<LikeIdeaMutation, LikeIdeaMutationVariables>;
+
+/**
+ * __useLikeIdeaMutation__
+ *
+ * To run a mutation, you first call `useLikeIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeIdeaMutation, { data, loading, error }] = useLikeIdeaMutation({
+ *   variables: {
+ *      idea_id: // value for 'idea_id'
+ *   },
+ * });
+ */
+export function useLikeIdeaMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<LikeIdeaMutation, LikeIdeaMutationVariables>) {
+        return ApolloReactHooks.useMutation<LikeIdeaMutation, LikeIdeaMutationVariables>(LikeIdeaDocument, baseOptions);
+      }
+export type LikeIdeaMutationHookResult = ReturnType<typeof useLikeIdeaMutation>;
+export type LikeIdeaMutationResult = ApolloReactCommon.MutationResult<LikeIdeaMutation>;
+export type LikeIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<LikeIdeaMutation, LikeIdeaMutationVariables>;
+export const UnlikeIdeaDocument = gql`
+    mutation UnlikeIdea($idea_id: ID!) {
+  unlikeIdea(idea_id: $idea_id) {
+    ...ToggleLikeBody
+  }
+}
+    ${ToggleLikeBodyFragmentDoc}`;
+export type UnlikeIdeaMutationFn = ApolloReactCommon.MutationFunction<UnlikeIdeaMutation, UnlikeIdeaMutationVariables>;
+
+/**
+ * __useUnlikeIdeaMutation__
+ *
+ * To run a mutation, you first call `useUnlikeIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlikeIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlikeIdeaMutation, { data, loading, error }] = useUnlikeIdeaMutation({
+ *   variables: {
+ *      idea_id: // value for 'idea_id'
+ *   },
+ * });
+ */
+export function useUnlikeIdeaMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UnlikeIdeaMutation, UnlikeIdeaMutationVariables>) {
+        return ApolloReactHooks.useMutation<UnlikeIdeaMutation, UnlikeIdeaMutationVariables>(UnlikeIdeaDocument, baseOptions);
+      }
+export type UnlikeIdeaMutationHookResult = ReturnType<typeof useUnlikeIdeaMutation>;
+export type UnlikeIdeaMutationResult = ApolloReactCommon.MutationResult<UnlikeIdeaMutation>;
+export type UnlikeIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<UnlikeIdeaMutation, UnlikeIdeaMutationVariables>;
 export const GetIdeaByIdDocument = gql`
     query GetIdeaById($id: ID!) {
   idea(id: $id) {
-    id
-    title
-    body
-    tags
-    createdAt
+    ...IdeaBody
     user {
-      id
-      username
-      avatar
+      ...UserShortBody
     }
   }
 }
-    `;
+    ${IdeaBodyFragmentDoc}
+${UserShortBodyFragmentDoc}`;
 
 /**
  * __useGetIdeaByIdQuery__
@@ -640,14 +809,10 @@ export type GetIdeaByIdQueryResult = ApolloReactCommon.QueryResult<GetIdeaByIdQu
 export const GetMyProfileDocument = gql`
     query GetMyProfile {
   me {
-    id
-    name
-    username
-    avatar
-    email
+    ...UserBody
   }
 }
-    `;
+    ${UserBodyFragmentDoc}`;
 
 /**
  * __useGetMyProfileQuery__
@@ -676,14 +841,10 @@ export type GetMyProfileQueryResult = ApolloReactCommon.QueryResult<GetMyProfile
 export const GetUserByIdDocument = gql`
     query GetUserById($id: ID!) {
   user(id: $id) {
-    id
-    name
-    username
-    avatar
-    createdAt
+    ...UserBody
   }
 }
-    `;
+    ${UserBodyFragmentDoc}`;
 
 /**
  * __useGetUserByIdQuery__
@@ -713,23 +874,20 @@ export type GetUserByIdQueryResult = ApolloReactCommon.QueryResult<GetUserByIdQu
 export const GetUserIdeasDocument = gql`
     query GetUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
   user(id: $id) {
-    id
-    username
-    avatar
+    ...UserShortBody
     ideas(after_id: $after_id, limit: $limit) {
       page {
-        cursor
-        hasNextPage
+        ...PageBody
       }
       entry {
-        id
-        title
-        createdAt
+        ...IdeaShortBody
       }
     }
   }
 }
-    `;
+    ${UserShortBodyFragmentDoc}
+${PageBodyFragmentDoc}
+${IdeaShortBodyFragmentDoc}`;
 
 /**
  * __useGetUserIdeasQuery__
@@ -761,23 +919,20 @@ export type GetUserIdeasQueryResult = ApolloReactCommon.QueryResult<GetUserIdeas
 export const GetSavedUserIdeasDocument = gql`
     query GetSavedUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
   user(id: $id) {
-    id
-    username
-    avatar
+    ...UserShortBody
     savedIdeas(after_id: $after_id, limit: $limit) {
       page {
-        cursor
-        hasNextPage
+        ...PageBody
       }
       entry {
-        id
-        title
-        createdAt
+        ...IdeaShortBody
       }
     }
   }
 }
-    `;
+    ${UserShortBodyFragmentDoc}
+${PageBodyFragmentDoc}
+${IdeaShortBodyFragmentDoc}`;
 
 /**
  * __useGetSavedUserIdeasQuery__
@@ -812,23 +967,20 @@ export const GetUserLikesDocument = gql`
     id
     likedIdeas(after_id: $after_id, limit: $limit) {
       page {
-        cursor
-        hasNextPage
+        ...PageBody
       }
       entry {
-        id
-        title
-        createdAt
+        ...IdeaShortBody
         user {
-          id
-          username
-          avatar
+          ...UserShortBody
         }
       }
     }
   }
 }
-    `;
+    ${PageBodyFragmentDoc}
+${IdeaShortBodyFragmentDoc}
+${UserShortBodyFragmentDoc}`;
 
 /**
  * __useGetUserLikesQuery__
@@ -861,22 +1013,19 @@ export const GetNewIdeasDocument = gql`
     query GetNewIdeas($after_id: ID, $limit: Int!) {
   newIdeas(after_id: $after_id, limit: $limit) {
     page {
-      cursor
-      hasNextPage
+      ...PageBody
     }
     entry {
-      id
-      title
-      createdAt
+      ...IdeaShortBody
       user {
-        id
-        username
-        avatar
+        ...UserShortBody
       }
     }
   }
 }
-    `;
+    ${PageBodyFragmentDoc}
+${IdeaShortBodyFragmentDoc}
+${UserShortBodyFragmentDoc}`;
 
 /**
  * __useGetNewIdeasQuery__
@@ -908,22 +1057,19 @@ export const GetTopIdeasDocument = gql`
     query GetTopIdeas($interval: INTERVAL!, $skip: Int!, $limit: Int!) {
   topIdeas(interval: $interval, skip: $skip, limit: $limit) {
     page {
-      cursor
-      hasNextPage
+      ...PageBody
     }
     entry {
-      id
-      title
-      createdAt
+      ...IdeaShortBody
       user {
-        id
-        username
-        avatar
+        ...UserShortBody
       }
     }
   }
 }
-    `;
+    ${PageBodyFragmentDoc}
+${IdeaShortBodyFragmentDoc}
+${UserShortBodyFragmentDoc}`;
 
 /**
  * __useGetTopIdeasQuery__

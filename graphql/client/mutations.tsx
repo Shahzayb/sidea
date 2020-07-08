@@ -1,5 +1,16 @@
 import gql from 'graphql-tag';
 
+export const ToggleLikeBody = gql`
+  fragment ToggleLikeBody on Like {
+    id
+    idea {
+      id
+      likesCount
+      isLikedByMe
+    }
+  }
+`;
+
 export const Login = gql`
   mutation Login($input: LoginInput!) {
     login(input: $input) {
@@ -26,6 +37,22 @@ export const CreateIdea = gql`
   mutation CreateIdea($input: CreateIdeaInput!) {
     createIdea(input: $input) {
       id
+    }
+  }
+`;
+
+export const LikeIdea = gql`
+  mutation LikeIdea($idea_id: ID!) {
+    likeIdea(idea_id: $idea_id) {
+      ...ToggleLikeBody
+    }
+  }
+`;
+
+export const UnlikeIdea = gql`
+  mutation UnlikeIdea($idea_id: ID!) {
+    unlikeIdea(idea_id: $idea_id) {
+      ...ToggleLikeBody
     }
   }
 `;

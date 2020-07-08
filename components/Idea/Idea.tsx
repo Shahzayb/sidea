@@ -24,6 +24,8 @@ import IdeaSkeleton from '../Skeletons/IdeaSkeleton';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
 import CustomError from '../Errors/CustomError';
 import number from '../../utils/number';
+import UserAvatar from '../User/UserAvatar';
+import ToggleLike from './IdeaActions/ToggleLike';
 
 interface Props {
   id: string;
@@ -74,16 +76,7 @@ function Idea({ id }: Props) {
             justifyContent: 'space-between',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar
-              style={{ marginRight: '0.5rem' }}
-              alt={data.idea.user.username}
-              src={data.idea.user.avatar}
-            />
-            <Typography component="span" variant="subtitle2">
-              {data.idea.user.username}
-            </Typography>
-          </div>
+          <UserAvatar user={data.idea.user} />
           <Typography variant="caption" color="textSecondary">
             {timeago_format(data.idea.createdAt)}
           </Typography>
@@ -121,9 +114,7 @@ function Idea({ id }: Props) {
             <Button size="small" startIcon={<ListIcon />}>
               12 Features
             </Button>
-            <Button size="small" startIcon={<FavoriteIcon />}>
-              Like
-            </Button>
+            <ToggleLike idea={data.idea} />
             <Button size="small" startIcon={<SaveIcon />}>
               save
             </Button>
@@ -140,7 +131,7 @@ function Idea({ id }: Props) {
             </Button>
           </div>
           <Typography component="span" variant="overline">
-            {number.format(199948)} likes
+            {number.format(data.idea.likesCount)} likes
           </Typography>
         </Box>
         <div style={{ marginTop: '2rem' }}>

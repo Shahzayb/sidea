@@ -122,12 +122,12 @@ export type MutationDeleteSavedIdeaArgs = {
 
 
 export type MutationLikeIdeaArgs = {
-  id: Scalars['ID'];
+  idea_id: Scalars['ID'];
 };
 
 
 export type MutationUnlikeIdeaArgs = {
-  id: Scalars['ID'];
+  idea_id: Scalars['ID'];
 };
 
 export type LoginInput = {
@@ -429,8 +429,8 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   deleteFeature?: Resolver<ResolversTypes['Feature'], ParentType, ContextType, RequireFields<MutationDeleteFeatureArgs, 'id'>>;
   saveIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationSaveIdeaArgs, 'id'>>;
   deleteSavedIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationDeleteSavedIdeaArgs, 'id'>>;
-  likeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeIdeaArgs, 'id'>>;
-  unlikeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationUnlikeIdeaArgs, 'id'>>;
+  likeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeIdeaArgs, 'idea_id'>>;
+  unlikeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationUnlikeIdeaArgs, 'idea_id'>>;
 }>;
 
 export type IdeaPageResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IdeaPageResponse'] = ResolversParentTypes['IdeaPageResponse']> = ResolversObject<{

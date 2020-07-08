@@ -26,8 +26,8 @@ const typeDefs = gql`
     deleteFeature(id: ID!): Feature!
     saveIdea(id: ID!): Save!
     deleteSavedIdea(id: ID!): Save!
-    likeIdea(id: ID!): Like!
-    unlikeIdea(id: ID!): Like!
+    likeIdea(idea_id: ID!): Like!
+    unlikeIdea(idea_id: ID!): Like!
   }
 
   input LoginInput {

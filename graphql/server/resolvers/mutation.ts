@@ -888,25 +888,25 @@ export const Mutation: MutationResolvers = {
 
     return save;
   },
-  async likeIdea(_, { id }, { prisma, user }) {
+  async likeIdea(_, { idea_id }, { prisma, user }) {
     if (!user) {
       throw new AuthenticationError('login is required');
     }
 
-    const errors: { param: 'id'; msg: string }[] = [];
+    const errors: { param: 'idea_id'; msg: string }[] = [];
 
     // validate id
     if (
-      !validator.isInt(id.trim(), {
+      !validator.isInt(idea_id.trim(), {
         allow_leading_zeroes: true,
       })
     ) {
       errors.push({
-        param: 'id',
-        msg: 'id is invalid',
+        param: 'idea_id',
+        msg: 'idea_id is invalid',
       });
     } else {
-      const ideaId = validator.toInt(id);
+      const ideaId = validator.toInt(idea_id);
       const ideaCount = await prisma.idea.count({
         where: {
           id: ideaId,
@@ -914,21 +914,21 @@ export const Mutation: MutationResolvers = {
       });
       if (!ideaCount) {
         errors.push({
-          param: 'id',
+          param: 'idea_id',
           msg: 'idea does not exists.',
         });
       } else {
         // check if idea is already saved
-        const saveCount = await prisma.like.count({
+        const likeCount = await prisma.like.count({
           where: {
             ideaId,
             userId: user.id,
           },
         });
 
-        if (saveCount > 0) {
+        if (likeCount > 0) {
           errors.push({
-            param: 'id',
+            param: 'idea_id',
             msg: 'idea is already liked by you.',
           });
         }
@@ -945,7 +945,7 @@ export const Mutation: MutationResolvers = {
       data: {
         Idea: {
           connect: {
-            id: validator.toInt(id),
+            id: validator.toInt(idea_id),
           },
         },
         User: {
@@ -958,34 +958,35 @@ export const Mutation: MutationResolvers = {
 
     return like;
   },
-  async unlikeIdea(_, { id }, { prisma, user }) {
+  async unlikeIdea(_, { idea_id }, { prisma, user }) {
     if (!user) {
       throw new AuthenticationError('login is required');
     }
 
-    const errors: { param: 'id'; msg: string }[] = [];
+    const errors: { param: 'idea_id'; msg: string }[] = [];
 
     // validate id
     if (
-      !validator.isInt(id.trim(), {
+      !validator.isInt(idea_id.trim(), {
         allow_leading_zeroes: true,
       })
     ) {
       errors.push({
-        param: 'id',
-        msg: 'id is invalid',
+        param: 'idea_id',
+        msg: 'idea_id is invalid',
       });
     } else {
-      const likeId = validator.toInt(id);
+      const ideaId = validator.toInt(idea_id);
       const likeCount = await prisma.like.count({
         where: {
-          id: likeId,
+          userId: user.id,
+          ideaId: ideaId,
         },
       });
-      if (!likeCount) {
+      if (likeCount <= 0) {
         errors.push({
-          param: 'id',
-          msg: `like with id "${id}" does not exist.`,
+          param: 'idea_id',
+          msg: `"user:${user.id}" didn't liked "idea:${ideaId}.`,
         });
       }
     }
@@ -996,15 +997,17 @@ export const Mutation: MutationResolvers = {
       });
     }
 
-    const like = await prisma.like.findOne({
-      where: {
-        id: validator.toInt(id),
-      },
-    });
+    // const like = await prisma.like.findOne({
+    //   where: {
+    //     userId: user.id,
+    //     ideaId: validator.toInt(idea_id),
+    //   },
+    // });
 
-    await prisma.like.delete({
+    const like = await prisma.like.delete({
       where: {
-        id: validator.toInt(id),
+        userId: user.id,
+        ideaId: validator.toInt(idea_id),
       },
     });
 

@@ -9,6 +9,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable, Operation } from 'apollo-link';
+import { SnackbarProvider } from 'notistack';
 
 import 'react-quill/dist/quill.snow.css';
 import '../public/styles/main.css';
@@ -19,6 +20,7 @@ import { IdeaCategoryProvider } from '../context/idea-category-context';
 
 import { apolloClientUri } from '../client-env';
 import { ZenObservable } from 'zen-observable-ts';
+import { useTheme, useMediaQuery } from '@material-ui/core';
 
 const defaultOptions: DefaultOptions = {
   watchQuery: {
@@ -84,6 +86,11 @@ const client = new ApolloClient({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
+
+  console.log('isSmallScreen', isSmallScreen);
+
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -102,7 +109,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ApolloProvider client={client}>
           <AuthProvider>
             <IdeaCategoryProvider>
-              <Component {...pageProps} />
+              <SnackbarProvider maxSnack={4} dense={isSmallScreen}>
+                <Component {...pageProps} />
+              </SnackbarProvider>
             </IdeaCategoryProvider>
           </AuthProvider>
         </ApolloProvider>

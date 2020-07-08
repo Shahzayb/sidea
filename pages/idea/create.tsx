@@ -21,13 +21,8 @@ function Index() {
   const { loading, authenticated } = useAuth();
   const gutterClx = useGutterAllChild({ spacing: 3 });
   return (
-    <Paper component="main">
-      <Box
-        className={gutterClx.gutterAllChild}
-        p={2}
-        py={4}
-        style={{ marginTop: '6rem' }}
-      >
+    <Paper component="main" style={{ marginTop: '6rem' }}>
+      <Box className={gutterClx.gutterAllChild} p={2} py={4}>
         <Typography component="h1" variant="h5">
           Create Idea
         </Typography>
