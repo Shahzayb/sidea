@@ -11,9 +11,6 @@ import {
 import {
   List as ListIcon,
   Delete as DeleteIcon,
-  Favorite as FavoriteIcon,
-  PlaylistAdd as SaveIcon,
-  PlaylistAddCheck as UnsaveIcon,
   Edit as EditIcon,
   Share as ShareIcon,
 } from '@material-ui/icons';
@@ -27,6 +24,7 @@ import number from '../../utils/number';
 import UserAvatar from '../User/UserAvatar';
 import ToggleLike from './IdeaActions/ToggleLike';
 import ToggleSave from './IdeaActions/ToggleSave';
+import Share from './IdeaActions/Share';
 
 interface Props {
   id: string;
@@ -118,9 +116,7 @@ function Idea({ id }: Props) {
             <ToggleLike idea={data.idea} />
             <ToggleSave idea={data.idea} />
 
-            <Button size="small" startIcon={<ShareIcon />}>
-              share
-            </Button>
+            <Share />
 
             <Button size="small" startIcon={<DeleteIcon />}>
               delete

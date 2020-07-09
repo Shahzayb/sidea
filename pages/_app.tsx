@@ -9,7 +9,6 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable, Operation } from 'apollo-link';
-import { SnackbarProvider } from 'notistack';
 
 import 'react-quill/dist/quill.snow.css';
 import '../public/styles/main.css';
@@ -21,6 +20,7 @@ import { IdeaCategoryProvider } from '../context/idea-category-context';
 import { apolloClientUri } from '../client-env';
 import { ZenObservable } from 'zen-observable-ts';
 import { useTheme, useMediaQuery } from '@material-ui/core';
+import { CustomSnackbarProvider } from '../context/snackbar-context';
 
 const defaultOptions: DefaultOptions = {
   watchQuery: {
@@ -107,9 +107,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ApolloProvider client={client}>
           <AuthProvider>
             <IdeaCategoryProvider>
-              <SnackbarProvider maxSnack={4} dense={isSmallScreen}>
+              <CustomSnackbarProvider maxSnack={4} dense={isSmallScreen}>
                 <Component {...pageProps} />
-              </SnackbarProvider>
+              </CustomSnackbarProvider>
             </IdeaCategoryProvider>
           </AuthProvider>
         </ApolloProvider>
