@@ -4,6 +4,8 @@ import { Button, CircularProgress, Box } from '@material-ui/core';
 import {
   CreateFeatureInput,
   useCreateIdeaMutation,
+  GetUserIdeasDocument,
+  GetNewIdeasDocument,
 } from '../../graphql/client/types';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -17,6 +19,8 @@ import { useRouter } from 'next/router';
 import Link from '../Link';
 import useMarginRightChild from '../../hooks/useMarginRightChild';
 import ResponsiveButton from '../ResponsiveButton';
+import { useAuth } from '../../context/auth-context';
+import { clientPageQueryLimit } from '../../client-env';
 
 const initialValues = {
   title: '',
@@ -77,7 +81,24 @@ const validationSchema = yup.object().shape({
 function CreateIdeaForm() {
   const gutterClx = useGutterAllChild({ spacing: 3 });
   const marginClx = useMarginRightChild();
-  const [createIdeaMutation, { loading, error }] = useCreateIdeaMutation();
+  const { user } = useAuth();
+  const [createIdeaMutation, { loading, error }] = useCreateIdeaMutation({
+    refetchQueries: [
+      {
+        query: GetUserIdeasDocument,
+        variables: {
+          id: user!.id,
+          limit: clientPageQueryLimit,
+        },
+      },
+      {
+        query: GetNewIdeasDocument,
+        variables: {
+          limit: clientPageQueryLimit,
+        },
+      },
+    ],
+  });
   const router = useRouter();
 
   const formik = useFormik({
