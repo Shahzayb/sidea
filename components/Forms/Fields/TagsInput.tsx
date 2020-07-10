@@ -70,6 +70,7 @@ function TagsInput({ value: tags, onChange: setTags, errors }: Props) {
         );
       }}
       options={[]}
+      open={false}
       multiple
       freeSolo
       size="small"

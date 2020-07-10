@@ -1,16 +1,10 @@
 import React from 'react';
 import { Button, CircularProgress, Box } from '@material-ui/core';
 
-import {
-  CreateFeatureInput,
-  useCreateIdeaMutation,
-  GetUserIdeasDocument,
-  GetNewIdeasDocument,
-} from '../../graphql/client/types';
+import { useUpdateIdeaMutation, Idea } from '../../graphql/client/types';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import TagsInput from './Fields/TagsInput';
-import MultiFeaturesInput from './Fields/MultiFeaturesInput';
 import RichTextEditor from './Fields/RichTextEditor';
 import MultilineTextField from './Fields/MultilineTextField';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
@@ -19,17 +13,11 @@ import { useRouter } from 'next/router';
 import Link from '../Link';
 import useMarginRightChild from '../../hooks/useMarginRightChild';
 import ResponsiveButton from '../ResponsiveButton';
-import { useAuth } from '../../context/auth-context';
-import { clientPageQueryLimit } from '../../client-env';
 
-const initialValues = {
-  title: '',
-  body: '',
-  tags: [] as string[],
-  features: [] as CreateFeatureInput[],
-};
-
-type Errors = { param: keyof typeof initialValues; msg: string }[];
+type Errors = {
+  param: keyof Pick<Idea, 'title' | 'body' | 'tags'>;
+  msg: string;
+}[];
 
 const validationSchema = yup.object().shape({
   title: yup.string().trim().required('required').max(300, 'title is too long'),
@@ -64,55 +52,39 @@ const validationSchema = yup.object().shape({
     )
     .default([])
     .max(30, 'Too much tags. Max limit is 30 tags.'),
-  features: yup
-    .array()
-    .of(
-      yup.object().shape({
-        title: yup
-          .string()
-          .trim()
-          .required('required')
-          .max(300, 'feature title is too long'),
-      })
-    )
-    .default([]),
 });
 
-function CreateIdeaForm() {
+interface Props {
+  idea: Pick<Idea, 'id' | 'title' | 'body' | 'tags'>;
+}
+
+function UpdateIdeaForm({ idea }: Props) {
   const gutterClx = useGutterAllChild({ spacing: 3 });
   const marginClx = useMarginRightChild();
-  const { user } = useAuth();
-  const [createIdeaMutation, { loading, error }] = useCreateIdeaMutation({
-    refetchQueries: [
-      {
-        query: GetUserIdeasDocument,
-        variables: {
-          id: user!.id,
-          limit: clientPageQueryLimit,
-        },
-      },
-      {
-        query: GetNewIdeasDocument,
-        variables: {
-          limit: clientPageQueryLimit,
-        },
-      },
-    ],
-  });
+
+  const [updateIdeaMutation, { loading, error }] = useUpdateIdeaMutation();
+
   const router = useRouter();
 
   const formik = useFormik({
-    initialValues,
+    initialValues: {
+      title: idea.title,
+      body: idea.body,
+      tags: idea.tags,
+    },
     validationSchema,
     onSubmit: (values, formik) => {
-      createIdeaMutation({
+      updateIdeaMutation({
         variables: {
-          input: values,
+          input: {
+            id: idea.id,
+            ...values,
+          },
         },
       })
         .then(({ data, errors }) => {
           if (data) {
-            router.push('/idea/[ideaId]', `/idea/${data.createIdea.id}`);
+            router.push('/idea/[ideaId]', `/idea/${data.updateIdea.id}`);
           } else {
             return Promise.reject({ graphQLErrors: errors });
           }
@@ -193,13 +165,6 @@ function CreateIdeaForm() {
           errors={formik.errors.tags}
         />
 
-        <MultiFeaturesInput
-          onChange={(value: CreateFeatureInput[]) => {
-            formik.setFieldValue('features', value);
-          }}
-          value={formik.values.features}
-          errors={formik.errors.features}
-        />
         <Box
           display="flex"
           justifyContent="flex-end"
@@ -220,7 +185,7 @@ function CreateIdeaForm() {
             color="primary"
             disabled={formik.isSubmitting || !formik.isValid}
           >
-            Post{' '}
+            Update
             {formik.isSubmitting && (
               <CircularProgress size={16} style={{ marginLeft: '10px' }} />
             )}
@@ -231,4 +196,4 @@ function CreateIdeaForm() {
   );
 }
 
-export default CreateIdeaForm;
+export default UpdateIdeaForm;

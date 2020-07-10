@@ -48,9 +48,16 @@ interface Props {
   onBlur?: () => void;
   error?: string;
   placeholder: string;
+  value: string;
 }
 
-function RichTextEditor({ onChange, onBlur, error, placeholder }: Props) {
+function RichTextEditor({
+  onChange,
+  onBlur,
+  error,
+  placeholder,
+  value,
+}: Props) {
   const classes = useStyles();
   return (
     <div id="quill_editor">
@@ -58,6 +65,7 @@ function RichTextEditor({ onChange, onBlur, error, placeholder }: Props) {
         className={clsx({
           [classes.errorBorder]: !!error,
         })}
+        value={value}
         theme={'snow'}
         formats={formats}
         modules={modules}

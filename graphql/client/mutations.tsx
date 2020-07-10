@@ -51,6 +51,17 @@ export const CreateIdea = gql`
   }
 `;
 
+export const UpdateIdea = gql`
+  mutation UpdateIdea($input: UpdateIdeaInput!) {
+    updateIdea(input: $input) {
+      id
+      title
+      body
+      tags
+    }
+  }
+`;
+
 export const LikeIdea = gql`
   mutation LikeIdea($idea_id: ID!) {
     likeIdea(idea_id: $idea_id) {

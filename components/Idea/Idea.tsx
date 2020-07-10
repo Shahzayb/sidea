@@ -1,18 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
-import {
-  Paper,
-  Avatar,
-  Typography,
-  Button,
-  Chip,
-  Box,
-} from '@material-ui/core';
+import { Paper, Typography, Button, Chip, Box } from '@material-ui/core';
 import {
   List as ListIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
-  Share as ShareIcon,
 } from '@material-ui/icons';
 import { format as timeago_format } from 'timeago.js';
 import CreateFeatureForm from '../Forms/CreateFeatureForm';
@@ -25,6 +17,7 @@ import UserAvatar from '../User/UserAvatar';
 import ToggleLike from './IdeaActions/ToggleLike';
 import ToggleSave from './IdeaActions/ToggleSave';
 import Share from './IdeaActions/Share';
+import Link from '../Link';
 
 interface Props {
   id: string;
@@ -121,9 +114,15 @@ function Idea({ id }: Props) {
             <Button size="small" startIcon={<DeleteIcon />}>
               delete
             </Button>
-            <Button size="small" startIcon={<EditIcon />}>
-              edit
-            </Button>
+            <Link
+              underline="none"
+              href="/idea/[ideaId]/edit"
+              as={`/idea/${data.idea.id}/edit`}
+            >
+              <Button size="small" startIcon={<EditIcon />}>
+                edit
+              </Button>
+            </Link>
           </div>
           <Typography component="span" variant="overline">
             {number.format(data.idea.likesCount)} likes
