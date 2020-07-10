@@ -57,7 +57,7 @@ function ToggleLike({ idea }: Props) {
         },
       },
     },
-    update(proxy, { data, errors, ...rest }) {
+    update(proxy, { data }) {
       try {
         if (data && !data.likeIdea.id.startsWith('-')) {
           const _idea = proxy.readQuery<
@@ -147,7 +147,7 @@ function ToggleLike({ idea }: Props) {
         },
       },
     },
-    update(proxy, { data, errors, ...rest }) {
+    update(proxy, { data }) {
       try {
         if (data && !data.unlikeIdea.id.startsWith('-')) {
           const _idea = proxy.readQuery<
