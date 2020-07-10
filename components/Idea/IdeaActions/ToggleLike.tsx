@@ -5,11 +5,18 @@ import {
   useLikeIdeaMutation,
   useUnlikeIdeaMutation,
   Idea,
+  GetIdeaByIdDocument,
+  GetIdeaByIdQuery,
+  GetIdeaByIdQueryVariables,
+  GetUserLikesQuery,
+  GetUserLikesDocument,
+  GetUserLikesQueryVariables,
 } from '../../../graphql/client/types';
 import clsx from 'clsx';
 import { useSnackbar } from 'notistack';
 import { useAuth } from '../../../context/auth-context';
 import LoginModal from '../../LoginModal';
+import { clientPageQueryLimit } from '../../../client-env';
 
 const useStyles = makeStyles((theme) => ({
   liked: {
@@ -50,6 +57,77 @@ function ToggleLike({ idea }: Props) {
         },
       },
     },
+    update(proxy, { data, errors, ...rest }) {
+      try {
+        if (data && !data.likeIdea.id.startsWith('-')) {
+          const _idea = proxy.readQuery<
+            GetIdeaByIdQuery,
+            GetIdeaByIdQueryVariables
+          >({
+            query: GetIdeaByIdDocument,
+            variables: {
+              id: idea.id,
+            },
+          });
+
+          if (_idea && _idea.idea) {
+            const _userLikes = proxy.readQuery<
+              GetUserLikesQuery,
+              GetUserLikesQueryVariables
+            >({
+              query: GetUserLikesDocument,
+              variables: {
+                id: _idea.idea.user.id,
+                limit: clientPageQueryLimit,
+              },
+            });
+
+            if (_userLikes && _userLikes.user) {
+              const _ideaExists =
+                _userLikes.user.likedIdeas.entry.findIndex(
+                  (idea) => idea.id === _idea.idea!.id
+                ) !== -1;
+
+              if (!_ideaExists) {
+                proxy.writeQuery<GetUserLikesQuery, GetUserLikesQueryVariables>(
+                  {
+                    query: GetUserLikesDocument,
+                    variables: {
+                      id: _idea.idea.user.id,
+                      limit: clientPageQueryLimit,
+                    },
+                    data: {
+                      ..._userLikes,
+                      user: {
+                        ..._userLikes.user,
+                        likedIdeas: {
+                          ..._userLikes.user.likedIdeas,
+                          entry: [
+                            {
+                              __typename: 'Idea',
+                              id: _idea.idea.id,
+                              createdAt: _idea.idea.createdAt,
+                              title: _idea.idea.title,
+                              user: {
+                                avatar: _idea.idea.user.avatar,
+                                id: _idea.idea.user.id,
+                                __typename: 'User',
+                                username: _idea.idea.user.username,
+                              },
+                            },
+                            ..._userLikes.user.likedIdeas.entry,
+                          ],
+                        },
+                      },
+                    },
+                  }
+                );
+              }
+            }
+          }
+        }
+      } catch {}
+    },
   });
 
   const [unlike, unlikeResult] = useUnlikeIdeaMutation({
@@ -68,6 +146,65 @@ function ToggleLike({ idea }: Props) {
           likesCount: idea.likesCount - 1,
         },
       },
+    },
+    update(proxy, { data, errors, ...rest }) {
+      try {
+        if (data && !data.unlikeIdea.id.startsWith('-')) {
+          const _idea = proxy.readQuery<
+            GetIdeaByIdQuery,
+            GetIdeaByIdQueryVariables
+          >({
+            query: GetIdeaByIdDocument,
+            variables: {
+              id: idea.id,
+            },
+          });
+
+          if (_idea && _idea.idea) {
+            const _userLikes = proxy.readQuery<
+              GetUserLikesQuery,
+              GetUserLikesQueryVariables
+            >({
+              query: GetUserLikesDocument,
+              variables: {
+                id: _idea.idea.user.id,
+                limit: clientPageQueryLimit,
+              },
+            });
+
+            if (_userLikes && _userLikes.user) {
+              const _ideaExists =
+                _userLikes.user.likedIdeas.entry.findIndex(
+                  (idea) => idea.id === _idea.idea!.id
+                ) !== -1;
+
+              if (_ideaExists) {
+                proxy.writeQuery<GetUserLikesQuery, GetUserLikesQueryVariables>(
+                  {
+                    query: GetUserLikesDocument,
+                    variables: {
+                      id: _idea.idea.user.id,
+                      limit: clientPageQueryLimit,
+                    },
+                    data: {
+                      ..._userLikes,
+                      user: {
+                        ..._userLikes.user,
+                        likedIdeas: {
+                          ..._userLikes.user.likedIdeas,
+                          entry: _userLikes.user.likedIdeas.entry.filter(
+                            (idea) => idea.id !== _idea!.idea!.id
+                          ),
+                        },
+                      },
+                    },
+                  }
+                );
+              }
+            }
+          }
+        }
+      } catch {}
     },
   });
 
