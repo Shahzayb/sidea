@@ -78,11 +78,12 @@ const client = new ApolloClient({
     requestLink,
     new HttpLink({
       uri: apolloClientUri,
-      credentials: 'include',
+      credentials: 'same-origin',
     }),
   ]),
   cache,
-  defaultOptions,
+  /**Error: when errorPolicy: 'all', onError does not execute  */
+  // defaultOptions,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {

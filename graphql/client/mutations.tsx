@@ -62,6 +62,14 @@ export const UpdateIdea = gql`
   }
 `;
 
+export const DeleteIdea = gql`
+  mutation DeleteIdea($id: ID!) {
+    deleteIdea(id: $id) {
+      id
+    }
+  }
+`;
+
 export const LikeIdea = gql`
   mutation LikeIdea($idea_id: ID!) {
     likeIdea(idea_id: $idea_id) {

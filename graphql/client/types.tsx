@@ -354,6 +354,19 @@ export type UpdateIdeaMutation = (
   ) }
 );
 
+export type DeleteIdeaMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteIdeaMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteIdea: (
+    { __typename?: 'Idea' }
+    & Pick<Idea, 'id'>
+  ) }
+);
+
 export type LikeIdeaMutationVariables = Exact<{
   idea_id: Scalars['ID'];
 }>;
@@ -798,6 +811,38 @@ export function useUpdateIdeaMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type UpdateIdeaMutationHookResult = ReturnType<typeof useUpdateIdeaMutation>;
 export type UpdateIdeaMutationResult = ApolloReactCommon.MutationResult<UpdateIdeaMutation>;
 export type UpdateIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateIdeaMutation, UpdateIdeaMutationVariables>;
+export const DeleteIdeaDocument = gql`
+    mutation DeleteIdea($id: ID!) {
+  deleteIdea(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteIdeaMutationFn = ApolloReactCommon.MutationFunction<DeleteIdeaMutation, DeleteIdeaMutationVariables>;
+
+/**
+ * __useDeleteIdeaMutation__
+ *
+ * To run a mutation, you first call `useDeleteIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteIdeaMutation, { data, loading, error }] = useDeleteIdeaMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteIdeaMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteIdeaMutation, DeleteIdeaMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteIdeaMutation, DeleteIdeaMutationVariables>(DeleteIdeaDocument, baseOptions);
+      }
+export type DeleteIdeaMutationHookResult = ReturnType<typeof useDeleteIdeaMutation>;
+export type DeleteIdeaMutationResult = ApolloReactCommon.MutationResult<DeleteIdeaMutation>;
+export type DeleteIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteIdeaMutation, DeleteIdeaMutationVariables>;
 export const LikeIdeaDocument = gql`
     mutation LikeIdea($idea_id: ID!) {
   likeIdea(idea_id: $idea_id) {

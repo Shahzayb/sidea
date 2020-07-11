@@ -1,11 +1,16 @@
 import React from 'react';
 import Head from 'next/head';
-import { Paper, Typography, Button, Chip, Box } from '@material-ui/core';
 import {
-  List as ListIcon,
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-} from '@material-ui/icons';
+  Paper,
+  Typography,
+  Button,
+  Chip,
+  Box,
+  Backdrop,
+  CircularProgress,
+  makeStyles,
+} from '@material-ui/core';
+import { List as ListIcon, Edit as EditIcon } from '@material-ui/icons';
 import { format as timeago_format } from 'timeago.js';
 import CreateFeatureForm from '../Forms/CreateFeatureForm';
 import { useGetIdeaByIdQuery } from '../../graphql/client/types';
@@ -18,13 +23,28 @@ import ToggleLike from './IdeaActions/ToggleLike';
 import ToggleSave from './IdeaActions/ToggleSave';
 import Share from './IdeaActions/Share';
 import Link from '../Link';
+import DeleteIdea from './IdeaActions/DeleteIdea';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'absolute',
+    zIndex: 999,
+    borderRadius: theme.shape.borderRadius,
+  },
+}));
 
 interface Props {
   id: string;
 }
 
 function Idea({ id }: Props) {
-  const classes = useGutterAllChild({ spacing: 2 });
+  const classes = useStyles();
+  const [deleting, setDeleting] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+  const gutterClx = useGutterAllChild({ spacing: 2 });
   const { data, loading, error, refetch, networkStatus } = useGetIdeaByIdQuery({
     variables: {
       id,
@@ -54,13 +74,23 @@ function Idea({ id }: Props) {
   }
 
   return (
-    <>
+    <div style={{ position: 'relative' }}>
+      {deleting && (
+        <Backdrop
+          open
+          classes={{
+            root: classes.root,
+          }}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       <Head>
         <title>
           {data.idea.title} : {data.idea.user.username}
         </title>
       </Head>
-      <Paper className={classes.gutterAllChild} style={{ padding: '1rem' }}>
+      <Paper className={gutterClx.gutterAllChild} style={{ padding: '1rem' }}>
         <div
           style={{
             display: 'flex',
@@ -111,9 +141,21 @@ function Idea({ id }: Props) {
 
             <Share />
 
-            <Button size="small" startIcon={<DeleteIcon />}>
-              delete
-            </Button>
+            <DeleteIdea
+              id={data.idea.id}
+              onLoading={() => setDeleting(true)}
+              onSuccess={async () => {
+                setDeleting(false);
+                try {
+                  await router.push('/');
+                } catch {}
+              }}
+              onError={() => {
+                setDeleting(false);
+                enqueueSnackbar('Failed to delete idea.');
+              }}
+            />
+
             <Link
               underline="none"
               href="/idea/[ideaId]/edit"
@@ -132,7 +174,7 @@ function Idea({ id }: Props) {
           <CreateFeatureForm />
         </div>
       </Paper>
-    </>
+    </div>
   );
 }
 
