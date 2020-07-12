@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 
-import ResponsiveButton from './ResponsiveButton';
+import ResponsiveButton from './Buttons/ResponsiveButton';
 import Link from './Link';
 import { useAuth } from '../context/auth-context';
 import { Skeleton } from '@material-ui/lab';

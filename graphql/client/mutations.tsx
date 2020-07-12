@@ -101,3 +101,11 @@ export const UnsaveIdea = gql`
     }
   }
 `;
+
+export const CreateFeature = gql`
+  mutation CreateFeature($input: CreateFeatureWithoutIdeaInput!) {
+    createFeature(input: $input) {
+      ...FeatureBody
+    }
+  }
+`;

@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import MultilineTextField from './Fields/MultilineTextField';
 import { Button, CircularProgress, Box } from '@material-ui/core';
+import { useCreateFeatureMutation } from '../../graphql/client/types';
 
 const initialValues = {
   feature: '',
@@ -16,11 +17,26 @@ const validationSchema = yup.object().shape({
     .max(300, 'feature is too long'),
 });
 
-function CreateFeatureForm() {
+interface Props {
+  ideaId: string;
+}
+
+function CreateFeatureForm({ ideaId }: Props) {
+  const [createFeatureMutation] = useCreateFeatureMutation();
+
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values, formik) => {},
+    onSubmit: (values, formik) => {
+      createFeatureMutation({
+        variables: {
+          input: {
+            ideaId,
+            title: values.feature,
+          },
+        },
+      });
+    },
     validateOnMount: true,
   });
   return (
@@ -52,7 +68,7 @@ function CreateFeatureForm() {
           size="small"
           disabled={formik.isSubmitting || !formik.isValid}
         >
-          Submit{' '}
+          Submit
           {formik.isSubmitting && (
             <CircularProgress size={16} style={{ marginLeft: '10px' }} />
           )}

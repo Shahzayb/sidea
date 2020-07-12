@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 
 import {
   PlaylistAdd as SaveIcon,
@@ -19,9 +18,8 @@ import {
 } from '../../../graphql/client/types';
 
 import { useSnackbar } from 'notistack';
-import { useAuth } from '../../../context/auth-context';
-import LoginModal from '../../LoginModal';
 import { clientPageQueryLimit } from '../../../client-env';
+import AuthenticatedButton from '../../Buttons/AuthenticatedButton';
 
 interface Props {
   idea: Pick<Idea, 'id' | 'isSavedByMe'>;
@@ -29,14 +27,6 @@ interface Props {
 
 function ToggleSave({ idea }: Props) {
   const { enqueueSnackbar } = useSnackbar();
-  const { authenticated } = useAuth();
-  const [isModalOpen, setModalOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (authenticated) {
-      setModalOpen(false);
-    }
-  }, [authenticated]);
 
   const [save, saveResult] = useSaveIdeaMutation({
     variables: {
@@ -208,13 +198,11 @@ function ToggleSave({ idea }: Props) {
 
   return (
     <>
-      <Button
+      <AuthenticatedButton
         size="small"
         startIcon={idea.isSavedByMe ? <UnsaveIcon /> : <SaveIcon />}
         onClick={() => {
-          if (!authenticated) {
-            setModalOpen(true);
-          } else if (!unsaveResult.loading && !saveResult.loading) {
+          if (!unsaveResult.loading && !saveResult.loading) {
             if (idea.isSavedByMe) {
               unsave()
                 .then(({ data, errors }) => {
@@ -244,8 +232,7 @@ function ToggleSave({ idea }: Props) {
         }}
       >
         {idea.isSavedByMe ? 'Unsave' : 'Save'}
-      </Button>
-      <LoginModal open={isModalOpen} onClose={() => setModalOpen(false)} />
+      </AuthenticatedButton>
     </>
   );
 }

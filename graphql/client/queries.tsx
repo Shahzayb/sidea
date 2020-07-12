@@ -47,12 +47,37 @@ export const PageBody = gql`
   }
 `;
 
+export const FeatureBody = gql`
+  fragment FeatureBody on Feature {
+    id
+    title
+    createdAt
+  }
+`;
+
 export const GetIdeaById = gql`
   query GetIdeaById($id: ID!) {
     idea(id: $id) {
       ...IdeaBody
       user {
         ...UserShortBody
+      }
+    }
+  }
+`;
+
+export const GetIdeaFeatures = gql`
+  query GetIdeaFeatures($idea_id: ID!, $after_feature_id: ID, $limit: Int!) {
+    features(
+      idea_id: $idea_id
+      after_feature_id: $after_feature_id
+      limit: $limit
+    ) {
+      page {
+        ...PageBody
+      }
+      entry {
+        ...FeatureBody
       }
     }
   }

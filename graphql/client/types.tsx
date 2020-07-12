@@ -419,6 +419,19 @@ export type UnsaveIdeaMutation = (
   ) }
 );
 
+export type CreateFeatureMutationVariables = Exact<{
+  input: CreateFeatureWithoutIdeaInput;
+}>;
+
+
+export type CreateFeatureMutation = (
+  { __typename?: 'Mutation' }
+  & { createFeature: (
+    { __typename?: 'Feature' }
+    & FeatureBodyFragment
+  ) }
+);
+
 export type UserBodyFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'name' | 'username' | 'email' | 'avatar' | 'createdAt'>
@@ -444,6 +457,11 @@ export type PageBodyFragment = (
   & Pick<Page, 'cursor' | 'hasNextPage'>
 );
 
+export type FeatureBodyFragment = (
+  { __typename?: 'Feature' }
+  & Pick<Feature, 'id' | 'title' | 'createdAt'>
+);
+
 export type GetIdeaByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -459,6 +477,27 @@ export type GetIdeaByIdQuery = (
     ) }
     & IdeaBodyFragment
   )> }
+);
+
+export type GetIdeaFeaturesQueryVariables = Exact<{
+  idea_id: Scalars['ID'];
+  after_feature_id?: Maybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetIdeaFeaturesQuery = (
+  { __typename?: 'Query' }
+  & { features: (
+    { __typename?: 'FeaturePageResponse' }
+    & { page: (
+      { __typename?: 'Page' }
+      & PageBodyFragment
+    ), entry: Array<(
+      { __typename?: 'Feature' }
+      & FeatureBodyFragment
+    )> }
+  ) }
 );
 
 export type GetMyProfileQueryVariables = Exact<{ [key: string]: never; }>;
@@ -672,6 +711,13 @@ export const PageBodyFragmentDoc = gql`
     fragment PageBody on Page {
   cursor
   hasNextPage
+}
+    `;
+export const FeatureBodyFragmentDoc = gql`
+    fragment FeatureBody on Feature {
+  id
+  title
+  createdAt
 }
     `;
 export const LoginDocument = gql`
@@ -971,6 +1017,38 @@ export function useUnsaveIdeaMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type UnsaveIdeaMutationHookResult = ReturnType<typeof useUnsaveIdeaMutation>;
 export type UnsaveIdeaMutationResult = ApolloReactCommon.MutationResult<UnsaveIdeaMutation>;
 export type UnsaveIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<UnsaveIdeaMutation, UnsaveIdeaMutationVariables>;
+export const CreateFeatureDocument = gql`
+    mutation CreateFeature($input: CreateFeatureWithoutIdeaInput!) {
+  createFeature(input: $input) {
+    ...FeatureBody
+  }
+}
+    ${FeatureBodyFragmentDoc}`;
+export type CreateFeatureMutationFn = ApolloReactCommon.MutationFunction<CreateFeatureMutation, CreateFeatureMutationVariables>;
+
+/**
+ * __useCreateFeatureMutation__
+ *
+ * To run a mutation, you first call `useCreateFeatureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFeatureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFeatureMutation, { data, loading, error }] = useCreateFeatureMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateFeatureMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateFeatureMutation, CreateFeatureMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateFeatureMutation, CreateFeatureMutationVariables>(CreateFeatureDocument, baseOptions);
+      }
+export type CreateFeatureMutationHookResult = ReturnType<typeof useCreateFeatureMutation>;
+export type CreateFeatureMutationResult = ApolloReactCommon.MutationResult<CreateFeatureMutation>;
+export type CreateFeatureMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateFeatureMutation, CreateFeatureMutationVariables>;
 export const GetIdeaByIdDocument = gql`
     query GetIdeaById($id: ID!) {
   idea(id: $id) {
@@ -1008,6 +1086,47 @@ export function useGetIdeaByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type GetIdeaByIdQueryHookResult = ReturnType<typeof useGetIdeaByIdQuery>;
 export type GetIdeaByIdLazyQueryHookResult = ReturnType<typeof useGetIdeaByIdLazyQuery>;
 export type GetIdeaByIdQueryResult = ApolloReactCommon.QueryResult<GetIdeaByIdQuery, GetIdeaByIdQueryVariables>;
+export const GetIdeaFeaturesDocument = gql`
+    query GetIdeaFeatures($idea_id: ID!, $after_feature_id: ID, $limit: Int!) {
+  features(idea_id: $idea_id, after_feature_id: $after_feature_id, limit: $limit) {
+    page {
+      ...PageBody
+    }
+    entry {
+      ...FeatureBody
+    }
+  }
+}
+    ${PageBodyFragmentDoc}
+${FeatureBodyFragmentDoc}`;
+
+/**
+ * __useGetIdeaFeaturesQuery__
+ *
+ * To run a query within a React component, call `useGetIdeaFeaturesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIdeaFeaturesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIdeaFeaturesQuery({
+ *   variables: {
+ *      idea_id: // value for 'idea_id'
+ *      after_feature_id: // value for 'after_feature_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetIdeaFeaturesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetIdeaFeaturesQuery, GetIdeaFeaturesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetIdeaFeaturesQuery, GetIdeaFeaturesQueryVariables>(GetIdeaFeaturesDocument, baseOptions);
+      }
+export function useGetIdeaFeaturesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetIdeaFeaturesQuery, GetIdeaFeaturesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetIdeaFeaturesQuery, GetIdeaFeaturesQueryVariables>(GetIdeaFeaturesDocument, baseOptions);
+        }
+export type GetIdeaFeaturesQueryHookResult = ReturnType<typeof useGetIdeaFeaturesQuery>;
+export type GetIdeaFeaturesLazyQueryHookResult = ReturnType<typeof useGetIdeaFeaturesLazyQuery>;
+export type GetIdeaFeaturesQueryResult = ApolloReactCommon.QueryResult<GetIdeaFeaturesQuery, GetIdeaFeaturesQueryVariables>;
 export const GetMyProfileDocument = gql`
     query GetMyProfile {
   me {

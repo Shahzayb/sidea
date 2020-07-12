@@ -1,6 +1,5 @@
 import React from 'react';
 import { useGetMyProfileQuery, User } from '../graphql/client/types';
-import { useRouter } from 'next/router';
 
 type AuthContext = {
   loading: boolean;
@@ -17,13 +16,12 @@ AuthContext.displayName = 'AuthContext';
 export const AUTH_TOKEN_KEY = 'sidea_auth_token';
 
 const AuthProvider: React.FC = ({ children }) => {
-  const { data, loading, client } = useGetMyProfileQuery();
-  const router = useRouter();
+  const { data, loading } = useGetMyProfileQuery();
 
   const login = React.useCallback((token) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(AUTH_TOKEN_KEY, token);
-      client.resetStore();
+      window.location.reload(true);
     }
   }, []);
 

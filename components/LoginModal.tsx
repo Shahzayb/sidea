@@ -6,7 +6,6 @@ import {
   Link,
   Typography,
   DialogContent,
-  DialogContentText,
 } from '@material-ui/core';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import LoginForm from './Forms/LoginForm';

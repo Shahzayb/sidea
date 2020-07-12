@@ -26,6 +26,7 @@ import Link from '../Link';
 import DeleteIdea from './IdeaActions/DeleteIdea';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import FeatureList from '../Feature/FeatureList';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -171,8 +172,12 @@ function Idea({ id }: Props) {
           </Typography>
         </Box>
         <div style={{ marginTop: '2rem' }}>
-          <CreateFeatureForm />
+          <CreateFeatureForm ideaId={data.idea.id} />
         </div>
+        <Typography component="h2" variant="h5">
+          Features
+        </Typography>
+        <FeatureList id={data.idea.id} />
       </Paper>
     </div>
   );

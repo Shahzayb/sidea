@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import {
   useLikeIdeaMutation,
@@ -14,9 +14,8 @@ import {
 } from '../../../graphql/client/types';
 import clsx from 'clsx';
 import { useSnackbar } from 'notistack';
-import { useAuth } from '../../../context/auth-context';
-import LoginModal from '../../LoginModal';
 import { clientPageQueryLimit } from '../../../client-env';
+import AuthenticatedButton from '../../Buttons/AuthenticatedButton';
 
 const useStyles = makeStyles((theme) => ({
   liked: {
@@ -31,14 +30,6 @@ interface Props {
 function ToggleLike({ idea }: Props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { authenticated } = useAuth();
-  const [isModalOpen, setModalOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (authenticated) {
-      setModalOpen(false);
-    }
-  }, [authenticated]);
 
   const [like, likeResult] = useLikeIdeaMutation({
     variables: {
@@ -210,7 +201,7 @@ function ToggleLike({ idea }: Props) {
 
   return (
     <>
-      <Button
+      <AuthenticatedButton
         classes={{
           startIcon: clsx({
             [classes.liked]: idea.isLikedByMe,
@@ -219,9 +210,7 @@ function ToggleLike({ idea }: Props) {
         size="small"
         startIcon={<FavoriteIcon />}
         onClick={() => {
-          if (!authenticated) {
-            setModalOpen(true);
-          } else if (!unlikeResult.loading && !likeResult.loading) {
+          if (!unlikeResult.loading && !likeResult.loading) {
             if (idea.isLikedByMe) {
               unlike()
                 .then(({ data, errors }) => {
@@ -251,8 +240,7 @@ function ToggleLike({ idea }: Props) {
         }}
       >
         {idea.isLikedByMe ? 'Unlike' : 'Like'}
-      </Button>
-      <LoginModal open={isModalOpen} onClose={() => setModalOpen(false)} />
+      </AuthenticatedButton>
     </>
   );
 }

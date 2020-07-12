@@ -12,7 +12,7 @@ import { Alert } from '@material-ui/lab';
 import { useRouter } from 'next/router';
 import Link from '../Link';
 import useMarginRightChild from '../../hooks/useMarginRightChild';
-import ResponsiveButton from '../ResponsiveButton';
+import ResponsiveButton from '../Buttons/ResponsiveButton';
 
 type Errors = {
   param: keyof Pick<Idea, 'title' | 'body' | 'tags'>;

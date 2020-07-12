@@ -2,7 +2,7 @@ import React from 'react';
 import NoIdea from '../Icons/NoIdea';
 import { Typography, Box } from '@material-ui/core';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
-import ResponsiveButton from '../ResponsiveButton';
+import ResponsiveButton from '../Buttons/ResponsiveButton';
 
 interface Props {
   retry?: () => void;
