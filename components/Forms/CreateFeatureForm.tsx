@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import MultilineTextField from './Fields/MultilineTextField';
 import { Button, CircularProgress, Box } from '@material-ui/core';
 import { useCreateFeatureMutation } from '../../graphql/client/types';
+import { useSnackbar } from 'notistack';
 
 const initialValues = {
   feature: '',
@@ -22,7 +23,11 @@ interface Props {
 }
 
 function CreateFeatureForm({ ideaId }: Props) {
-  const [createFeatureMutation] = useCreateFeatureMutation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [createFeatureMutation] = useCreateFeatureMutation({
+    refetchQueries: ['GetIdeaFeatures'],
+  });
 
   const formik = useFormik({
     initialValues,
@@ -35,7 +40,22 @@ function CreateFeatureForm({ ideaId }: Props) {
             title: values.feature,
           },
         },
-      });
+      })
+        .then(({ data, errors }) => {
+          if (data) {
+            enqueueSnackbar('Feature is created');
+            formik.resetForm();
+          } else if (errors) {
+            return Promise.reject({ graphQLErrors: errors });
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          enqueueSnackbar('Failed to create feature');
+        })
+        .finally(() => {
+          formik.setSubmitting(false);
+        });
     },
     validateOnMount: true,
   });

@@ -2,7 +2,8 @@
   "name": "sidea",
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently \"next\" \"npm run types:generate:watch\"",
+    "dev": "next",
+    "dev:types": "concurrently \"next\" \"npm run types:generate:watch\"",
     "build": "next build",
     "export": "next export",
     "start": "next start",

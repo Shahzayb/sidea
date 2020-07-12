@@ -1,7 +1,7 @@
 import React from 'react';
 import { CreateFeatureInput } from '../../../graphql/client/types';
 import MultilineTextField from './MultilineTextField';
-import SquareIconButton from '../../SquareIconButton';
+import SquareIconButton from '../../Buttons/SquareIconButton';
 import {
   List,
   ListItem,
