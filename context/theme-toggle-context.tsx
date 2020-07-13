@@ -6,6 +6,11 @@ import {
   responsiveFontSizes,
   createMuiTheme,
 } from '@material-ui/core';
+import {
+  useGetMySettingsQuery,
+  ThemeMode,
+  useUpdateThemeModeMutation,
+} from '../graphql/client/types';
 
 const BASE_THEME: ThemeOptions = {
   props: {
@@ -53,11 +58,10 @@ const DARK_THEME: ThemeOptions = {
   },
 };
 
-type Mode = 'light' | 'dark';
 type Toggle = () => void;
 
 type ThemeContext = {
-  mode: Mode;
+  mode: ThemeMode;
   toggle: Toggle;
 };
 
@@ -66,13 +70,39 @@ const ThemeContext = React.createContext<ThemeContext | undefined>(undefined);
 ThemeContext.displayName = 'ThemeContext';
 
 export const ThemeToggleProvider: React.FC = ({ children }) => {
-  const [mode, setMode] = React.useState<Mode>('light');
+  const [mode, setMode] = React.useState<ThemeMode>(ThemeMode.Light);
 
-  const toggle = React.useCallback(() => {
-    if (mode === 'light') {
-      setMode('dark');
+  useGetMySettingsQuery({
+    onCompleted(data) {
+      setMode(data.mySetting.themeMode);
+    },
+  });
+
+  const [updateThemeModeMutation] = useUpdateThemeModeMutation();
+
+  const toggle = React.useCallback(async () => {
+    if (mode === ThemeMode.Light) {
+      setMode(ThemeMode.Dark);
+      try {
+        await updateThemeModeMutation({
+          variables: {
+            input: {
+              themeMode: ThemeMode.Dark,
+            },
+          },
+        });
+      } catch {}
     } else {
-      setMode('light');
+      setMode(ThemeMode.Light);
+      try {
+        await updateThemeModeMutation({
+          variables: {
+            input: {
+              themeMode: ThemeMode.Light,
+            },
+          },
+        });
+      } catch {}
     }
   }, [mode]);
 
@@ -86,7 +116,7 @@ export const ThemeToggleProvider: React.FC = ({ children }) => {
 
   const theme = React.useMemo(() => {
     let theme: ThemeOptions;
-    if (mode === 'light') {
+    if (mode === ThemeMode.Light) {
       theme = { ...BASE_THEME, ...LIGHT_THEME };
     } else {
       theme = { ...BASE_THEME, ...DARK_THEME };

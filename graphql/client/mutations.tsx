@@ -43,6 +43,14 @@ export const SignUp = gql`
   }
 `;
 
+export const UpdateThemeMode = gql`
+  mutation UpdateThemeMode($input: UpdateThemeModeInput!) {
+    updateThemeMode(input: $input) {
+      ...SettingBody
+    }
+  }
+`;
+
 export const CreateIdea = gql`
   mutation CreateIdea($input: CreateIdeaInput!) {
     createIdea(input: $input) {

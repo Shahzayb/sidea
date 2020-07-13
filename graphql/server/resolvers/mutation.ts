@@ -178,13 +178,23 @@ export const Mutation: MutationResolvers = {
 
     // generate avatar
     const avatar = gravatar.url(input.email);
-    // create user
-    const user = await prisma.user.create({
+    // create user & setting
+    const setting = await prisma.setting.create({
       data: {
-        ...input,
-        avatar,
+        User: {
+          create: {
+            ...input,
+            avatar,
+          },
+        },
+      },
+      include: {
+        User: true,
       },
     });
+
+    const user = setting.User;
+
     // create jwt token
     const token = createJwtToken({ id: user.id });
 
@@ -1006,5 +1016,21 @@ export const Mutation: MutationResolvers = {
     });
 
     return like!;
+  },
+  async updateThemeMode(_, { input }, { prisma, user }) {
+    if (!user) {
+      throw new AuthenticationError('login is required');
+    }
+
+    const setting = await prisma.setting.update({
+      data: {
+        themeMode: input.themeMode,
+      },
+      where: {
+        userId: user.id,
+      },
+    });
+
+    return setting;
   },
 };

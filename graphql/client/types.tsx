@@ -19,6 +19,7 @@ export type Query = {
   idea?: Maybe<Idea>;
   features: FeaturePageResponse;
   me: User;
+  mySetting: Setting;
   user?: Maybe<User>;
 };
 
@@ -66,6 +67,7 @@ export type Mutation = {
   unsaveIdea: Save;
   likeIdea: Like;
   unlikeIdea: Like;
+  updateThemeMode: Setting;
 };
 
 
@@ -128,6 +130,15 @@ export type MutationUnlikeIdeaArgs = {
   idea_id: Scalars['ID'];
 };
 
+
+export type MutationUpdateThemeModeArgs = {
+  input: UpdateThemeModeInput;
+};
+
+export type UpdateThemeModeInput = {
+  themeMode: ThemeMode;
+};
+
 export type LoginInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -175,6 +186,17 @@ export enum Interval {
   Year = 'YEAR',
   AllTime = 'ALL_TIME'
 }
+
+export enum ThemeMode {
+  Light = 'LIGHT',
+  Dark = 'DARK'
+}
+
+export type Setting = {
+  __typename?: 'Setting';
+  id: Scalars['ID'];
+  themeMode: ThemeMode;
+};
 
 export type IdeaPageResponse = {
   __typename?: 'IdeaPageResponse';
@@ -328,6 +350,19 @@ export type SignUpMutation = (
   ) }
 );
 
+export type UpdateThemeModeMutationVariables = Exact<{
+  input: UpdateThemeModeInput;
+}>;
+
+
+export type UpdateThemeModeMutation = (
+  { __typename?: 'Mutation' }
+  & { updateThemeMode: (
+    { __typename?: 'Setting' }
+    & SettingBodyFragment
+  ) }
+);
+
 export type CreateIdeaMutationVariables = Exact<{
   input: CreateIdeaInput;
 }>;
@@ -468,6 +503,11 @@ export type UserShortBodyFragment = (
   & Pick<User, 'id' | 'username' | 'avatar'>
 );
 
+export type SettingBodyFragment = (
+  { __typename?: 'Setting' }
+  & Pick<Setting, 'id' | 'themeMode'>
+);
+
 export type IdeaBodyFragment = (
   { __typename?: 'Idea' }
   & Pick<Idea, 'id' | 'title' | 'body' | 'tags' | 'isLikedByMe' | 'likesCount' | 'isSavedByMe' | 'createdAt'>
@@ -534,6 +574,17 @@ export type GetMyProfileQuery = (
   & { me: (
     { __typename?: 'User' }
     & UserBodyFragment
+  ) }
+);
+
+export type GetMySettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMySettingsQuery = (
+  { __typename?: 'Query' }
+  & { mySetting: (
+    { __typename?: 'Setting' }
+    & SettingBodyFragment
   ) }
 );
 
@@ -714,6 +765,12 @@ export const UserShortBodyFragmentDoc = gql`
   avatar
 }
     `;
+export const SettingBodyFragmentDoc = gql`
+    fragment SettingBody on Setting {
+  id
+  themeMode
+}
+    `;
 export const IdeaBodyFragmentDoc = gql`
     fragment IdeaBody on Idea {
   id
@@ -816,6 +873,38 @@ export function useSignUpMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = ApolloReactCommon.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = ApolloReactCommon.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const UpdateThemeModeDocument = gql`
+    mutation UpdateThemeMode($input: UpdateThemeModeInput!) {
+  updateThemeMode(input: $input) {
+    ...SettingBody
+  }
+}
+    ${SettingBodyFragmentDoc}`;
+export type UpdateThemeModeMutationFn = ApolloReactCommon.MutationFunction<UpdateThemeModeMutation, UpdateThemeModeMutationVariables>;
+
+/**
+ * __useUpdateThemeModeMutation__
+ *
+ * To run a mutation, you first call `useUpdateThemeModeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateThemeModeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateThemeModeMutation, { data, loading, error }] = useUpdateThemeModeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateThemeModeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateThemeModeMutation, UpdateThemeModeMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateThemeModeMutation, UpdateThemeModeMutationVariables>(UpdateThemeModeDocument, baseOptions);
+      }
+export type UpdateThemeModeMutationHookResult = ReturnType<typeof useUpdateThemeModeMutation>;
+export type UpdateThemeModeMutationResult = ApolloReactCommon.MutationResult<UpdateThemeModeMutation>;
+export type UpdateThemeModeMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateThemeModeMutation, UpdateThemeModeMutationVariables>;
 export const CreateIdeaDocument = gql`
     mutation CreateIdea($input: CreateIdeaInput!) {
   createIdea(input: $input) {
@@ -1249,6 +1338,38 @@ export function useGetMyProfileLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
 export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery>;
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileQueryResult = ApolloReactCommon.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
+export const GetMySettingsDocument = gql`
+    query GetMySettings {
+  mySetting {
+    ...SettingBody
+  }
+}
+    ${SettingBodyFragmentDoc}`;
+
+/**
+ * __useGetMySettingsQuery__
+ *
+ * To run a query within a React component, call `useGetMySettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMySettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMySettingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMySettingsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetMySettingsQuery, GetMySettingsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetMySettingsQuery, GetMySettingsQueryVariables>(GetMySettingsDocument, baseOptions);
+      }
+export function useGetMySettingsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetMySettingsQuery, GetMySettingsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetMySettingsQuery, GetMySettingsQueryVariables>(GetMySettingsDocument, baseOptions);
+        }
+export type GetMySettingsQueryHookResult = ReturnType<typeof useGetMySettingsQuery>;
+export type GetMySettingsLazyQueryHookResult = ReturnType<typeof useGetMySettingsLazyQuery>;
+export type GetMySettingsQueryResult = ApolloReactCommon.QueryResult<GetMySettingsQuery, GetMySettingsQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($id: ID!) {
   user(id: $id) {

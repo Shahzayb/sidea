@@ -22,6 +22,7 @@ import { useAuth } from '../context/auth-context';
 import { Skeleton } from '@material-ui/lab';
 import { useToggleTheme } from '../context/theme-toggle-context';
 import IdeaAdd from './Icons/IdeaAdd';
+import { ThemeMode } from '../graphql/client/types';
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -152,7 +153,7 @@ function Navbar() {
                     />
                     <ListItemSecondaryAction>
                       <Switch
-                        checked={mode === 'dark'}
+                        checked={mode === ThemeMode.Dark}
                         onChange={() => toggle()}
                         color="primary"
                         inputProps={{ 'aria-label': 'primary checkbox' }}

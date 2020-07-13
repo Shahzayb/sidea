@@ -12,6 +12,7 @@ generates:
         Like: '@prisma/client#Like as CustomLike'
         Save: '@prisma/client#Save as CustomSave'
         Tag: '@prisma/client#Tag as CustomTag'
+        Setting: '@prisma/client#Setting as CustomSetting'
         FeaturePageResponse: './mappers/models#FeaturePageResponse as CustomFeaturePageResponse'
         IdeaPageResponse: './mappers/models#IdeaPageResponse as CustomIdeaPageResponse'
         Page: './mappers/models#Page as CustomPage'

@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { User as CustomUser, Feature as CustomFeature, Idea as CustomIdea, Like as CustomLike, Save as CustomSave, Tag as CustomTag } from '@prisma/client';
+import { User as CustomUser, Feature as CustomFeature, Idea as CustomIdea, Like as CustomLike, Save as CustomSave, Tag as CustomTag, Setting as CustomSetting } from '@prisma/client';
 import { FeaturePageResponse as CustomFeaturePageResponse, IdeaPageResponse as CustomIdeaPageResponse, Page as CustomPage } from './mappers/models';
 import { Context } from '../../pages/api/graphql';
 export type Maybe<T> = T | null;
@@ -21,6 +21,7 @@ export type Query = {
   idea?: Maybe<Idea>;
   features: FeaturePageResponse;
   me: User;
+  mySetting: Setting;
   user?: Maybe<User>;
 };
 
@@ -68,6 +69,7 @@ export type Mutation = {
   unsaveIdea: Save;
   likeIdea: Like;
   unlikeIdea: Like;
+  updateThemeMode: Setting;
 };
 
 
@@ -130,6 +132,15 @@ export type MutationUnlikeIdeaArgs = {
   idea_id: Scalars['ID'];
 };
 
+
+export type MutationUpdateThemeModeArgs = {
+  input: UpdateThemeModeInput;
+};
+
+export type UpdateThemeModeInput = {
+  themeMode: ThemeMode;
+};
+
 export type LoginInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -177,6 +188,17 @@ export enum Interval {
   Year = 'YEAR',
   AllTime = 'ALL_TIME'
 }
+
+export enum ThemeMode {
+  Light = 'LIGHT',
+  Dark = 'DARK'
+}
+
+export type Setting = {
+  __typename?: 'Setting';
+  id: Scalars['ID'];
+  themeMode: ThemeMode;
+};
 
 export type IdeaPageResponse = {
   __typename?: 'IdeaPageResponse';
@@ -363,6 +385,7 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  UpdateThemeModeInput: UpdateThemeModeInput;
   LoginInput: LoginInput;
   SignupInput: SignupInput;
   CreateFeatureInput: CreateFeatureInput;
@@ -371,6 +394,8 @@ export type ResolversTypes = ResolversObject<{
   UpdateIdeaInput: UpdateIdeaInput;
   UpdateFeatureInput: UpdateFeatureInput;
   INTERVAL: Interval;
+  ThemeMode: ThemeMode;
+  Setting: ResolverTypeWrapper<CustomSetting>;
   IdeaPageResponse: ResolverTypeWrapper<CustomIdeaPageResponse>;
   FeaturePageResponse: ResolverTypeWrapper<CustomFeaturePageResponse>;
   Page: ResolverTypeWrapper<CustomPage>;
@@ -390,6 +415,7 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
+  UpdateThemeModeInput: UpdateThemeModeInput;
   LoginInput: LoginInput;
   SignupInput: SignupInput;
   CreateFeatureInput: CreateFeatureInput;
@@ -398,6 +424,8 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateIdeaInput: UpdateIdeaInput;
   UpdateFeatureInput: UpdateFeatureInput;
   INTERVAL: Interval;
+  ThemeMode: ThemeMode;
+  Setting: CustomSetting;
   IdeaPageResponse: CustomIdeaPageResponse;
   FeaturePageResponse: CustomFeaturePageResponse;
   Page: CustomPage;
@@ -415,6 +443,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   idea?: Resolver<Maybe<ResolversTypes['Idea']>, ParentType, ContextType, RequireFields<QueryIdeaArgs, 'id'>>;
   features?: Resolver<ResolversTypes['FeaturePageResponse'], ParentType, ContextType, RequireFields<QueryFeaturesArgs, 'idea_id' | 'limit'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  mySetting?: Resolver<ResolversTypes['Setting'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 }>;
 
@@ -431,6 +460,13 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   unsaveIdea?: Resolver<ResolversTypes['Save'], ParentType, ContextType, RequireFields<MutationUnsaveIdeaArgs, 'idea_id'>>;
   likeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeIdeaArgs, 'idea_id'>>;
   unlikeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationUnlikeIdeaArgs, 'idea_id'>>;
+  updateThemeMode?: Resolver<ResolversTypes['Setting'], ParentType, ContextType, RequireFields<MutationUpdateThemeModeArgs, 'input'>>;
+}>;
+
+export type SettingResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Setting'] = ResolversParentTypes['Setting']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  themeMode?: Resolver<ResolversTypes['ThemeMode'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
 export type IdeaPageResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IdeaPageResponse'] = ResolversParentTypes['IdeaPageResponse']> = ResolversObject<{
@@ -512,6 +548,7 @@ export type SaveResolvers<ContextType = Context, ParentType extends ResolversPar
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  Setting?: SettingResolvers<ContextType>;
   IdeaPageResponse?: IdeaPageResponseResolvers<ContextType>;
   FeaturePageResponse?: FeaturePageResponseResolvers<ContextType>;
   Page?: PageResolvers<ContextType>;

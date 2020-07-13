@@ -61,6 +61,15 @@ model Save {
   @@unique([userId, ideaId], name: "userId_ideaId")
 }
 
+model Setting {
+  id        Int               @default(autoincrement()) @id
+  themeMode setting_themeMode @default(LIGHT)
+  userId    Int               @unique
+  User      User              @relation(fields: [userId], references: [id])
+
+  @@index([userId], name: "user_settings_idx")
+}
+
 model Tag {
   id     Int    @default(autoincrement()) @id
   ideaId Int
@@ -82,4 +91,10 @@ model User {
   Idea      Idea[]
   Like      Like[]
   Save      Save[]
+  Setting   Setting?
+}
+
+enum setting_themeMode {
+  LIGHT
+  DARK
 }

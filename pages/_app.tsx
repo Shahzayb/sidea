@@ -104,17 +104,17 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Sidea</title>
       </Head>
 
-      <ThemeToggleProvider>
-        <ApolloProvider client={client}>
-          <AuthProvider>
+      <ApolloProvider client={client}>
+        <AuthProvider>
+          <ThemeToggleProvider>
             <IdeaCategoryProvider>
               <CustomSnackbarProvider maxSnack={4} dense={isSmallScreen}>
                 <Component {...pageProps} />
               </CustomSnackbarProvider>
             </IdeaCategoryProvider>
-          </AuthProvider>
-        </ApolloProvider>
-      </ThemeToggleProvider>
+          </ThemeToggleProvider>
+        </AuthProvider>
+      </ApolloProvider>
     </>
   );
 }

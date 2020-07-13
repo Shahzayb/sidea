@@ -229,4 +229,17 @@ export const Query: QueryResolvers = {
 
     return response;
   },
+  async mySetting(_, __, { prisma, user }) {
+    if (!user) {
+      throw new AuthenticationError('login is required');
+    }
+
+    const setting = await prisma.setting.findOne({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    return setting!;
+  },
 };

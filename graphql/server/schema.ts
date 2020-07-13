@@ -11,6 +11,7 @@ const typeDefs = gql`
       limit: Int!
     ): FeaturePageResponse!
     me: User!
+    mySetting: Setting!
     user(id: ID!): User
   }
 
@@ -28,6 +29,11 @@ const typeDefs = gql`
     unsaveIdea(idea_id: ID!): Save!
     likeIdea(idea_id: ID!): Like!
     unlikeIdea(idea_id: ID!): Like!
+    updateThemeMode(input: UpdateThemeModeInput!): Setting!
+  }
+
+  input UpdateThemeModeInput {
+    themeMode: ThemeMode!
   }
 
   input LoginInput {
@@ -78,7 +84,17 @@ const typeDefs = gql`
     ALL_TIME
   }
 
+  enum ThemeMode {
+    LIGHT
+    DARK
+  }
+
   # models
+
+  type Setting {
+    id: ID!
+    themeMode: ThemeMode!
+  }
 
   type IdeaPageResponse {
     page: Page!

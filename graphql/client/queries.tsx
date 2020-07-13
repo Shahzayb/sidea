@@ -19,6 +19,13 @@ export const UserShortBody = gql`
   }
 `;
 
+export const SettingBody = gql`
+  fragment SettingBody on Setting {
+    id
+    themeMode
+  }
+`;
+
 export const IdeaBody = gql`
   fragment IdeaBody on Idea {
     id
@@ -87,6 +94,14 @@ export const GetMyProfile = gql`
   query GetMyProfile {
     me {
       ...UserBody
+    }
+  }
+`;
+
+export const GetMySettings = gql`
+  query GetMySettings {
+    mySetting {
+      ...SettingBody
     }
   }
 `;
