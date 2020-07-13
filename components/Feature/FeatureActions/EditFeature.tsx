@@ -1,13 +1,24 @@
 import React from 'react';
-import { Tooltip, IconButton } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import { Edit as EditIcon } from '@material-ui/icons';
+import AuthenticatedIconButton from '../../Buttons/AuthenticatedIconButton';
 
-function EditFeature() {
+interface Props {
+  onClick: () => void;
+  disabled: boolean;
+}
+
+function EditFeature({ onClick, disabled }: Props) {
   return (
     <Tooltip placement="bottom" title="Edit feature" aria-label="Edit feature">
-      <IconButton size="small" aria-label="edit">
+      <AuthenticatedIconButton
+        onClick={onClick}
+        disabled={disabled}
+        size="small"
+        aria-label="edit"
+      >
         <EditIcon />
-      </IconButton>
+      </AuthenticatedIconButton>
     </Tooltip>
   );
 }

@@ -110,6 +110,14 @@ export const CreateFeature = gql`
   }
 `;
 
+export const UpdateFeature = gql`
+  mutation UpdateFeature($input: UpdateFeatureInput!) {
+    updateFeature(input: $input) {
+      ...FeatureBody
+    }
+  }
+`;
+
 export const DeleteFeature = gql`
   mutation DeleteFeature($id: ID!) {
     deleteFeature(id: $id) {

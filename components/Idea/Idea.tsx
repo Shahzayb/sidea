@@ -10,7 +10,7 @@ import {
   CircularProgress,
   makeStyles,
 } from '@material-ui/core';
-import { List as ListIcon, Edit as EditIcon } from '@material-ui/icons';
+import { Edit as EditIcon } from '@material-ui/icons';
 import { format as timeago_format } from 'timeago.js';
 import CreateFeatureForm from '../Forms/CreateFeatureForm';
 import { useGetIdeaByIdQuery } from '../../graphql/client/types';
@@ -134,9 +134,6 @@ function Idea({ id }: Props) {
               flexWrap: 'wrap',
             }}
           >
-            <Button size="small" startIcon={<ListIcon />}>
-              12 Features
-            </Button>
             <ToggleLike idea={data.idea} />
             <ToggleSave idea={data.idea} />
 

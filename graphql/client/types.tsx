@@ -432,6 +432,19 @@ export type CreateFeatureMutation = (
   ) }
 );
 
+export type UpdateFeatureMutationVariables = Exact<{
+  input: UpdateFeatureInput;
+}>;
+
+
+export type UpdateFeatureMutation = (
+  { __typename?: 'Mutation' }
+  & { updateFeature: (
+    { __typename?: 'Feature' }
+    & FeatureBodyFragment
+  ) }
+);
+
 export type DeleteFeatureMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -1062,6 +1075,38 @@ export function useCreateFeatureMutation(baseOptions?: ApolloReactHooks.Mutation
 export type CreateFeatureMutationHookResult = ReturnType<typeof useCreateFeatureMutation>;
 export type CreateFeatureMutationResult = ApolloReactCommon.MutationResult<CreateFeatureMutation>;
 export type CreateFeatureMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateFeatureMutation, CreateFeatureMutationVariables>;
+export const UpdateFeatureDocument = gql`
+    mutation UpdateFeature($input: UpdateFeatureInput!) {
+  updateFeature(input: $input) {
+    ...FeatureBody
+  }
+}
+    ${FeatureBodyFragmentDoc}`;
+export type UpdateFeatureMutationFn = ApolloReactCommon.MutationFunction<UpdateFeatureMutation, UpdateFeatureMutationVariables>;
+
+/**
+ * __useUpdateFeatureMutation__
+ *
+ * To run a mutation, you first call `useUpdateFeatureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFeatureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFeatureMutation, { data, loading, error }] = useUpdateFeatureMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateFeatureMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateFeatureMutation, UpdateFeatureMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateFeatureMutation, UpdateFeatureMutationVariables>(UpdateFeatureDocument, baseOptions);
+      }
+export type UpdateFeatureMutationHookResult = ReturnType<typeof useUpdateFeatureMutation>;
+export type UpdateFeatureMutationResult = ApolloReactCommon.MutationResult<UpdateFeatureMutation>;
+export type UpdateFeatureMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateFeatureMutation, UpdateFeatureMutationVariables>;
 export const DeleteFeatureDocument = gql`
     mutation DeleteFeature($id: ID!) {
   deleteFeature(id: $id) {

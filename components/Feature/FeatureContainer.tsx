@@ -11,6 +11,7 @@ import { Feature } from '../../graphql/client/types';
 import DeleteFeature from './FeatureActions/DeleteFeature';
 import EditFeature from './FeatureActions/EditFeature';
 import clsx from 'clsx';
+import UpdateFeatureForm from '../Forms/UpdateFeatureForm';
 
 const useStyles = makeStyles((theme) => ({
   listText: {
@@ -31,34 +32,58 @@ interface Props {
   ideaId: string;
 }
 
+type Mode = 'edit' | 'view';
+
 function FeatureContainer({ feature, ideaId }: Props) {
   const [disable, setDisable] = React.useState(false);
+  const [mode, setMode] = React.useState<Mode>('view');
+
   const classes = useStyles();
   return (
     <ListItem key={feature.id} divider>
-      <ListItemText
-        classes={{
-          root: clsx(classes.listText, { [classes.disabledText]: disable }),
-        }}
-        primary={<Typography>{feature.title}</Typography>}
-      />
-      <ListItemSecondaryAction>
-        <EditFeature />
-        <DeleteFeature
-          disabled={disable}
-          id={feature.id}
-          ideaId={ideaId}
-          onLoading={() => {
-            setDisable(true);
-          }}
+      {mode === 'view' && (
+        <>
+          <ListItemText
+            classes={{
+              root: clsx(classes.listText, { [classes.disabledText]: disable }),
+            }}
+            primary={<Typography>{feature.title}</Typography>}
+          />
+          <ListItemSecondaryAction>
+            <EditFeature
+              disabled={disable}
+              onClick={() => {
+                setMode('edit');
+              }}
+            />
+            <DeleteFeature
+              disabled={disable}
+              id={feature.id}
+              ideaId={ideaId}
+              onLoading={() => {
+                setDisable(true);
+              }}
+              onSuccess={() => {
+                setDisable(false);
+              }}
+              onError={() => {
+                setDisable(false);
+              }}
+            />
+          </ListItemSecondaryAction>
+        </>
+      )}
+      {mode === 'edit' && (
+        <UpdateFeatureForm
+          feature={feature}
           onSuccess={() => {
-            setDisable(false);
+            setMode('view');
           }}
-          onError={() => {
-            setDisable(false);
+          onClose={() => {
+            setMode('view');
           }}
         />
-      </ListItemSecondaryAction>
+      )}
     </ListItem>
   );
 }
