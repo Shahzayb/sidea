@@ -49,8 +49,7 @@ function CreateFeatureForm({ ideaId }: Props) {
             return Promise.reject({ graphQLErrors: errors });
           }
         })
-        .catch((error) => {
-          console.log('error', error);
+        .catch(() => {
           enqueueSnackbar('Failed to create feature');
         })
         .finally(() => {

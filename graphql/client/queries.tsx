@@ -72,7 +72,7 @@ export const GetIdeaFeatures = gql`
       idea_id: $idea_id
       after_feature_id: $after_feature_id
       limit: $limit
-    ) {
+    ) @connection(key: "features", filter: ["idea_id"]) {
       page {
         ...PageBody
       }
@@ -101,9 +101,9 @@ export const GetUserById = gql`
 
 export const GetUserIdeas = gql`
   query GetUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
-    user(id: $id) {
+    user(id: $id) @connection(key: "user", filter: ["id"]) {
       ...UserShortBody
-      ideas(after_id: $after_id, limit: $limit) {
+      ideas(after_id: $after_id, limit: $limit) @connection(key: "ideas") {
         page {
           ...PageBody
         }
@@ -119,7 +119,8 @@ export const GetSavedUserIdeas = gql`
   query GetSavedUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
     user(id: $id) {
       ...UserShortBody
-      savedIdeas(after_id: $after_id, limit: $limit) {
+      savedIdeas(after_id: $after_id, limit: $limit)
+        @connection(key: "savedIdeas") {
         page {
           ...PageBody
         }
@@ -133,9 +134,10 @@ export const GetSavedUserIdeas = gql`
 
 export const GetUserLikes = gql`
   query GetUserLikes($id: ID!, $after_id: ID, $limit: Int!) {
-    user(id: $id) {
+    user(id: $id) @connection(key: "user", filter: ["id"]) {
       id
-      likedIdeas(after_id: $after_id, limit: $limit) {
+      likedIdeas(after_id: $after_id, limit: $limit)
+        @connection(key: "likedIdeas") {
         page {
           ...PageBody
         }
@@ -152,7 +154,7 @@ export const GetUserLikes = gql`
 
 export const GetNewIdeas = gql`
   query GetNewIdeas($after_id: ID, $limit: Int!) {
-    newIdeas(after_id: $after_id, limit: $limit) {
+    newIdeas(after_id: $after_id, limit: $limit) @connection(key: "newIdeas") {
       page {
         ...PageBody
       }
@@ -168,7 +170,8 @@ export const GetNewIdeas = gql`
 
 export const GetTopIdeas = gql`
   query GetTopIdeas($interval: INTERVAL!, $skip: Int!, $limit: Int!) {
-    topIdeas(interval: $interval, skip: $skip, limit: $limit) {
+    topIdeas(interval: $interval, skip: $skip, limit: $limit)
+      @connection(key: "topIdeas", filter: ["interval"]) {
       page {
         ...PageBody
       }

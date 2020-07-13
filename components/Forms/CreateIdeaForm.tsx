@@ -118,7 +118,6 @@ function CreateIdeaForm() {
           }
         })
         .catch((err) => {
-          console.dir(err);
           if (err.graphQLErrors[0]) {
             const errors: Errors = err.graphQLErrors[0]?.extensions?.errors;
             errors.forEach(({ param, msg }) => {

@@ -109,3 +109,11 @@ export const CreateFeature = gql`
     }
   }
 `;
+
+export const DeleteFeature = gql`
+  mutation DeleteFeature($id: ID!) {
+    deleteFeature(id: $id) {
+      id
+    }
+  }
+`;

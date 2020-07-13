@@ -10,6 +10,7 @@ import {
 import { clientPageQueryLimit } from '../../client-env';
 import CustomError from '../Errors/CustomError';
 import FeatureContainer from './FeatureContainer';
+import FeatureSkeleton from '../Skeletons/FeatureSkeleton';
 
 interface Props {
   id: string;
@@ -76,11 +77,11 @@ function FeatureList({ id }: Props) {
       {!!data && (
         <List>
           {data.features.entry.map((feature) => (
-            <FeatureContainer key={feature.id} feature={feature} />
+            <FeatureContainer key={feature.id} feature={feature} ideaId={id} />
           ))}
         </List>
       )}
-      {(loading || networkStatus === 4) && <div>loading</div>}
+      {(loading || networkStatus === 4) && <FeatureSkeleton />}
       {!loading && !error && (!data || !data.features.entry.length) && (
         <CustomError title="No feature found." />
       )}

@@ -432,6 +432,19 @@ export type CreateFeatureMutation = (
   ) }
 );
 
+export type DeleteFeatureMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteFeatureMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteFeature: (
+    { __typename?: 'Feature' }
+    & Pick<Feature, 'id'>
+  ) }
+);
+
 export type UserBodyFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'name' | 'username' | 'email' | 'avatar' | 'createdAt'>
@@ -1049,6 +1062,38 @@ export function useCreateFeatureMutation(baseOptions?: ApolloReactHooks.Mutation
 export type CreateFeatureMutationHookResult = ReturnType<typeof useCreateFeatureMutation>;
 export type CreateFeatureMutationResult = ApolloReactCommon.MutationResult<CreateFeatureMutation>;
 export type CreateFeatureMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateFeatureMutation, CreateFeatureMutationVariables>;
+export const DeleteFeatureDocument = gql`
+    mutation DeleteFeature($id: ID!) {
+  deleteFeature(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteFeatureMutationFn = ApolloReactCommon.MutationFunction<DeleteFeatureMutation, DeleteFeatureMutationVariables>;
+
+/**
+ * __useDeleteFeatureMutation__
+ *
+ * To run a mutation, you first call `useDeleteFeatureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteFeatureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteFeatureMutation, { data, loading, error }] = useDeleteFeatureMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteFeatureMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteFeatureMutation, DeleteFeatureMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteFeatureMutation, DeleteFeatureMutationVariables>(DeleteFeatureDocument, baseOptions);
+      }
+export type DeleteFeatureMutationHookResult = ReturnType<typeof useDeleteFeatureMutation>;
+export type DeleteFeatureMutationResult = ApolloReactCommon.MutationResult<DeleteFeatureMutation>;
+export type DeleteFeatureMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteFeatureMutation, DeleteFeatureMutationVariables>;
 export const GetIdeaByIdDocument = gql`
     query GetIdeaById($id: ID!) {
   idea(id: $id) {
@@ -1088,7 +1133,7 @@ export type GetIdeaByIdLazyQueryHookResult = ReturnType<typeof useGetIdeaByIdLaz
 export type GetIdeaByIdQueryResult = ApolloReactCommon.QueryResult<GetIdeaByIdQuery, GetIdeaByIdQueryVariables>;
 export const GetIdeaFeaturesDocument = gql`
     query GetIdeaFeatures($idea_id: ID!, $after_feature_id: ID, $limit: Int!) {
-  features(idea_id: $idea_id, after_feature_id: $after_feature_id, limit: $limit) {
+  features(idea_id: $idea_id, after_feature_id: $after_feature_id, limit: $limit) @connection(key: "features", filter: ["idea_id"]) {
     page {
       ...PageBody
     }
@@ -1194,9 +1239,9 @@ export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLaz
 export type GetUserByIdQueryResult = ApolloReactCommon.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
 export const GetUserIdeasDocument = gql`
     query GetUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
-  user(id: $id) {
+  user(id: $id) @connection(key: "user", filter: ["id"]) {
     ...UserShortBody
-    ideas(after_id: $after_id, limit: $limit) {
+    ideas(after_id: $after_id, limit: $limit) @connection(key: "ideas") {
       page {
         ...PageBody
       }
@@ -1241,7 +1286,7 @@ export const GetSavedUserIdeasDocument = gql`
     query GetSavedUserIdeas($id: ID!, $after_id: ID, $limit: Int!) {
   user(id: $id) {
     ...UserShortBody
-    savedIdeas(after_id: $after_id, limit: $limit) {
+    savedIdeas(after_id: $after_id, limit: $limit) @connection(key: "savedIdeas") {
       page {
         ...PageBody
       }
@@ -1284,9 +1329,9 @@ export type GetSavedUserIdeasLazyQueryHookResult = ReturnType<typeof useGetSaved
 export type GetSavedUserIdeasQueryResult = ApolloReactCommon.QueryResult<GetSavedUserIdeasQuery, GetSavedUserIdeasQueryVariables>;
 export const GetUserLikesDocument = gql`
     query GetUserLikes($id: ID!, $after_id: ID, $limit: Int!) {
-  user(id: $id) {
+  user(id: $id) @connection(key: "user", filter: ["id"]) {
     id
-    likedIdeas(after_id: $after_id, limit: $limit) {
+    likedIdeas(after_id: $after_id, limit: $limit) @connection(key: "likedIdeas") {
       page {
         ...PageBody
       }
@@ -1332,7 +1377,7 @@ export type GetUserLikesLazyQueryHookResult = ReturnType<typeof useGetUserLikesL
 export type GetUserLikesQueryResult = ApolloReactCommon.QueryResult<GetUserLikesQuery, GetUserLikesQueryVariables>;
 export const GetNewIdeasDocument = gql`
     query GetNewIdeas($after_id: ID, $limit: Int!) {
-  newIdeas(after_id: $after_id, limit: $limit) {
+  newIdeas(after_id: $after_id, limit: $limit) @connection(key: "newIdeas") {
     page {
       ...PageBody
     }
@@ -1376,7 +1421,7 @@ export type GetNewIdeasLazyQueryHookResult = ReturnType<typeof useGetNewIdeasLaz
 export type GetNewIdeasQueryResult = ApolloReactCommon.QueryResult<GetNewIdeasQuery, GetNewIdeasQueryVariables>;
 export const GetTopIdeasDocument = gql`
     query GetTopIdeas($interval: INTERVAL!, $skip: Int!, $limit: Int!) {
-  topIdeas(interval: $interval, skip: $skip, limit: $limit) {
+  topIdeas(interval: $interval, skip: $skip, limit: $limit) @connection(key: "topIdeas", filter: ["interval"]) {
     page {
       ...PageBody
     }

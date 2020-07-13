@@ -12,6 +12,8 @@ import {
   MenuItem,
   Switch,
   Tooltip,
+  ListItemText,
+  ListItemSecondaryAction,
 } from '@material-ui/core';
 
 import ResponsiveButton from './Buttons/ResponsiveButton';
@@ -132,23 +134,30 @@ function Navbar() {
                   open={open}
                   onClose={handleClose}
                 >
-                  <MenuItem
-                    component={Link}
-                    color="inherit"
-                    href="/user/[userId]"
-                    as={`/user/${user.id}`}
-                    onClick={handleClose}
-                  >
-                    Profile
+                  <MenuItem onClick={handleClose}>
+                    <Link
+                      style={{ display: 'block', width: '100%' }}
+                      color="inherit"
+                      underline="none"
+                      href="/user/[userId]"
+                      as={`/user/${user.id}`}
+                    >
+                      <ListItemText primary="Profile" />
+                    </Link>
                   </MenuItem>
-                  <MenuItem>
-                    Dark Mode:{' '}
-                    <Switch
-                      checked={mode === 'dark'}
-                      onChange={() => toggle()}
-                      color="primary"
-                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                  <MenuItem button={false}>
+                    <ListItemText
+                      style={{ marginRight: '2rem' }}
+                      primary="Dark Mode"
                     />
+                    <ListItemSecondaryAction>
+                      <Switch
+                        checked={mode === 'dark'}
+                        onChange={() => toggle()}
+                        color="primary"
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                      />
+                    </ListItemSecondaryAction>
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
@@ -156,7 +165,7 @@ function Navbar() {
                       handleClose();
                     }}
                   >
-                    Logout
+                    <ListItemText primary="Logout" />
                   </MenuItem>
                 </Menu>
               </div>
