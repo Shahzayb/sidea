@@ -7,7 +7,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import { Feature, useUpdateFeatureMutation } from '../../graphql/client/types';
 import { useSnackbar } from 'notistack';
-import useIsMountedRef from '../../hooks/useIsMountedRef';
+import useIsMounted from '../../hooks/useIsMounted';
 
 const validationSchema = yup.object().shape({
   feature: yup
@@ -26,7 +26,7 @@ interface Props {
 function UpdateFeatureForm({ feature, onSuccess, onClose }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const mountedRef = useIsMountedRef();
+  const isMounted = useIsMounted();
 
   const [updateFeatureMutation] = useUpdateFeatureMutation();
 
@@ -48,7 +48,7 @@ function UpdateFeatureForm({ feature, onSuccess, onClose }: Props) {
           if (data) {
             onSuccess();
             enqueueSnackbar('Feature is updated');
-            if (mountedRef.current) {
+            if (isMounted) {
               formik.resetForm();
             }
           } else if (errors) {
@@ -59,7 +59,7 @@ function UpdateFeatureForm({ feature, onSuccess, onClose }: Props) {
           enqueueSnackbar('Failed to update feature');
         })
         .finally(() => {
-          if (mountedRef.current) {
+          if (isMounted) {
             formik.setSubmitting(false);
           }
         });

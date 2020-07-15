@@ -4,11 +4,11 @@ import { useRouter } from 'next/router';
 
 type ProtectionType = 'AUTHENTICATED_ONLY' | 'UNAUTHENTICATED_ONLY';
 
-const withRouteProtection = (
-  Component: React.FC,
+function withRouteProtection<P extends {}>(
+  Component: React.FC<P>,
   protectionType: ProtectionType = 'AUTHENTICATED_ONLY'
-) => {
-  return () => {
+) {
+  return (props: P) => {
     const { loading, authenticated } = useAuth();
     const router = useRouter();
     React.useEffect(() => {
@@ -26,8 +26,8 @@ const withRouteProtection = (
         router.replace('/');
       }
     }, [loading, authenticated, router]);
-    return <Component />;
+    return <Component {...props} />;
   };
-};
+}
 
 export default withRouteProtection;

@@ -43,6 +43,22 @@ export const SignUp = gql`
   }
 `;
 
+export const ForgotPassword = gql`
+  mutation ForgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input) {
+      msg
+    }
+  }
+`;
+
+export const ResetPassword = gql`
+  mutation ResetPassword($input: ResetPasswordInput!) {
+    resetPassword(input: $input) {
+      token
+    }
+  }
+`;
+
 export const UpdateThemeMode = gql`
   mutation UpdateThemeMode($input: UpdateThemeModeInput!) {
     updateThemeMode(input: $input) {

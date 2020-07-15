@@ -9,8 +9,15 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import gravatar from 'gravatar';
 import { AuthenticationError, UserInputError } from 'apollo-server-micro';
-import { createJwtToken } from '../../../utils/jwt';
+import jwt from 'jsonwebtoken';
+
+import {
+  createJwtToken,
+  createTokenForResetPassword,
+  JWTTokenPayload,
+} from '../../../utils/jwt';
 import { MutationResolvers } from '../types';
+import { sendForgotPasswordEmail } from '../../../utils/email';
 
 export const Mutation: MutationResolvers = {
   async login(_, { input: { username, password } }, { prisma }) {
@@ -1001,13 +1008,6 @@ export const Mutation: MutationResolvers = {
       });
     }
 
-    // const like = await prisma.like.findOne({
-    //   where: {
-    //     userId: user.id,
-    //     ideaId: validator.toInt(idea_id),
-    //   },
-    // });
-
     const like = await prisma.like.delete({
       where: {
         userId: user.id,
@@ -1032,5 +1032,167 @@ export const Mutation: MutationResolvers = {
     });
 
     return setting;
+  },
+  async forgotPassword(_, { input }, { prisma }) {
+    input.email = validator.normalizeEmail(input.email.trim()) as string;
+
+    const user = await prisma.user.findOne({
+      where: {
+        email: input.email,
+      },
+      select: {
+        id: true,
+        username: true,
+        password: true,
+        createdAt: true,
+      },
+    });
+
+    const errors: { param: keyof typeof input; msg: string }[] = [];
+
+    // check if email is valid
+    if (!input.email) {
+      errors.push({
+        param: 'email',
+        msg: 'email is required',
+      });
+    } else if (!validator.isEmail(input.email)) {
+      errors.push({
+        param: 'email',
+        msg: 'email is invalid',
+      });
+    } else if (!user) {
+      errors.push({
+        param: 'email',
+        msg: 'email is not linked with any account',
+      });
+    }
+
+    if (errors.length) {
+      throw new UserInputError('invalid data', {
+        errors,
+      });
+    }
+
+    const token = createTokenForResetPassword({
+      id: user!.id,
+      createdAt: user!.createdAt.toISOString(),
+      password: user!.password,
+    });
+
+    sendForgotPasswordEmail({
+      id: user!.id,
+      email: input.email,
+      token,
+      username: user!.username,
+    }).catch(() => {});
+
+    return { __typename: 'ForgotPasswordResponse' };
+  },
+  async resetPassword(_, { input }, { prisma }) {
+    input.token = input.token.trim();
+    input.userId = input.userId.trim();
+    const userId = validator.toInt(input.userId);
+
+    const errors: { param: keyof typeof input; msg: string }[] = [];
+
+    // validate userId
+    if (
+      !validator.isInt(input.userId, {
+        allow_leading_zeroes: true,
+      })
+    ) {
+      errors.push({
+        param: 'userId',
+        msg: 'userId is invalid',
+      });
+    } else {
+      const userCount = await prisma.user.count({
+        where: {
+          id: userId,
+        },
+      });
+      if (userCount <= 0) {
+        errors.push({
+          param: 'userId',
+          msg: `"user:${userId}" does not exist`,
+        });
+      }
+    }
+
+    // check if password is valid
+    if (!input.newPassword) {
+      errors.push({
+        param: 'newPassword',
+        msg: 'newPassword is required',
+      });
+    } else if (input.newPassword.length < 8) {
+      errors.push({
+        param: 'newPassword',
+        msg: 'newPassword is too short. should be at least 8 character',
+      });
+    } else {
+      // hash the password
+      input.newPassword = await bcrypt.hash(input.newPassword, 8);
+    }
+
+    // validate token
+    if (!input.token) {
+      errors.push({
+        param: 'token',
+        msg: 'token is required',
+      });
+    } else if (!validator.isJWT(input.token)) {
+      errors.push({
+        param: 'token',
+        msg: 'token is not JWT',
+      });
+    } else if (Number.isFinite(userId)) {
+      const user = await prisma.user.findOne({
+        where: {
+          id: userId,
+        },
+        select: {
+          password: true,
+          createdAt: true,
+        },
+      });
+      if (user) {
+        try {
+          const secretKey = user.password + '-' + user.createdAt.toISOString();
+          const payload = jwt.verify(input.token, secretKey) as JWTTokenPayload;
+          if (payload.id !== userId) {
+            errors.push({
+              param: 'token',
+              msg: 'token is invalid',
+            });
+          }
+        } catch {
+          errors.push({
+            param: 'token',
+            msg: 'token is invalid',
+          });
+        }
+      }
+    }
+
+    if (errors.length) {
+      throw new UserInputError('invalid data', {
+        errors,
+      });
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: input.newPassword,
+      },
+    });
+
+    const token = createJwtToken({ id: user.id });
+
+    return { user, token };
   },
 };

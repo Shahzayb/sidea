@@ -30,6 +30,18 @@ const typeDefs = gql`
     likeIdea(idea_id: ID!): Like!
     unlikeIdea(idea_id: ID!): Like!
     updateThemeMode(input: UpdateThemeModeInput!): Setting!
+    forgotPassword(input: ForgotPasswordInput!): ForgotPasswordResponse!
+    resetPassword(input: ResetPasswordInput!): AuthResponse!
+  }
+
+  input ResetPasswordInput {
+    userId: ID!
+    newPassword: String!
+    token: String!
+  }
+
+  input ForgotPasswordInput {
+    email: String!
   }
 
   input UpdateThemeModeInput {
@@ -90,6 +102,10 @@ const typeDefs = gql`
   }
 
   # models
+
+  type ForgotPasswordResponse {
+    msg: String
+  }
 
   type Setting {
     id: ID!

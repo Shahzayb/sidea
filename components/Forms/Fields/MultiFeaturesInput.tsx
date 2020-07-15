@@ -12,6 +12,7 @@ import {
   makeStyles,
   Box,
   FormHelperText,
+  Tooltip,
 } from '@material-ui/core';
 import { Delete as DeleteIcon, Add as AddIcon } from '@material-ui/icons';
 import { FormikErrors } from 'formik';
@@ -58,20 +59,27 @@ function ListInput({ onChange, value, errors }: Props) {
           }}
           helperText={`${feature.length}/300`}
         />
-        <SquareIconButton
-          size="small"
-          color="secondary"
+        <Tooltip
           title="add feature"
-          onClick={() => {
-            const findIndex = value.findIndex((feat) => feat.title === feature);
-            if (findIndex === -1 && feature) {
-              onChange([...value, { title: feature }]);
-            }
-            setFeature('');
-          }}
+          placement="bottom"
+          aria-label="add feature"
         >
-          <AddIcon />
-        </SquareIconButton>
+          <SquareIconButton
+            size="small"
+            color="secondary"
+            onClick={() => {
+              const findIndex = value.findIndex(
+                (feat) => feat.title === feature
+              );
+              if (findIndex === -1 && feature) {
+                onChange([...value, { title: feature }]);
+              }
+              setFeature('');
+            }}
+          >
+            <AddIcon />
+          </SquareIconButton>
+        </Tooltip>
       </div>
 
       {!!value.length && (
@@ -106,18 +114,24 @@ function ListInput({ onChange, value, errors }: Props) {
                     primary={<Typography>{feat.title}</Typography>}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton
-                      onClick={() => {
-                        const _value = value.filter(
-                          (_, _index) => _index !== index
-                        );
-                        onChange(_value);
-                      }}
-                      size="small"
-                      aria-label="delete"
+                    <Tooltip
+                      title="remove feature"
+                      placement="bottom"
+                      aria-label="remove feature"
                     >
-                      <DeleteIcon />
-                    </IconButton>
+                      <IconButton
+                        onClick={() => {
+                          const _value = value.filter(
+                            (_, _index) => _index !== index
+                          );
+                          onChange(_value);
+                        }}
+                        size="small"
+                        aria-label="delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
                   </ListItemSecondaryAction>
                 </ListItem>
               );

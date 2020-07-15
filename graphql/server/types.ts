@@ -70,6 +70,8 @@ export type Mutation = {
   likeIdea: Like;
   unlikeIdea: Like;
   updateThemeMode: Setting;
+  forgotPassword: ForgotPasswordResponse;
+  resetPassword: AuthResponse;
 };
 
 
@@ -137,6 +139,26 @@ export type MutationUpdateThemeModeArgs = {
   input: UpdateThemeModeInput;
 };
 
+
+export type MutationForgotPasswordArgs = {
+  input: ForgotPasswordInput;
+};
+
+
+export type MutationResetPasswordArgs = {
+  input: ResetPasswordInput;
+};
+
+export type ResetPasswordInput = {
+  userId: Scalars['ID'];
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type ForgotPasswordInput = {
+  email: Scalars['String'];
+};
+
 export type UpdateThemeModeInput = {
   themeMode: ThemeMode;
 };
@@ -193,6 +215,11 @@ export enum ThemeMode {
   Light = 'LIGHT',
   Dark = 'DARK'
 }
+
+export type ForgotPasswordResponse = {
+  __typename?: 'ForgotPasswordResponse';
+  msg?: Maybe<Scalars['String']>;
+};
 
 export type Setting = {
   __typename?: 'Setting';
@@ -385,6 +412,8 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  ResetPasswordInput: ResetPasswordInput;
+  ForgotPasswordInput: ForgotPasswordInput;
   UpdateThemeModeInput: UpdateThemeModeInput;
   LoginInput: LoginInput;
   SignupInput: SignupInput;
@@ -395,6 +424,7 @@ export type ResolversTypes = ResolversObject<{
   UpdateFeatureInput: UpdateFeatureInput;
   INTERVAL: Interval;
   ThemeMode: ThemeMode;
+  ForgotPasswordResponse: ResolverTypeWrapper<ForgotPasswordResponse>;
   Setting: ResolverTypeWrapper<CustomSetting>;
   IdeaPageResponse: ResolverTypeWrapper<CustomIdeaPageResponse>;
   FeaturePageResponse: ResolverTypeWrapper<CustomFeaturePageResponse>;
@@ -415,6 +445,8 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
+  ResetPasswordInput: ResetPasswordInput;
+  ForgotPasswordInput: ForgotPasswordInput;
   UpdateThemeModeInput: UpdateThemeModeInput;
   LoginInput: LoginInput;
   SignupInput: SignupInput;
@@ -425,6 +457,7 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateFeatureInput: UpdateFeatureInput;
   INTERVAL: Interval;
   ThemeMode: ThemeMode;
+  ForgotPasswordResponse: ForgotPasswordResponse;
   Setting: CustomSetting;
   IdeaPageResponse: CustomIdeaPageResponse;
   FeaturePageResponse: CustomFeaturePageResponse;
@@ -461,6 +494,13 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   likeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationLikeIdeaArgs, 'idea_id'>>;
   unlikeIdea?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationUnlikeIdeaArgs, 'idea_id'>>;
   updateThemeMode?: Resolver<ResolversTypes['Setting'], ParentType, ContextType, RequireFields<MutationUpdateThemeModeArgs, 'input'>>;
+  forgotPassword?: Resolver<ResolversTypes['ForgotPasswordResponse'], ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'input'>>;
+  resetPassword?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'input'>>;
+}>;
+
+export type ForgotPasswordResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ForgotPasswordResponse'] = ResolversParentTypes['ForgotPasswordResponse']> = ResolversObject<{
+  msg?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
 export type SettingResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Setting'] = ResolversParentTypes['Setting']> = ResolversObject<{
@@ -548,6 +588,7 @@ export type SaveResolvers<ContextType = Context, ParentType extends ResolversPar
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  ForgotPasswordResponse?: ForgotPasswordResponseResolvers<ContextType>;
   Setting?: SettingResolvers<ContextType>;
   IdeaPageResponse?: IdeaPageResponseResolvers<ContextType>;
   FeaturePageResponse?: FeaturePageResponseResolvers<ContextType>;

@@ -11,18 +11,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SquareIconButton(props: IconButtonProps) {
-  const classes = useStyles();
-  return (
-    <IconButton
-      {...props}
-      classes={{
-        ...props.classes,
-        root: clsx(props.classes?.root, classes.root),
-        sizeSmall: clsx(props.classes?.sizeSmall, classes.sizeSmall),
-      }}
-    ></IconButton>
-  );
-}
-
+const SquareIconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+  (props, ref) => {
+    const classes = useStyles();
+    return (
+      <IconButton
+        {...props}
+        ref={ref}
+        classes={{
+          ...props.classes,
+          root: clsx(props.classes?.root, classes.root),
+          sizeSmall: clsx(props.classes?.sizeSmall, classes.sizeSmall),
+        }}
+      ></IconButton>
+    );
+  }
+);
 export default SquareIconButton;
