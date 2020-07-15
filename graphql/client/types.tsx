@@ -614,6 +614,10 @@ export type GetIdeaFeaturesQuery = (
       & PageBodyFragment
     ), entry: Array<(
       { __typename?: 'Feature' }
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id'>
+      ) }
       & FeatureBodyFragment
     )> }
   ) }
@@ -1390,6 +1394,9 @@ export const GetIdeaFeaturesDocument = gql`
     }
     entry {
       ...FeatureBody
+      user {
+        id
+      }
     }
   }
 }

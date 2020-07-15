@@ -2,6 +2,8 @@ import React from 'react';
 import useGutterAllChild from '../../hooks/useGutterAllChild';
 import { Paper, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import IdeaActionsSkeleton from './IdeaActionsSkeleton';
+import CreateFeatureFormSkeleton from './CreateFeatureFormSkeleton';
 
 function IdeaSkeleton() {
   const classes = useGutterAllChild({ spacing: 2 });
@@ -39,6 +41,8 @@ function IdeaSkeleton() {
         <Skeleton width="98%" />
         <Skeleton width="30%" />
       </Typography>
+      <IdeaActionsSkeleton />
+      <CreateFeatureFormSkeleton />
     </Paper>
   );
 }

@@ -7,11 +7,12 @@ import {
   makeStyles,
 } from '@material-ui/core';
 
-import { Feature } from '../../graphql/client/types';
+import { Feature, User } from '../../graphql/client/types';
 import DeleteFeature from './FeatureActions/DeleteFeature';
 import EditFeature from './FeatureActions/EditFeature';
 import clsx from 'clsx';
 import UpdateFeatureForm from '../Forms/UpdateFeatureForm';
+import { useAuth } from '../../context/auth-context';
 
 const useStyles = makeStyles((theme) => ({
   listText: {
@@ -28,17 +29,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  feature: Pick<Feature, 'id' | 'title'>;
+  feature: Pick<Feature, 'id' | 'title'> & { user: Pick<User, 'id'> };
   ideaId: string;
 }
 
 type Mode = 'edit' | 'view';
 
 function FeatureContainer({ feature, ideaId }: Props) {
+  const classes = useStyles();
+  const { user: authUser, authenticated } = useAuth();
   const [disable, setDisable] = React.useState(false);
   const [mode, setMode] = React.useState<Mode>('view');
 
-  const classes = useStyles();
+  const isMineFeature = feature.user.id === authUser?.id && authenticated;
+
   return (
     <ListItem key={feature.id} divider>
       {mode === 'view' && (
@@ -50,26 +54,30 @@ function FeatureContainer({ feature, ideaId }: Props) {
             primary={<Typography>{feature.title}</Typography>}
           />
           <ListItemSecondaryAction>
-            <EditFeature
-              disabled={disable}
-              onClick={() => {
-                setMode('edit');
-              }}
-            />
-            <DeleteFeature
-              disabled={disable}
-              id={feature.id}
-              ideaId={ideaId}
-              onLoading={() => {
-                setDisable(true);
-              }}
-              onSuccess={() => {
-                setDisable(false);
-              }}
-              onError={() => {
-                setDisable(false);
-              }}
-            />
+            {isMineFeature && (
+              <EditFeature
+                disabled={disable}
+                onClick={() => {
+                  setMode('edit');
+                }}
+              />
+            )}
+            {isMineFeature && (
+              <DeleteFeature
+                disabled={disable}
+                id={feature.id}
+                ideaId={ideaId}
+                onLoading={() => {
+                  setDisable(true);
+                }}
+                onSuccess={() => {
+                  setDisable(false);
+                }}
+                onError={() => {
+                  setDisable(false);
+                }}
+              />
+            )}
           </ListItemSecondaryAction>
         </>
       )}

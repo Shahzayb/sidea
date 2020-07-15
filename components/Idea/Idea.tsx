@@ -27,12 +27,24 @@ import DeleteIdea from './IdeaActions/DeleteIdea';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import FeatureList from '../Feature/FeatureList';
+import { useAuth } from '../../context/auth-context';
+import IdeaActionsSkeleton from '../Skeletons/IdeaActionsSkeleton';
+import CreateFeatureFormSkeleton from '../Skeletons/CreateFeatureFormSkeleton';
+import useMarginRightChild from '../../hooks/useMarginRightChild';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     zIndex: 999,
     borderRadius: theme.shape.borderRadius,
+  },
+  ideaActions: {
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    '& > #idea-likes': {
+      paddingBottom: theme.spacing(1),
+      paddingLeft: 5,
+    },
   },
 }));
 
@@ -43,9 +55,11 @@ interface Props {
 function Idea({ id }: Props) {
   const classes = useStyles();
   const [deleting, setDeleting] = React.useState(false);
+  const { user: authUser, loading: authLoading, authenticated } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const gutterClx = useGutterAllChild({ spacing: 2 });
+  const mrChildClx = useMarginRightChild();
   const { data, loading, error, refetch, networkStatus } = useGetIdeaByIdQuery({
     variables: {
       id,
@@ -73,6 +87,8 @@ function Idea({ id }: Props) {
   if (!data || !data.idea) {
     return <CustomError title="No idea found." />;
   }
+
+  const isMineIdea = data.idea.user.id === authUser?.id && authenticated;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -126,51 +142,67 @@ function Idea({ id }: Props) {
             ))}
           </div>
         )}
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography
+          noWrap
+          component="div"
+          color="textPrimary"
+          variant="overline"
+        >
+          {number.format(data.idea.likesCount)} likes
+        </Typography>
+
+        {!authLoading && (
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               flexWrap: 'wrap',
             }}
+            className={mrChildClx.root}
           >
             <ToggleLike idea={data.idea} />
             <ToggleSave idea={data.idea} />
 
             <Share />
 
-            <DeleteIdea
-              id={data.idea.id}
-              onLoading={() => setDeleting(true)}
-              onSuccess={async () => {
-                setDeleting(false);
-                try {
-                  await router.push('/');
-                } catch {}
-              }}
-              onError={() => {
-                setDeleting(false);
-                enqueueSnackbar('Failed to delete idea.');
-              }}
-            />
+            {isMineIdea && (
+              <DeleteIdea
+                id={data.idea.id}
+                onLoading={() => setDeleting(true)}
+                onSuccess={async () => {
+                  setDeleting(false);
+                  try {
+                    await router.push('/');
+                  } catch {}
+                }}
+                onError={() => {
+                  setDeleting(false);
+                  enqueueSnackbar('Failed to delete idea.');
+                }}
+              />
+            )}
 
-            <Link
-              underline="none"
-              href="/idea/[ideaId]/edit"
-              as={`/idea/${data.idea.id}/edit`}
-            >
-              <Button size="small" startIcon={<EditIcon />}>
-                edit
-              </Button>
-            </Link>
+            {isMineIdea && (
+              <Link
+                underline="none"
+                href="/idea/[ideaId]/edit"
+                as={`/idea/${data.idea.id}/edit`}
+              >
+                <Button size="small" startIcon={<EditIcon />}>
+                  edit
+                </Button>
+              </Link>
+            )}
           </div>
-          <Typography component="span" variant="overline">
-            {number.format(data.idea.likesCount)} likes
-          </Typography>
-        </Box>
-        <div style={{ marginTop: '2rem' }}>
-          <CreateFeatureForm ideaId={data.idea.id} />
-        </div>
+        )}
+        {authLoading && <IdeaActionsSkeleton />}
+
+        {isMineIdea && (
+          <div style={{ marginTop: '2rem' }}>
+            <CreateFeatureForm ideaId={data.idea.id} />
+          </div>
+        )}
+        {authLoading && <CreateFeatureFormSkeleton />}
         <Typography component="h2" variant="h5">
           Features
         </Typography>

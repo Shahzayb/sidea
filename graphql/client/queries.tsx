@@ -85,6 +85,9 @@ export const GetIdeaFeatures = gql`
       }
       entry {
         ...FeatureBody
+        user {
+          id
+        }
       }
     }
   }

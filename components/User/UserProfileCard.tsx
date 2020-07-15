@@ -16,12 +16,14 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 import Link from '../Link';
 import validator from 'validator';
+import { useAuth } from '../../context/auth-context';
 
 interface Props {
   user: Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'createdAt'>;
 }
 
 function UserProfileCard({ user }: Props) {
+  const { user: authUser } = useAuth();
   const date = React.useMemo(() => {
     const _date = new Date(validator.toInt(user.createdAt));
 
@@ -31,6 +33,8 @@ function UserProfileCard({ user }: Props) {
     });
   }, [user.createdAt]);
 
+  const isMineProfile = user.id === authUser?.id;
+
   return (
     <Card>
       <CardHeader
@@ -38,9 +42,11 @@ function UserProfileCard({ user }: Props) {
         title={user.name}
         subheader={user.username}
         action={
-          <IconButton aria-label="settings">
-            <SettingsIcon />
-          </IconButton>
+          isMineProfile && (
+            <IconButton aria-label="settings">
+              <SettingsIcon />
+            </IconButton>
+          )
         }
       />
       <CardContent>
@@ -57,11 +63,13 @@ function UserProfileCard({ user }: Props) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <Link style={{ width: '100%' }} naked href="/idea/create">
-          <Button size="small" fullWidth color="primary" variant="contained">
-            New Idea
-          </Button>
-        </Link>
+        {isMineProfile && (
+          <Link style={{ width: '100%' }} naked href="/idea/create">
+            <Button size="small" fullWidth color="primary" variant="contained">
+              New Idea
+            </Button>
+          </Link>
+        )}
       </CardActions>
     </Card>
   );
