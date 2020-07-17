@@ -9,6 +9,12 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
+
+import {
+  NewReleases as NewIcon,
+  TrendingUp as TopIcon,
+} from '@material-ui/icons';
+
 import { Interval } from '../../graphql/client/types';
 import { useRouter } from 'next/router';
 import Link from '../Link';
@@ -48,6 +54,7 @@ function IdeaCategoryTab() {
         >
           <Tab
             value={Category.NEW_IDEAS}
+            icon={<NewIcon />}
             label="New Ideas"
             href="/new"
             naked
@@ -57,6 +64,7 @@ function IdeaCategoryTab() {
           />
 
           <Tab
+            icon={<TopIcon />}
             component={React.forwardRef((props: TabProps, ref: any) => {
               return (
                 <>

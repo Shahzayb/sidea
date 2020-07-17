@@ -14,6 +14,8 @@ import {
   Tooltip,
   ListItemText,
   ListItemSecondaryAction,
+  Box,
+  ListItemIcon,
 } from '@material-ui/core';
 
 import ResponsiveButton from './Buttons/ResponsiveButton';
@@ -22,7 +24,12 @@ import { useAuth } from '../context/auth-context';
 import { Skeleton } from '@material-ui/lab';
 import { useToggleTheme } from '../context/theme-toggle-context';
 import IdeaAdd from './Icons/IdeaAdd';
+import PersonIcon from '@material-ui/icons/Person';
+import SettingsBrightnessIcon from '@material-ui/icons/SettingsBrightness';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { ThemeMode } from '../graphql/client/types';
+import SideMenu from './SideMenu';
+import Logo from './Icons/Logo';
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -72,10 +79,22 @@ function Navbar() {
     <HideOnScroll>
       <AppBar color="default" variant="outlined">
         <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Link color="inherit" href="/">
-            <Typography variant="h5">Sidea</Typography>
-          </Link>
-
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Box mr={2}>
+              <SideMenu />
+            </Box>
+            <Link
+              style={{ display: 'flex', alignItems: 'center' }}
+              color="inherit"
+              underline="none"
+              href="/"
+            >
+              <Box display="flex" alignItems="center" mr={1}>
+                <Logo fontSize="large" color="primary" />
+              </Box>
+              <Typography variant="h5">Sidea</Typography>
+            </Link>
+          </div>
           {loading && (
             <nav className={classes.nav}>
               <Skeleton variant="circle" width={40} height={40} />
@@ -86,10 +105,12 @@ function Navbar() {
           {!loading && !authenticated && (
             <nav className={classes.nav}>
               <Link underline="none" href={'/login'}>
-                <ResponsiveButton color="default">Sign in</ResponsiveButton>
+                <ResponsiveButton color="primary" variant="outlined">
+                  Login
+                </ResponsiveButton>
               </Link>
               <Link underline="none" href={'/signup'}>
-                <ResponsiveButton color="default" variant="outlined">
+                <ResponsiveButton color="primary" variant="contained">
                   Sign up
                 </ResponsiveButton>
               </Link>
@@ -135,27 +156,49 @@ function Navbar() {
                   open={open}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>
-                    <Link
-                      style={{ display: 'block', width: '100%' }}
-                      color="inherit"
-                      underline="none"
-                      href="/user/[userId]"
-                      as={`/user/${user.id}`}
-                    >
-                      <ListItemText primary="Profile" />
-                    </Link>
+                  <MenuItem disabled divider style={{ opacity: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Box mr={2}>
+                        <Avatar alt={user.name} src={user.avatar} />
+                      </Box>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <Typography variant="h6" gutterBottom>
+                          {user.name}
+                        </Typography>
+                        <Typography variant="body1">{user.username}</Typography>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    color="inherit"
+                    underline="none"
+                    href="/user/[userId]"
+                    as={`/user/${user.id}`}
+                    onClick={handleClose}
+                  >
+                    <ListItemIcon>
+                      <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Profile" />
                   </MenuItem>
                   <MenuItem button={false}>
+                    <ListItemIcon>
+                      <SettingsBrightnessIcon />
+                    </ListItemIcon>
                     <ListItemText
-                      style={{ marginRight: '2rem' }}
+                      style={{ marginRight: '2.5rem' }}
                       primary="Dark Mode"
                     />
                     <ListItemSecondaryAction>
                       <Switch
                         checked={mode === ThemeMode.Dark}
                         onChange={() => toggle()}
-                        color="primary"
                         inputProps={{ 'aria-label': 'primary checkbox' }}
                       />
                     </ListItemSecondaryAction>
@@ -166,6 +209,9 @@ function Navbar() {
                       handleClose();
                     }}
                   >
+                    <ListItemIcon>
+                      <ExitToAppIcon />
+                    </ListItemIcon>
                     <ListItemText primary="Logout" />
                   </MenuItem>
                 </Menu>

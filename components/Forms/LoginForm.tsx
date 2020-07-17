@@ -124,7 +124,7 @@ function LoginForm() {
           disabled={formik.isSubmitting || !formik.isValid}
           fullWidth
         >
-          Sign in{' '}
+          Login
           {formik.isSubmitting && (
             <CircularProgress
               color="secondary"

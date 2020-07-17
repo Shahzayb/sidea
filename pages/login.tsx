@@ -24,7 +24,7 @@ function Index() {
       <Paper className={classes.gutterAllChild} style={{ padding: '1rem' }}>
         <LogoHomeLink />
         <Typography align="center" component="h1" variant="h5">
-          Welcome back, sign in to continue
+          Welcome back, login to continue
         </Typography>
 
         {!loading && !authenticated && <LoginForm />}

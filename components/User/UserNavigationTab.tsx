@@ -1,5 +1,8 @@
 import React from 'react';
 import { Paper, Box, Tabs, Tab } from '@material-ui/core';
+import { Save as SaveIcon, Favorite as FavoriteIcon } from '@material-ui/icons';
+import IdeaIcon from '../Icons/Idea';
+
 import Link from '../Link';
 import { a11yProps } from '../Tabs/TabPanel';
 
@@ -21,6 +24,7 @@ function UserNavigationTab({ userId, page }: Props) {
         <Tabs value={curTab} onChange={handleChange} aria-label="user tabs">
           <Tab
             label="Ideas"
+            icon={<IdeaIcon />}
             href={`/user/[userId]/ideas`}
             as={`/user/${userId}/ideas`}
             naked
@@ -30,6 +34,7 @@ function UserNavigationTab({ userId, page }: Props) {
           />
           <Tab
             label="Saved"
+            icon={<SaveIcon />}
             href={`/user/[userId]/ideas/saved`}
             as={`/user/${userId}/ideas/saved`}
             naked
@@ -39,6 +44,7 @@ function UserNavigationTab({ userId, page }: Props) {
           />
           <Tab
             label="Likes"
+            icon={<FavoriteIcon />}
             href={`/user/[userId]/ideas/likes`}
             as={`/user/${userId}/ideas/likes`}
             naked
