@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 
 type ProtectionType = 'AUTHENTICATED_ONLY' | 'UNAUTHENTICATED_ONLY';
 
-function withRouteProtection<P extends {}>(
-  Component: React.FC<P>,
+function withRouteProtection<P extends {} = {}>(
+  Component: React.FC<P> | React.ComponentClass<P>,
   protectionType: ProtectionType = 'AUTHENTICATED_ONLY'
 ) {
   return (props: P) => {

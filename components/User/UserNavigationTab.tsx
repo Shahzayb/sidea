@@ -21,7 +21,12 @@ function UserNavigationTab({ userId, page }: Props) {
   return (
     <Paper>
       <Box p={1}>
-        <Tabs value={curTab} onChange={handleChange} aria-label="user tabs">
+        <Tabs
+          value={curTab}
+          onChange={handleChange}
+          textColor="secondary"
+          aria-label="user tabs"
+        >
           <Tab
             label="Ideas"
             icon={<IdeaIcon />}

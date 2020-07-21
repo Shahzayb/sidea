@@ -43,4 +43,4 @@ const Home = () => {
   );
 };
 
-export default withLayout(withFooter(withNavbar(Home)), 'md');
+export default withLayout(withFooter(withNavbar<{}>(Home)), 'md');

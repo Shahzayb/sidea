@@ -43,6 +43,9 @@ export const IdeaShortBody = gql`
   fragment IdeaShortBody on Idea {
     id
     title
+    isLikedByMe
+    likesCount
+    isSavedByMe
     createdAt
   }
 `;

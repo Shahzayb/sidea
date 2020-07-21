@@ -18,6 +18,7 @@ import {
 } from '../../../utils/jwt';
 import { MutationResolvers } from '../types';
 import { sendForgotPasswordEmail } from '../../../utils/email';
+import * as search from '../../../utils/search';
 
 export const Mutation: MutationResolvers = {
   async login(_, { input: { username, password } }, { prisma }) {
@@ -202,6 +203,10 @@ export const Mutation: MutationResolvers = {
 
     const user = setting.User;
 
+    try {
+      await search.addUser(user);
+    } catch {}
+
     // create jwt token
     const token = createJwtToken({ id: user.id });
 
@@ -359,6 +364,12 @@ export const Mutation: MutationResolvers = {
     const idea = await prisma.idea.create({
       data,
     });
+
+    try {
+      await search.addIdea({ ...idea, tags: input.tags || [] });
+    } catch (e) {
+      console.log('addIdea error', e);
+    }
 
     return idea;
   },
@@ -589,6 +600,15 @@ export const Mutation: MutationResolvers = {
 
     const idea = await prisma.idea.update(update);
 
+    try {
+      await search.updateIdea({
+        id: idea.id,
+        title: input.title,
+        body: input.body,
+        tags: input.tags ?? undefined,
+      });
+    } catch {}
+
     return idea;
   },
   async updateFeature(_, { input }, { prisma, user }) {
@@ -779,6 +799,10 @@ export const Mutation: MutationResolvers = {
 
     await prisma.executeRaw`DELETE FROM Idea where id = ${validator.toInt(id)}`;
 
+    try {
+      await search.deleteIdea(id);
+    } catch {}
+
     return idea!;
   },
   async saveIdea(_, { idea_id }, { prisma, user }) {
@@ -929,7 +953,7 @@ export const Mutation: MutationResolvers = {
           msg: 'idea does not exists.',
         });
       } else {
-        // check if idea is already saved
+        // check if idea is already liked
         const likeCount = await prisma.like.count({
           where: {
             ideaId,
@@ -966,6 +990,10 @@ export const Mutation: MutationResolvers = {
         },
       },
     });
+
+    try {
+      await search.likeIdea(idea_id.trim());
+    } catch {}
 
     return like;
   },
@@ -1014,6 +1042,10 @@ export const Mutation: MutationResolvers = {
         ideaId: validator.toInt(idea_id),
       },
     });
+
+    try {
+      await search.unlikeIdea(idea_id.trim());
+    } catch {}
 
     return like!;
   },

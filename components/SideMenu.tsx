@@ -93,7 +93,9 @@ export default function SideMenu() {
               <Box display="flex" alignItems="center" mr={1}>
                 <Logo fontSize="large" color="primary" />
               </Box>
-              <Typography variant="h5">Sidea</Typography>
+              <Typography variant="h5" noWrap>
+                Sidea
+              </Typography>
             </Link>
           </Box>
           <Divider />

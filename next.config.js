@@ -17,18 +17,10 @@ module.exports = (phase) => {
   console.log(`isDev:${isDev}  isProd:${isProd}   isStaging:${isStaging}`);
 
   const env = {
-    APOLLO_CLIENT_URI: (() => {
-      if (isDev) return 'http://localhost:3000/api/graphql';
-      if (isProd) {
-        return 'https://www.siliconvalley-codecamp.com/rest/speakers/ps';
-      }
-      return '';
-    })(),
-    CLIENT_PAGE_QUERY_LIMIT: (() => {
-      if (isDev) return '10';
-      if (isProd) return '10';
-      return '';
-    })(),
+    APOLLO_CLIENT_URI: process.env.APOLLO_CLIENT_URI,
+    CLIENT_PAGE_QUERY_LIMIT: process.env.CLIENT_PAGE_QUERY_LIMIT,
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_ONLY_API_KEY: process.env.ALGOLIA_SEARCH_ONLY_API_KEY,
   };
 
   // next.config.js object

@@ -1,13 +1,15 @@
 import React from 'react';
 import Footer from '../components/Footer';
 
-const withFooter = (Component: () => JSX.Element) => {
-  return () => (
+function withFooter<P extends {} = {}>(
+  Component: React.FC<P> | React.ComponentClass<P>
+) {
+  return (props: P) => (
     <>
-      <Component />
+      <Component {...props} />
       <Footer />
     </>
   );
-};
+}
 
 export default withFooter;

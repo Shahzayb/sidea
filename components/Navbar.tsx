@@ -30,6 +30,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { ThemeMode } from '../graphql/client/types';
 import SideMenu from './SideMenu';
 import Logo from './Icons/Logo';
+import AutocompleteUserSearch from './Search/AutocompleteUserSearch';
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -92,9 +93,12 @@ function Navbar() {
               <Box display="flex" alignItems="center" mr={1}>
                 <Logo fontSize="large" color="primary" />
               </Box>
-              <Typography variant="h5">Sidea</Typography>
+              <Typography variant="h5" noWrap>
+                Sidea
+              </Typography>
             </Link>
           </div>
+
           {loading && (
             <nav className={classes.nav}>
               <Skeleton variant="circle" width={40} height={40} />
@@ -104,6 +108,7 @@ function Navbar() {
 
           {!loading && !authenticated && (
             <nav className={classes.nav}>
+              <AutocompleteUserSearch />
               <Link underline="none" href={'/login'}>
                 <ResponsiveButton color="primary" variant="outlined">
                   Login
@@ -118,6 +123,7 @@ function Navbar() {
           )}
           {!loading && user && (
             <nav className={classes.nav}>
+              <AutocompleteUserSearch />
               <Tooltip
                 placement="bottom"
                 title="Create Idea"

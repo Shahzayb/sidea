@@ -1,15 +1,17 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 
-const withNavbar = (Component: () => JSX.Element) => {
-  return () => (
+function withNavbar<P extends {} = {}>(
+  Component: React.FC<P> | React.ComponentClass<P>
+) {
+  return (props: P) => (
     <>
       <Navbar />
       <div style={{ marginTop: '5rem' }}>
-        <Component />
+        <Component {...props} />
       </div>
     </>
   );
-};
+}
 
 export default withNavbar;

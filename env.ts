@@ -25,3 +25,9 @@ export const clientBaseUrl = env
   .get('CLIENT_BASE_URL')
   .required()
   .asUrlString();
+
+export const algoliaAppId = env.get('ALGOLIA_APP_ID').required().asString();
+export const algoliaAdminApiKey = env
+  .get('ALGOLIA_ADMIN_API_KEY')
+  .required()
+  .asString();

@@ -98,6 +98,21 @@ function CreateIdeaForm() {
         },
       },
     ],
+    onCompleted(data) {
+      formik.setSubmitting(false);
+      router.push('/idea/[ideaId]', `/idea/${data.createIdea.id}`);
+    },
+    onError(error) {
+      formik.setSubmitting(false);
+      if (error.graphQLErrors[0]) {
+        const errors: Errors | null | undefined =
+          error.graphQLErrors[0]?.extensions?.errors;
+        if (errors)
+          errors.forEach(({ param, msg }) => {
+            formik.setFieldError(param, msg);
+          });
+      }
+    },
   });
   const router = useRouter();
 
@@ -109,25 +124,7 @@ function CreateIdeaForm() {
         variables: {
           input: values,
         },
-      })
-        .then(({ data, errors }) => {
-          if (data) {
-            router.push('/idea/[ideaId]', `/idea/${data.createIdea.id}`);
-          } else {
-            return Promise.reject({ graphQLErrors: errors });
-          }
-        })
-        .catch((err) => {
-          if (err.graphQLErrors[0]) {
-            const errors: Errors = err.graphQLErrors[0]?.extensions?.errors;
-            errors.forEach(({ param, msg }) => {
-              formik.setFieldError(param, msg);
-            });
-          }
-        })
-        .finally(() => {
-          formik.setSubmitting(false);
-        });
+      });
     },
   });
 

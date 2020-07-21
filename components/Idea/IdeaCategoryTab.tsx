@@ -51,6 +51,7 @@ function IdeaCategoryTab() {
           value={category}
           onChange={handleCategoryChange}
           aria-label="category tabs"
+          textColor="secondary"
         >
           <Tab
             value={Category.NEW_IDEAS}

@@ -568,7 +568,7 @@ export type IdeaBodyFragment = (
 
 export type IdeaShortBodyFragment = (
   { __typename?: 'Idea' }
-  & Pick<Idea, 'id' | 'title' | 'createdAt'>
+  & Pick<Idea, 'id' | 'title' | 'isLikedByMe' | 'likesCount' | 'isSavedByMe' | 'createdAt'>
 );
 
 export type PageBodyFragment = (
@@ -844,6 +844,9 @@ export const IdeaShortBodyFragmentDoc = gql`
     fragment IdeaShortBody on Idea {
   id
   title
+  isLikedByMe
+  likesCount
+  isSavedByMe
   createdAt
 }
     `;
