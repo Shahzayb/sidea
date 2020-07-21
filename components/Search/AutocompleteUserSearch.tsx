@@ -39,7 +39,6 @@ function AutocompleteUserSearch({
       <Configure hitsPerPage={clientPageQueryLimit} />
       <Autocomplete
         id="autocomplete-user-search"
-        style={{ width: 300 }}
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : option.username
         }
@@ -47,10 +46,8 @@ function AutocompleteUserSearch({
         options={hits}
         freeSolo
         noOptionsText="Users not found"
-        autoComplete
         includeInputInList
         filterSelectedOptions
-        // value={value}
         onChange={(event, newValue, reason) => {
           if (newValue) {
             if (
@@ -81,7 +78,7 @@ function AutocompleteUserSearch({
               ...params.InputProps,
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon />
+                  <SearchIcon color="action" />
                 </InputAdornment>
               ),
             }}
@@ -91,7 +88,6 @@ function AutocompleteUserSearch({
             fullWidth
           />
         )}
-        // You can use the `getOptionSelected` prop to customize the equality test.
         renderOption={(option) => {
           return (
             <Link

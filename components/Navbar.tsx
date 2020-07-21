@@ -16,6 +16,7 @@ import {
   ListItemSecondaryAction,
   Box,
   ListItemIcon,
+  Hidden,
 } from '@material-ui/core';
 
 import ResponsiveButton from './Buttons/ResponsiveButton';
@@ -31,6 +32,7 @@ import { ThemeMode } from '../graphql/client/types';
 import SideMenu from './SideMenu';
 import Logo from './Icons/Logo';
 import AutocompleteUserSearch from './Search/AutocompleteUserSearch';
+import NavbarAutocompleteUserSearch from './Search/NavbarAutocompleteUserSearch';
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -79,7 +81,12 @@ function Navbar() {
   return (
     <HideOnScroll>
       <AppBar color="default" variant="outlined">
-        <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Toolbar
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Box mr={2}>
               <SideMenu />
@@ -93,9 +100,11 @@ function Navbar() {
               <Box display="flex" alignItems="center" mr={1}>
                 <Logo fontSize="large" color="primary" />
               </Box>
-              <Typography variant="h5" noWrap>
-                Sidea
-              </Typography>
+              <Hidden xsDown>
+                <Typography variant="h5" noWrap>
+                  Sidea
+                </Typography>
+              </Hidden>
             </Link>
           </div>
 
@@ -108,7 +117,8 @@ function Navbar() {
 
           {!loading && !authenticated && (
             <nav className={classes.nav}>
-              <AutocompleteUserSearch />
+              {/* <AutocompleteUserSearch /> */}
+              <NavbarAutocompleteUserSearch />
               <Link underline="none" href={'/login'}>
                 <ResponsiveButton color="primary" variant="outlined">
                   Login
@@ -123,7 +133,8 @@ function Navbar() {
           )}
           {!loading && user && (
             <nav className={classes.nav}>
-              <AutocompleteUserSearch />
+              {/* <AutocompleteUserSearch /> */}
+              <NavbarAutocompleteUserSearch />
               <Tooltip
                 placement="bottom"
                 title="Create Idea"
