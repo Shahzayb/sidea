@@ -7,7 +7,7 @@ function withNavbar<P extends {} = {}>(
   return (props: P) => (
     <>
       <Navbar />
-      <div style={{ marginTop: '5rem' }}>
+      <div style={{ marginTop: '6rem' }}>
         <Component {...props} />
       </div>
     </>

@@ -80,7 +80,7 @@ function Navbar() {
 
   return (
     <HideOnScroll>
-      <AppBar color="default" variant="outlined">
+      <AppBar color="inherit" variant="outlined">
         <Toolbar
           style={{
             display: 'flex',
