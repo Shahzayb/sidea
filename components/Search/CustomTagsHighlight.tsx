@@ -24,18 +24,20 @@ const Highlight = ({ highlight, hit }: Omit<HighlightProps, 'attribute'>) => {
         ></span>
       );
     });
+    const tagString = ReactDOMServer.renderToStaticMarkup(<span>{_tag}</span>);
     return (
       <Box key={index} mr={1} mb={1}>
-        <Chip variant="outlined" color="primary" label={_tag} size="small" />
+        <Chip
+          variant="outlined"
+          color="primary"
+          label={<span dangerouslySetInnerHTML={{ __html: tagString }} />}
+          size="small"
+        />
       </Box>
     );
   });
 
-  const htmlString = ReactDOMServer.renderToString(
-    <span style={{ display: 'flex', flexWrap: 'wrap' }}>{tagsHtml}</span>
-  );
-
-  return <span dangerouslySetInnerHTML={{ __html: htmlString }} />;
+  return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{tagsHtml}</div>;
 };
 
 const CustomTagsHighlight = connectHighlight(Highlight);
