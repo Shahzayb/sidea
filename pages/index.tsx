@@ -1,6 +1,7 @@
 import Home from '../components/Screens/Home';
 import { useIdeaCategory, Category } from '../context/idea-category-context';
 import React from 'react';
+import Head from 'next/head';
 
 const Index = () => {
   const { changeCategory } = useIdeaCategory();
@@ -8,7 +9,14 @@ const Index = () => {
   React.useEffect(() => {
     changeCategory(Category.NEW_IDEAS);
   }, []);
-  return <Home />;
+  return (
+    <>
+      <Head>
+        <title>Home - Sidea</title>
+      </Head>
+      <Home />
+    </>
+  );
 };
 
 export default Index;

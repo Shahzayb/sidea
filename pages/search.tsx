@@ -9,6 +9,7 @@ import { GetServerSideProps } from 'next';
 import { Paper, Typography, Box } from '@material-ui/core';
 import useGutterAllChild from '../hooks/useGutterAllChild';
 import { clientPageQueryLimit } from '../client-env';
+import Head from 'next/head';
 
 const VirtualSearchBox = connectSearchBox(() => null);
 
@@ -24,24 +25,30 @@ function Index({ q: searchTerm = '' }: Props) {
   }
 
   return (
-    <div className={classes.gutterAllChild}>
-      <Paper>
-        <Box p={1}>
-          <Box pb={1}>
-            <Typography gutterBottom component="h1" variant="h4">
-              "{searchTerm.trim()}"
+    <>
+      <Head>
+        <title>Search for "${searchTerm.trim()}" - Sidea</title>
+      </Head>
+
+      <div className={classes.gutterAllChild}>
+        <Paper>
+          <Box p={1}>
+            <Box pb={1}>
+              <Typography gutterBottom component="h1" variant="h4">
+                "{searchTerm.trim()}"
+              </Typography>
+            </Box>
+            <Typography component="h1" variant="body2">
+              Search results
             </Typography>
           </Box>
-          <Typography component="h1" variant="body2">
-            Search results
-          </Typography>
-        </Box>
-      </Paper>
-      <Configure hitsPerPage={clientPageQueryLimit} />
+        </Paper>
+        <Configure hitsPerPage={clientPageQueryLimit} />
 
-      <VirtualSearchBox defaultRefinement={searchTerm.trim()} />
-      <InfiniteIdeaHits />
-    </div>
+        <VirtualSearchBox defaultRefinement={searchTerm.trim()} />
+        <InfiniteIdeaHits />
+      </div>
+    </>
   );
 }
 

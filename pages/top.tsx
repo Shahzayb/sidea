@@ -3,6 +3,7 @@ import { useIdeaCategory, Category } from '../context/idea-category-context';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { Interval } from '../graphql/client/types';
+import Head from 'next/head';
 const Index = () => {
   const router = useRouter();
 
@@ -40,7 +41,14 @@ const Index = () => {
     }
   }, [intervalQuery]);
 
-  return <Home />;
+  return (
+    <>
+      <Head>
+        <title>Top Ideas - Sidea</title>
+      </Head>
+      <Home />
+    </>
+  );
 };
 
 export default Index;
