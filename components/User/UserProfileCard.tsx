@@ -64,7 +64,12 @@ function UserProfileCard({ user }: Props) {
       </CardContent>
       <CardActions disableSpacing>
         {isMineProfile && (
-          <Link style={{ width: '100%' }} naked href="/idea/create">
+          <Link
+            style={{ width: '100%' }}
+            color="inherit"
+            underline="none"
+            href="/idea/create"
+          >
             <Button size="small" fullWidth color="primary" variant="contained">
               New Idea
             </Button>

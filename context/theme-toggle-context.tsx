@@ -47,13 +47,32 @@ const BASE_THEME: ThemeOptions = {
 };
 
 const LIGHT_THEME: ThemeOptions = {
+  ...BASE_THEME,
+
   palette: {
+    primary: {
+      main: '#0F2E44',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#DB8423',
+      contrastText: '#fff',
+    },
     type: 'light',
   },
 };
 
 const DARK_THEME: ThemeOptions = {
+  ...BASE_THEME,
   palette: {
+    primary: {
+      main: '#A7E1ED',
+      contrastText: '#000',
+    },
+    secondary: {
+      main: '#FFE6AC',
+      contrastText: '#000',
+    },
     type: 'dark',
   },
 };
@@ -115,13 +134,9 @@ export const ThemeToggleProvider: React.FC = ({ children }) => {
   );
 
   const theme = React.useMemo(() => {
-    let theme: ThemeOptions;
-    if (mode === ThemeMode.Light) {
-      theme = { ...BASE_THEME, ...LIGHT_THEME };
-    } else {
-      theme = { ...BASE_THEME, ...DARK_THEME };
-    }
-    return responsiveFontSizes(createMuiTheme(theme));
+    return responsiveFontSizes(
+      createMuiTheme(mode === ThemeMode.Light ? LIGHT_THEME : DARK_THEME)
+    );
   }, [mode]);
 
   return (
