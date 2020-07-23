@@ -92,12 +92,14 @@ export const User: UserResolvers = {
       });
     }
 
-    const QUERY = `SELECT Idea.* 
-          FROM Save INNER JOIN Idea ON Save.ideaId = Idea.id 
-          WHERE Save.userId = ${user.id} ${
-      input.after_id ? `AND Idea.id < ${validator.toInt(input.after_id)}` : ''
+    const QUERY = `SELECT sidea.idea.* 
+          FROM sidea.save INNER JOIN sidea.idea ON sidea.save.ideaId = sidea.idea.id 
+          WHERE sidea.save.userId = ${user.id} ${
+      input.after_id
+        ? `AND sidea.idea.id < ${validator.toInt(input.after_id)}`
+        : ''
     } 
-          ORDER BY Idea.id DESC 
+          ORDER BY sidea.idea.id DESC 
           LIMIT ${input.limit}`;
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);
@@ -140,12 +142,14 @@ export const User: UserResolvers = {
       });
     }
 
-    const QUERY = `SELECT Idea.* 
-          FROM sidea.Like INNER JOIN Idea ON sidea.Like.ideaId = Idea.id 
-          WHERE sidea.Like.userId = ${user.id} ${
-      input.after_id ? `AND Idea.id < ${validator.toInt(input.after_id)}` : ''
+    const QUERY = `SELECT sidea.idea.* 
+          FROM sidea.like INNER JOIN sidea.idea ON sidea.like.ideaId = sidea.idea.id 
+          WHERE sidea.like.userId = ${user.id} ${
+      input.after_id
+        ? `AND sidea.idea.id < ${validator.toInt(input.after_id)}`
+        : ''
     } 
-          ORDER BY Idea.id DESC 
+          ORDER BY sidea.idea.id DESC 
           LIMIT ${input.limit}`;
 
     const ideas = await prisma.queryRaw<Idea[]>(QUERY);

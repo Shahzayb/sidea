@@ -18,6 +18,7 @@ model Feature {
 
   @@index([ideaId], name: "ideaId")
   @@index([userId], name: "userId")
+  @@map("feature")
 }
 
 model Idea {
@@ -33,6 +34,7 @@ model Idea {
   Tag       Tag[]
 
   @@index([userId], name: "userId")
+  @@map("idea")
 }
 
 model Like {
@@ -46,6 +48,7 @@ model Like {
   @@index([ideaId], name: "ideaId")
   @@index([userId], name: "userId")
   @@unique([userId, ideaId], name: "userId_ideaId")
+  @@map("like")
 }
 
 model Save {
@@ -59,6 +62,7 @@ model Save {
   @@index([ideaId], name: "ideaId")
   @@index([userId], name: "userId")
   @@unique([userId, ideaId], name: "userId_ideaId")
+  @@map("save")
 }
 
 model Setting {
@@ -68,6 +72,7 @@ model Setting {
   User      User              @relation(fields: [userId], references: [id])
 
   @@index([userId], name: "user_settings_idx")
+  @@map("setting")
 }
 
 model Tag {
@@ -77,6 +82,7 @@ model Tag {
   Idea   Idea   @relation(fields: [ideaId], references: [id])
 
   @@index([ideaId], name: "ideaId")
+  @@map("tag")
 }
 
 model User {
@@ -92,6 +98,7 @@ model User {
   Like      Like[]
   Save      Save[]
   Setting   Setting?
+  @@map("user")
 }
 
 enum setting_themeMode {

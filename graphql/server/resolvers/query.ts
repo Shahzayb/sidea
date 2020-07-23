@@ -205,15 +205,15 @@ export const Query: QueryResolvers = {
     }
 
     const QUERY = `
-        select Idea.id, Idea.title, Idea.body, Idea.userId, Idea.createdAt, count(sidea.Like.id) as likeCount 
-        from Idea left join sidea.Like on Idea.id = sidea.Like.ideaId
-        group by Idea.id, Idea.title, Idea.body, Idea.userId, Idea.createdAt
+        select sidea.idea.id, sidea.idea.title, sidea.idea.body, sidea.idea.userId, sidea.idea.createdAt, count(sidea.like.id) as likeCount 
+        from sidea.idea left join sidea.like on sidea.idea.id = sidea.like.ideaId
+        group by sidea.idea.id, sidea.idea.title, sidea.idea.body, sidea.idea.userId, sidea.idea.createdAt
         ${
           input.interval !== Interval.AllTime
-            ? `having Idea.createdAt > DATE_SUB(NOW(), INTERVAL 1 ${input.interval})`
+            ? `having sidea.idea.createdAt > DATE_SUB(NOW(), INTERVAL 1 ${input.interval})`
             : ''
         }
-        order by likeCount desc, Idea.id desc
+        order by likeCount desc, sidea.idea.id desc
         limit ${input.skip}, ${input.limit}
         `;
 

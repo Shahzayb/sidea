@@ -20,7 +20,7 @@ function UserNavigationTab({ userId, page }: Props) {
   };
   return (
     <Paper>
-      <Box p={1}>
+      <Box paddingX={1}>
         <Tabs
           value={curTab}
           onChange={handleChange}

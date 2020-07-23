@@ -18,22 +18,21 @@ import { AuthProvider, AUTH_TOKEN_KEY } from '../context/auth-context';
 import { ThemeToggleProvider } from '../context/theme-toggle-context';
 import { IdeaCategoryProvider } from '../context/idea-category-context';
 
-import { apolloClientUri } from '../client-env';
 import { ZenObservable } from 'zen-observable-ts';
 import { useTheme, useMediaQuery } from '@material-ui/core';
 import { CustomSnackbarProvider } from '../context/snackbar-context';
 
-const defaultOptions: DefaultOptions = {
-  watchQuery: {
-    errorPolicy: 'all',
-  },
-  query: {
-    errorPolicy: 'all',
-  },
-  mutate: {
-    errorPolicy: 'all',
-  },
-};
+// const defaultOptions: DefaultOptions = {
+//   watchQuery: {
+//     errorPolicy: 'all',
+//   },
+//   query: {
+//     errorPolicy: 'all',
+//   },
+//   mutate: {
+//     errorPolicy: 'all',
+//   },
+// };
 
 const cache = new InMemoryCache();
 
@@ -72,13 +71,13 @@ const requestLink = new ApolloLink(
 
 const client = new ApolloClient({
   link: ApolloLink.from([
-    onError(({ graphQLErrors, networkError }) => {
-      // console.log('graphqlErrors', graphQLErrors);
-      // console.log('networkError', networkError);
-    }),
+    // onError(({ graphQLErrors, networkError }) => {
+    //   console.log('graphqlErrors', graphQLErrors);
+    //   console.log('networkError', networkError);
+    // }),
     requestLink,
     new HttpLink({
-      uri: apolloClientUri,
+      uri: '/api/graphql',
       credentials: 'same-origin',
     }),
   ]),
