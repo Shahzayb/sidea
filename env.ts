@@ -14,6 +14,9 @@ const env = from(process.env, {
     return email as string;
   },
 });
+
+export const nodeEnv = env.get('NODE_ENV').required().asString();
+
 export const jwtSecret = env.get('JWT_SECRET').required().asString();
 
 export const sendGridApiKey = env.get('SENDGRID_API_KEY').required().asString();
@@ -21,10 +24,17 @@ export const sendGridApiKey = env.get('SENDGRID_API_KEY').required().asString();
 export const companyName = env.get('COMPANY_NAME').required().asString();
 export const companyEmail = env.get('COMPANY_EMAIL').required().asEmail();
 
-export const clientBaseUrl = env
+const _clientBaseUrl = env
   .get('CLIENT_BASE_URL')
-  .required()
+  .required(nodeEnv === 'development')
   .asUrlString();
+
+const _vercelUrl = env
+  .get('VERCEL_URL')
+  .required(nodeEnv === 'production')
+  .asUrlString();
+
+export const clientBaseUrl = _clientBaseUrl || _vercelUrl;
 
 export const algoliaAppId = env.get('ALGOLIA_APP_ID').required().asString();
 export const algoliaAdminApiKey = env

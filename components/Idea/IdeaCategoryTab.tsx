@@ -46,7 +46,7 @@ function IdeaCategoryTab() {
 
   return (
     <Paper>
-      <Box p={1}>
+      <Box paddingX={1}>
         <Tabs
           value={category}
           onChange={handleCategoryChange}

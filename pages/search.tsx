@@ -27,7 +27,7 @@ function Index({ q: searchTerm = '' }: Props) {
   return (
     <>
       <Head>
-        <title>Search for "${searchTerm.trim()}" - Sidea</title>
+        <title>Search for "{searchTerm.trim()}" - Sidea</title>
       </Head>
 
       <div className={classes.gutterAllChild}>
