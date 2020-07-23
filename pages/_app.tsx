@@ -71,10 +71,10 @@ const requestLink = new ApolloLink(
 
 const client = new ApolloClient({
   link: ApolloLink.from([
-    onError(({ graphQLErrors, networkError }) => {
-      // console.log('graphqlErrors', graphQLErrors);
-      // console.log('networkError', networkError);
-    }),
+    // onError(({ graphQLErrors, networkError }) => {
+    //   console.log('graphqlErrors', graphQLErrors);
+    //   console.log('networkError', networkError);
+    // }),
     requestLink,
     new HttpLink({
       uri: '/api/graphql',
