@@ -18,6 +18,9 @@ const env = from(process.env, {
 
 export const nodeEnv = env.get('NODE_ENV').required().asString();
 
+export const isDevEnv = nodeEnv === 'development';
+export const isProdEnv = nodeEnv === 'production';
+
 export const jwtSecret = env.get('JWT_SECRET').required().asString();
 
 export const sendGridApiKey = env.get('SENDGRID_API_KEY').required().asString();
@@ -25,15 +28,18 @@ export const sendGridApiKey = env.get('SENDGRID_API_KEY').required().asString();
 export const companyName = env.get('COMPANY_NAME').required().asString();
 export const companyEmail = env.get('COMPANY_EMAIL').required().asEmail();
 
-const _vercelUrl = env
-  .get('VERCEL_URL')
-  .required(nodeEnv === 'production')
-  .asString();
+const _vercelUrl = url_format({
+  protocol: 'https',
+  pathname: env.get('VERCEL_URL').required(isProdEnv).asString(),
+});
+
+if (isProdEnv && !validator.isURL(_vercelUrl)) {
+  throw new Error('VERCEL_URL is not valid');
+}
 
 const _clientBaseUrl = env
   .get('CLIENT_BASE_URL')
-  .required(nodeEnv === 'development')
-  .default(url_format({ protocol: 'https', pathname: _vercelUrl }))
+  .required(isDevEnv)
   .asUrlString();
 
 export const clientBaseUrl = _clientBaseUrl || _vercelUrl;
