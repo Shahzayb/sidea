@@ -24,6 +24,8 @@ export const sendGridApiKey = env.get('SENDGRID_API_KEY').required().asString();
 export const companyName = env.get('COMPANY_NAME').required().asString();
 export const companyEmail = env.get('COMPANY_EMAIL').required().asEmail();
 
+console.log(process.env);
+
 const _clientBaseUrl = env
   .get('CLIENT_BASE_URL')
   .required(nodeEnv === 'development')
@@ -33,8 +35,6 @@ const _vercelUrl = env
   .get('VERCEL_URL')
   .required(nodeEnv === 'production')
   .asUrlString();
-
-console.log(process.env);
 
 export const clientBaseUrl = _clientBaseUrl || _vercelUrl;
 
