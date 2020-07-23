@@ -1,3 +1,4 @@
+import { format as url_format } from 'url';
 import { from } from 'env-var';
 
 import validator from 'validator';
@@ -24,16 +25,15 @@ export const sendGridApiKey = env.get('SENDGRID_API_KEY').required().asString();
 export const companyName = env.get('COMPANY_NAME').required().asString();
 export const companyEmail = env.get('COMPANY_EMAIL').required().asEmail();
 
-console.log(process.env);
+const _vercelUrl = env
+  .get('VERCEL_URL')
+  .required(nodeEnv === 'production')
+  .asString();
 
 const _clientBaseUrl = env
   .get('CLIENT_BASE_URL')
   .required(nodeEnv === 'development')
-  .asUrlString();
-
-const _vercelUrl = env
-  .get('VERCEL_URL')
-  .required(nodeEnv === 'production')
+  .default(url_format({ protocol: 'https', pathname: _vercelUrl }))
   .asUrlString();
 
 export const clientBaseUrl = _clientBaseUrl || _vercelUrl;
