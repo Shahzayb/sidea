@@ -30,11 +30,11 @@ export const companyEmail = env.get('COMPANY_EMAIL').required().asEmail();
 
 const _vercelUrl = url_format({
   protocol: 'https',
-  pathname: env.get('VERCEL_URL').required(isProdEnv).asString(),
+  hostname: env.get('VERCEL_URL').required(isProdEnv).asString(),
 });
 
 if (isProdEnv && !validator.isURL(_vercelUrl)) {
-  throw new Error('VERCEL_URL is not valid');
+  throw new Error(`VERCEL_URL is not valid - ${_vercelUrl}`);
 }
 
 const _clientBaseUrl = env
