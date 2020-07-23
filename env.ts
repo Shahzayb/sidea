@@ -34,6 +34,8 @@ const _vercelUrl = env
   .required(nodeEnv === 'production')
   .asUrlString();
 
+console.log(process.env);
+
 export const clientBaseUrl = _clientBaseUrl || _vercelUrl;
 
 export const algoliaAppId = env.get('ALGOLIA_APP_ID').required().asString();
