@@ -797,7 +797,9 @@ export const Mutation: MutationResolvers = {
       },
     });
 
-    await prisma.executeRaw`DELETE FROM Idea where id = ${validator.toInt(id)}`;
+    await prisma.executeRaw`DELETE FROM sidea.idea where id = ${validator.toInt(
+      id
+    )}`;
 
     try {
       await search.deleteIdea(id);
