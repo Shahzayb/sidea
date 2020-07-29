@@ -11,7 +11,6 @@ import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable, Operation } from 'apollo-link';
 
 import 'react-quill/dist/quill.snow.css';
-import 'react-quill/dist/quill.bubble.css';
 import '../public/styles/main.css';
 
 import { AuthProvider, AUTH_TOKEN_KEY } from '../context/auth-context';
