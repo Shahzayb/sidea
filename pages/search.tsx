@@ -61,6 +61,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default withInstantSearch(
-  withLayout(withFooter(withNavbar(Index))),
+  withLayout(withFooter(withNavbar(Index)), 'md'),
   'ideas'
 );

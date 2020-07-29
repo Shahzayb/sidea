@@ -25,7 +25,7 @@ const searchClient = {
 
 function withInstantSearch<P extends {} = {}>(
   Component: React.FC<P> | React.ComponentClass<P>,
-  index: string
+  index: 'users' | 'ideas'
 ) {
   return (props: P) => {
     return (

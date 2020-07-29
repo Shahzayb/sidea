@@ -1,7 +1,16 @@
 import React from 'react';
 
-import { connectAutoComplete, Configure } from 'react-instantsearch-dom';
-import { AutocompleteProvided, BasicDoc, Hit } from 'react-instantsearch-core';
+import {
+  connectAutoComplete,
+  Configure,
+  connectStateResults,
+} from 'react-instantsearch-dom';
+import {
+  AutocompleteProvided,
+  StateResultsProvided,
+  BasicDoc,
+  Hit,
+} from 'react-instantsearch-core';
 
 import {
   TextField,
@@ -32,7 +41,8 @@ function AutocompleteUserSearch({
   currentRefinement,
   hits,
   refine,
-}: AutocompleteProvided<HitType>) {
+  isSearchStalled,
+}: AutocompleteProvided<HitType> & StateResultsProvided<HitType>) {
   const router = useRouter();
   return (
     <>
@@ -43,9 +53,16 @@ function AutocompleteUserSearch({
           typeof option === 'string' ? option : option.username
         }
         filterOptions={(x) => x}
-        options={hits}
+        options={hits.length ? hits : ([''] as any[])}
         freeSolo
-        noOptionsText="Users not found"
+        loading={isSearchStalled}
+        openOnFocus={false}
+        getOptionDisabled={(option) => {
+          if (typeof option === 'string') {
+            return true;
+          }
+          return false;
+        }}
         includeInputInList
         filterSelectedOptions
         onChange={(event, newValue, reason) => {
@@ -55,13 +72,18 @@ function AutocompleteUserSearch({
               typeof newValue === 'string' &&
               newValue.trim()
             ) {
-              router.push({
-                pathname: `/search`,
-                query: {
-                  q: newValue.trim().toLowerCase(),
-                },
-              });
-              newValue;
+              if (typeof window !== 'undefined') {
+                window.location.assign(
+                  `/search?q=${newValue.trim().toLowerCase()}`
+                );
+              }
+              // Fix: this causes awkward amount of delay between enter & search.
+              // router.push({
+              //   pathname: `/search`,
+              //   query: {
+              //     q: newValue.trim().toLowerCase(),
+              //   },
+              // });
             } else if (reason === 'select-option' && isUserHit(newValue)) {
               router.push('/user/[userId]', `/user/${newValue.id}`);
             }
@@ -89,6 +111,9 @@ function AutocompleteUserSearch({
           />
         )}
         renderOption={(option) => {
+          if (typeof option === 'string') {
+            return <div>No User Found.</div>;
+          }
           return (
             <Link
               color="inherit"
@@ -117,6 +142,6 @@ function AutocompleteUserSearch({
 }
 
 export default withInstantSearch(
-  connectAutoComplete(AutocompleteUserSearch),
+  connectAutoComplete(connectStateResults(AutocompleteUserSearch)),
   'users'
 );

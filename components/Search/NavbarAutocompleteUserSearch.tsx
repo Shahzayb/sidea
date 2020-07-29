@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 function NavbarAutocompleteUserSearch() {
   const classes = useStyles();
   const [smallSearchActive, setSmallSearchActive] = React.useState(false);
-  const [largeSearchActive, setLargeSearchActive] = React.useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -73,29 +72,13 @@ function NavbarAutocompleteUserSearch() {
         </ClickAwayListener>
       )}
       {!isSmallScreen && (
-        <ClickAwayListener
-          onClickAway={() => {
-            setLargeSearchActive(false);
+        <div
+          style={{
+            width: 300,
           }}
         >
-          <div
-            onClick={() => {
-              setLargeSearchActive(true);
-            }}
-            style={{
-              width: largeSearchActive ? 400 : 300,
-              transition: theme.transitions.create('width'),
-              background: largeSearchActive
-                ? theme.palette.background.paper
-                : undefined,
-              borderRadius: largeSearchActive
-                ? theme.shape.borderRadius
-                : undefined,
-            }}
-          >
-            <AutocompleteUserSearch />
-          </div>
-        </ClickAwayListener>
+          <AutocompleteUserSearch />
+        </div>
       )}
     </div>
   );
