@@ -58,7 +58,7 @@ export const User: UserResolvers = {
       entry: ideas,
       page: {
         cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
-        hasNextPage: !!ideas.length,
+        hasNextPage: ideas.length === input.limit,
       },
     };
 
@@ -108,7 +108,7 @@ export const User: UserResolvers = {
       entry: ideas,
       page: {
         cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
-        hasNextPage: !!ideas.length,
+        hasNextPage: ideas.length === input.limit,
       },
     };
 
@@ -158,7 +158,7 @@ export const User: UserResolvers = {
       entry: ideas,
       page: {
         cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
-        hasNextPage: !!ideas.length,
+        hasNextPage: ideas.length === input.limit,
       },
     };
 
