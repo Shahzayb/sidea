@@ -87,7 +87,7 @@ export const Query: QueryResolvers = {
       entry: ideas,
       page: {
         cursor: ideas.length ? ideas[ideas.length - 1].id : input.after_id,
-        hasNextPage: !!ideas.length,
+        hasNextPage: ideas.length === input.limit,
       },
     };
 
@@ -175,7 +175,7 @@ export const Query: QueryResolvers = {
         cursor: features.length
           ? features[features.length - 1].id
           : input.after_feature_id,
-        hasNextPage: !!features.length,
+        hasNextPage: features.length === input.limit,
       },
     };
 
@@ -223,7 +223,7 @@ export const Query: QueryResolvers = {
       entry: ideas,
       page: {
         cursor: input.skip + ideas.length,
-        hasNextPage: !!ideas.length,
+        hasNextPage: ideas.length === input.limit,
       },
     };
 

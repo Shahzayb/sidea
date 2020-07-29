@@ -73,7 +73,7 @@ export const Idea: IdeaResolvers = {
         cursor: features.length
           ? features[features.length - 1].id
           : input.after_id,
-        hasNextPage: !!features.length,
+        hasNextPage: features.length === input.limit,
       },
     };
 
