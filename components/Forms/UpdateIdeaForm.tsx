@@ -133,7 +133,7 @@ function UpdateIdeaForm({ idea }: Props) {
       >
         <MultilineTextField
           {...formik.getFieldProps('title')}
-          placeholder="Title"
+          placeholder="Introduce Idea"
           variant="outlined"
           spellCheck="false"
           margin="none"
@@ -155,7 +155,7 @@ function UpdateIdeaForm({ idea }: Props) {
           }}
           error={formik.touched.body ? formik.errors.body : undefined}
           value={formik.values.body}
-          placeholder="Text"
+          placeholder="Further explain Idea/Problem, and provide possible solutions"
         />
         <TagsInput
           value={formik.values.tags}
